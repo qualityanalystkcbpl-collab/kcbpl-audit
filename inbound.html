@@ -37,7 +37,11 @@
     </style>
 </head>
 <body>
-
+<script>
+if(localStorage.getItem("gtpl_login") !== "yes"){
+    window.location.href = "LOGIN.html";
+}
+</script>
 <div id="mainContent">
 
 <div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">

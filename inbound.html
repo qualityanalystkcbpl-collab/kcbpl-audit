@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTPL KCBPL - Inbound Call Quality Audit Form</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .form-container { max-width: 850px; background: #fff; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        h1 { text-align: center; color: #1a365d; margin-bottom: 6px; font-size: 26px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        h3 { text-align: center; color: #718096; margin-top: 0; font-weight: 600; font-size: 13px; margin-bottom: 35px; letter-spacing: 1.5px; text-transform: uppercase; }
+        
+        fieldset { border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 25px; background-color: #f8fafc; }
+        legend { font-weight: bold; color: #2b6cb0; padding: 0 10px; font-size: 15px; text-transform: uppercase; }
+        .form-group { margin-bottom: 18px; display: flex; flex-direction: column; }
+        .form-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        
+        label { font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #4a5568; line-height: 1.4; }
+        label .en-label { color: #4a5568; }
+        label .bn-label { color: #6b7280; font-size: 13px; font-weight: 500; display: block; margin-top: 2px; }
+        label.required::after { content: " *"; color: #e53e3e; }
+        
+        input[type="text"], input[type="email"], input[type="date"], input[type="time"], select, textarea { padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; background-color: #fff; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #3182ce; box-shadow: 0 0 0 3px rgba(66,153,225,0.2); }
+        textarea { resize: vertical; height: 55px; font-family: inherit; margin-top: 6px; }
+        
+        .remarks-container { margin-top: 8px; padding: 10px; background-color: #edf2f7; border-radius: 6px; border-left: 3px solid #718096; }
+        .remarks-select { margin-bottom: 6px; background-color: #fff; }
+        
+        .submit-btn { background: linear-gradient(135deg, #2b6cb0, #1a365d) !important; color: white !important; border: none !important; padding: 15px 20px !important; font-size: 16px !important; font-weight: bold !important; border-radius: 8px !important; cursor: pointer; width: 100%; transition: all 0.3s ease-in-out !important; box-shadow: 0 4px 6px rgba(43, 108, 176, 0.2); letter-spacing: 0.5px; }
+        .submit-btn:hover { background: linear-gradient(135deg, #1a365d, #0f172a) !important; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(26, 54, 93, 0.4); }
+        .submit-btn:disabled { background: #cbd5e0 !important; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .fatal-select { border-left: 4px solid #e53e3e; }
+        #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
+    </style>
+</head>
+<body>
+<div id="loginBox" style="max-width:400px;margin:100px auto;padding:20px;border:1px solid #ccc;border-radius:10px;background:#fff;text-align:center;">
+    <h2>GTPL Audit Login</h2>
+
+    <input type="text" id="username" placeholder="Username"
+           style="width:90%;padding:10px;margin:10px;"><br>
+
+    <input type="password" id="password" placeholder="Password"
+           style="width:90%;padding:10px;margin:10px;"><br>
+
+    <button onclick="checkLogin()"
+            style="padding:10px 20px;background:#1a365d;color:white;border:none;border-radius:5px;">
+        Login
+    </button>
+
+    <p id="loginError" style="color:red;"></p>
+</div>
+
+<div id="mainContent" style="display:none;">
+
+<div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
+    <img src="https://static.wikia.nocookie.net/etv-gspn-bangla/images/6/63/GTPL_KCBPL.png/revision/latest/scale-to-width-down/984?cb=20210928114613" alt="GTPL KCBPL Logo" style="max-width: 180px; max-height: 70px; width: auto; height: auto; object-fit: contain;">
+</div>
+<div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
+    <img src="logo.png" alt="GTPL KCBPL Logo"
+         style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
+</div>
+
+<div style="text-align:right; margin:10px 20px;">
+    <button onclick="logout()"
+        style="background:red;color:white;border:none;padding:8px 15px;border-radius:5px;cursor:pointer;">
+        Logout
+    </button>
+</div>
+
+<div class="form-container">
+
+<div class="form-container">
+    <h1>GTPL KCBPL – Call Quality Audit Form</h1>
+    <h3>CATV , BB TECH , BB RENEWAL INBOUND (TOTAL MARKS - 100)</h3>
+
+    <form id="auditForm" action="https://script.google.com/macros/s/AKfycbwxz1ey72WqCo901GpK3BqENJMTSSyUus-CZuwARjV0TvgH8_geD0Q5VGw2WFFi9gbUrg/exec" method="POST">
+
+        <!-- Section 1: Basic Information -->
+        <fieldset>
+            <legend>Section 1: Basic Information / সাধারণ তথ্য</legend>
+            <div class="form-group">
+                <label class="required"><span class="en-label">Email</span><span class="bn-label">ইমেল আইডি</span></label>
+                <input type="email" name="Email" required placeholder="e.g. kalyan.sarkar1234@gmail.com">
+            </div>
+            
+            <div class="form-inline">
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Process</span><span class="bn-label">প্রসেসের ধরন</span></label>
+                    <select name="Process" required>
+                        <option value="">Select Process</option>
+                        <option value="CATV">CATV</option>
+                        <option value="BB RENEWAL">BB RENEWAL</option>
+                        <option value="BB TECH SUPPORT">BB TECH SUPPORT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Associate Emp ID</span><span class="bn-label">প্রতিনিধির এমপ্লয়ী আইডি</span></label>
+                    <input type="text" name="Associate Emp ID" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
+                    <input type="text" name="Associate Name" required>
+                </div>
+            </div>
+            
+            <div class="form-inline">
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর</span></label>
+                    <input type="text" name="Calling Number" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
+                    <input type="date" name="Call Date" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Call time</span><span class="bn-label">কলের সময়</span></label>
+                    <input type="time" name="Call time" required>
+                </div>
+            </div>
+
+            <div class="form-inline">
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
+                    <input type="text" name="Call ID" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
+                    <select name="TL Name" required>
+                        <option value="">Select TL Name</option>
+                        <option value="ANWESHA GANGULY">ANWESHA GANGULY</option>
+                        <option value="SOMA SAMATA">SOMA SAMATA</option>
+                        <option value="BANIBRATA MAJUNDAR">BANIBRATA MAJUNDAR</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
+                    <select name="Language" required>
+                        <option value="">Select Language</option>
+                        <option value="BENGALI">BENGALI</option>
+                        <option value="ENGLISH">ENGLISH</option>
+                        <option value="HINDI">HINDI</option>
+                        <option value="OTHERS">OTHERS</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-inline">
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
+                    <input type="text" name="Call Duration" placeholder="e.g. 03:45" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
+                    <input type="text" name="Call Link" required>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
+                    <input type="text" name="Disposition" required>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Section 2: Core Parameter Checklist -->
+        <fieldset>
+            <legend>Section 2: Call Quality Performance Evaluation</legend>
+
+            <!-- 1. Opening -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Opening (5 Marks)</span><span class="bn-label">কল ওপেনিং স্ক্রিপ্ট ও ব্র্যান্ডিং</span></label>
+                <select name="Opening" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark / মন্তব্য বাছুন --</option>
+                        <option value="Call opening was not given over the call.">Call opening was not given over the call.</option>
+                        <option value="Call opening was given after 3 sec.">Call opening was given after 3 sec.</option>
+                        <option value="Brand name was not mentioned over the call.">Brand name was not mentioned over the call.</option>
+                    </select>
+                    <textarea name="Remarks 1" placeholder="Or write custom remarks (Other)..."></textarea>
+                </div>
+            </div>
+
+            <!-- 2. Enthusiatic tone -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Enthusiatic tone (1 Mark)</span><span class="bn-label">ইতিবাচক ও উৎসাহব্যঞ্জক কণ্ঠস্বর</span></label>
+                <select name="Enthusiatic tone" required>
+                    <option value="">Select Score</option>
+                    <option value="1">1</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Call opening was given in dull voice.">Call opening was given in dull voice.</option>
+                    </select>
+                    <textarea name="Remarks 2" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 3. Assurance -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Assurance (3 Marks)</span><span class="bn-label">গ্রাহককে সঠিক সহায়তার আশ্বাস</span></label>
+                <select name="Assurance" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Assurance was missing over the call.">Assurance was missing over the call.</option>
+                    </select>
+                    <textarea name="Remarks 3" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 4. Closing -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Closing (4 Marks)</span><span class="bn-label">সঠিক ক্লোজিং এবং ধন্যবাদ জ্ঞাপন</span></label>
+                <select name="Closing" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Further assistance, closing and brand name was not pitched when advisor have the opportunity to pitch.">Further assistance, closing and brand name was not pitched when advisor have the opportunity to pitch.</option>
+                        <option value="Further assistance was missing over the call.">Further assistance was missing over the call.</option>
+                        <option value="Further assistance, closing was not pitched when advisor have the opportunity to pitch.">Further assistance, closing was not pitched when advisor have the opportunity to pitch.</option>
+                    </select>
+                    <textarea name="Remarks 4" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 5. Account Authentication/Security Checks (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Account Authentication/Security Checks (3 Marks / FATAL)</span><span class="bn-label">অ্যাকাউন্ট ভেরিফিকেশন বা সিকিউরিটি চেক</span></label>
+                <select name="Account Authentication/Security Checks" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3 (Pass)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <textarea name="Remarks 5" class="remarks-field" placeholder="Remarks 5 (Optional)"></textarea>
+            </div>
+
+            <!-- 6. Query and system probing -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Query and system probing (3 Marks)</span><span class="bn-label">সঠিক সিস্টেম অনুসন্ধান ও সমস্যা চিহ্নিতকরণ</span></label>
+                <select name="Query and system probing" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3</option>
+                    <option value="0">0</option>
+                </select>
+                <textarea name="Remarks 6" class="remarks-field" placeholder="Remarks 6 (Optional)"></textarea>
+            </div>
+
+            <!-- 7. Empathy/Apology -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Empathy/Apology (4 Marks)</span><span class="bn-label">দুঃখপ্রকাশ বা সহানুভূতির সঠিক ব্যবহার</span></label>
+                <select name="Empathy/Apology" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Apology was missing over the call.">Apology was missing over the call.</option>
+                    </select>
+                    <textarea name="Remarks 7" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 8. Paraphrasing/ Acknowledgement -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Paraphrasing/ Acknowledgement (4 Marks)</span><span class="bn-label">গ্রাহকের কথা প্যারাফ্রেজ বা অ্যাকনলেজ করা</span></label>
+                <select name="Paraphrasing/ Acknowledgement" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Paraphrasing was missing over the call.">Paraphrasing was missing over the call.</option>
+                    </select>
+                    <textarea name="Remarks 8" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 9. Hold / Transfer Procedure -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Hold / Transfer Procedure (4 Marks)</span><span class="bn-label">হোল্ড বা ট্রান্সফার করার সঠিক নিয়মাবলি</span></label>
+                <select name="Hold / Transfer Procedure" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Hold script was not followed properly over the call.">Hold script was not followed properly over the call.</option>
+                        <option value="Unhold script was not followed properly.">Unhold script was not followed properly.</option>
+                        <option value="The hold time exceeded 120 seconds.">The hold time exceeded 120 seconds.</option>
+                    </select>
+                    <textarea name="Remarks 9" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 10. Dead Air -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Dead Air (3 Marks)</span><span class="bn-label">ডেড এয়ার বা নীরবতা নিয়ন্ত্রণ</span></label>
+                <select name="Dead Air" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Dead air was observed more then 10 sec.">Dead air was observed more then 10 sec.</option>
+                    </select>
+                    <textarea name="Remarks 10" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 11. Active Listening/ Attentiveness -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Active Listening/ Attentiveness (4 Marks)</span><span class="bn-label">মনোযোগ সহকারে গ্রাহকের কথা শোনা</span></label>
+                <select name="Active Listening/ Attentiveness" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Advisor was not attentive over the call.">Advisor was not attentive over the call.</option>
+                    </select>
+                    <textarea name="Remarks 11" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 12. Interruption -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Interruption (9 Marks)</span><span class="bn-label">গ্রাহকের কথার মাঝে বাধা না দেওয়া</span></label>
+                <select name="Interruption" required>
+                    <option value="">Select Score</option>
+                    <option value="9">9</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Overlapping was observed over the call.">Overlapping was observed over the call.</option>
+                        <option value="Interruption was observed over the call.">Interruption was observed over the call.</option>
+                    </select>
+                    <textarea name="Remarks 12" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 13. Choice of words/Sentence formation -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Choice of words/Sentence formation (4 Marks)</span><span class="bn-label">সঠিক শব্দচয়ন এবং বাক্য গঠন</span></label>
+                <select name="Choice of words/Sentence formation" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Inappropriate choice of words used during the interaction.">Inappropriate choice of words used during the interaction.</option>
+                        <option value="Word selection was not suitable for a professional conversation.">Word selection was not suitable for a professional conversation.</option>
+                    </select>
+                    <textarea name="Remarks 13" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 14. Clarity of speech/Rate of Speech -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Clarity of speech/Rate of Speech (5 Marks)</span><span class="bn-label">কথা বলার স্পষ্টতা এবং স্বাভাবিক গতি</span></label>
+                <select name="Clarity of speech/Rate of Speech" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Agent spoke too fast, making it difficult for the customer to follow.">Agent spoke too fast, making it difficult for the customer to follow.</option>
+                        <option value="Speech rate was high, reducing clarity of communication.">Speech rate was high, reducing clarity of communication.</option>
+                        <option value="Speech was too slow, affecting the flow of the conversation.">Speech was too slow, affecting the flow of the conversation.</option>
+                        <option value="Speech clarity and rate were not maintained properly, making it difficult for the customer to clearly understand.">Speech clarity and rate were not maintained properly, making it difficult for the customer to clearly understand.</option>
+                    </select>
+                    <textarea name="Remarks 14" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 15. Lack of confidence/fumbling -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Lack of confidence/fumbling (2 Marks)</span><span class="bn-label">আত্মবিশ্বাসের অভাব বা ফাম্বলিং চেক</span></label>
+                <select name="Lack of confidence/fumbling" required>
+                    <option value="">Select Score</option>
+                    <option value="2">2</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Fumbling was observed over the call.">Fumbling was observed over the call.</option>
+                        <option value="Lack of confidence was observed over the call.">Lack of confidence was observed over the call.</option>
+                        <option value="Agent lacked confidence during the interaction.">Agent lacked confidence during the interaction.</option>
+                        <option value="Agent showed fumbling while communicating in Hindi.">Agent showed fumbling while communicating in Hindi.</option>
+                        <option value="Agent fumbled while speaking in English.">Agent fumbled while speaking in English.</option>
+                    </select>
+                    <textarea name="Remarks 15" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 16. Using Customer Language -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Using Customer Language (2 Marks)</span><span class="bn-label">গ্রাহকের সুবিধাজনক ভাষার সঠিক ব্যবহার</span></label>
+                <select name="Using Customer Language" required>
+                    <option value="">Select Score</option>
+                    <option value="2">2</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Language switched without LCO/LBO confirmation.">Language switched without LCO/LBO confirmation.</option>
+                        <option value="Language switched with out Customer confirmation.">Language switched with out Customer confirmation.</option>
+                    </select>
+                    <textarea name="Remarks 16" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 17. Background Noice (Shouting / Screeming) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Background Noice (Shouting / Screeming) (2 Marks)</span><span class="bn-label">পার্শ্ববর্তী গোলমাল বা চেঁচামেচি মুক্ত পরিবেশ</span></label>
+                <select name="Background Noice (Shouting / Screeming)" required>
+                    <option value="">Select Score</option>
+                    <option value="2">2</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Background noise was present during the call, affecting communication quality.">Background noise was present during the call, affecting communication quality.</option>
+                        <option value="Disturbance from background noise impacted call clarity.">Disturbance from background noise impacted call clarity.</option>
+                        <option value="Loud background noise/shouting was observed during the interaction.">Loud background noise/shouting was observed during the interaction.</option>
+                        <option value="High noise levels in the background affected professionalism.">High noise levels in the background affected professionalism.</option>
+                        <option value="Significant background noise (shouting/screaming) was present, impacting clarity.">Significant background noise (shouting/screaming) was present, impacting clarity.</option>
+                    </select>
+                    <textarea name="Remarks 17" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 18. Personalization & Rapport Building -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Personalization & Rapport Building (4 Marks)</span><span class="bn-label">ব্যক্তিগত সুসম্পর্ক বা র‍্যাপো তৈরি করা</span></label>
+                <select name="Personalization & Rapport Building" required>
+                    <option value="">Select Score</option>
+                    <option value="4">4</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Agent failed to build rapport with the customer.">Agent failed to build rapport with the customer.</option>
+                        <option value="Customers Last name was not taken on call.">Customers Last name was not taken on call.</option>
+                    </select>
+                    <textarea name="Remarks 18" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 19. Jargon/Abbreviations -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Jargon/Abbreviations (1 Mark)</span><span class="bn-label">জটিল টেকনিক্যাল শব্দ বর্জন</span></label>
+                <select name="Jargon/Abbreviations" required>
+                    <option value="">Select Score</option>
+                    <option value="1">1</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Technical jargon was used without proper explanation.">Technical jargon was used without proper explanation.</option>
+                        <option value="Use of complex terms affected customer understanding.">Use of complex terms affected customer understanding.</option>
+                        <option value="Internal terminology was used instead of customer-friendly language.">Internal terminology was used instead of customer-friendly language.</option>
+                        <option value="Agent should use simple, customer-friendly language and explain any necessary terms.">Agent should use simple, customer-friendly language and explain any necessary terms.</option>
+                    </select>
+                    <textarea name="Remarks 19" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 20. Enthusiasm/Energy level/Willing to help -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Enthusiasm/Energy level/Willing to help (3 Marks)</span><span class="bn-label">সাহায্য করার মানসিকতা ও পজিটিভ এনার্জি</span></label>
+                <select name="Enthusiasm/Energy level/Willing to help" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Advisor sound very low over the call.">Advisor sound very low over the call.</option>
+                        <option value="Advisor sound dull over the call.">Advisor sound dull over the call.</option>
+                        <option value="Low energy level made the conversation sound dull.">Low energy level made the conversation sound dull.</option>
+                        <option value="Lack of willingness to help was observed during the call.">Lack of willingness to help was observed during the call.</option>
+                        <option value="Agent showed low enthusiasm and limited willingness to assist.">Agent showed low enthusiasm and limited willingness to assist.</option>
+                    </select>
+                    <textarea name="Remarks 20" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 21. Impolite/commanding/Casual tone/Flat tone -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Impolite/commanding/Casual tone/Flat tone (7 Marks)</span><span class="bn-label">রুক্ষ বা অতিরিক্ত ক্যাজুয়াল টোন বর্জন</span></label>
+                <select name="Impolite/commanding/Casual tone/Flat tone" required>
+                    <option value="">Select Score</option>
+                    <option value="7">7</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Commanding tone was observed over the call.">Commanding tone was observed over the call.</option>
+                        <option value="Order tone was observed over the call.">Order tone was observed over the call.</option>
+                    </select>
+                    <textarea name="Remarks 21" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 22. Incorrect information (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Incorrect information (5 Marks / FATAL)</span><span class="bn-label">গ্রাহককে ভুল তথ্য প্রদান</span></label>
+                <select name="Incorrect information" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5 (Pass)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <textarea name="Remarks 22" class="remarks-field" placeholder="Remarks 22 (Optional)"></textarea>
+            </div>
+
+            <!-- 23. Incomplete information (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Incomplete information (5 Marks / FATAL)</span><span class="bn-label">অসম্পূর্ণ বা অর্ধেক তথ্য প্রদান (TAT মিস করা)</span></label>
+                <select name="Incomplete information" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5 (Pass)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Advisor didn't shared the email resolution TAT.">Advisor didn't shared the email resolution TAT.</option>
+                        <option value="Advisor didn't shared the resolution TAT.">Advisor didn't shared the resolution TAT.</option>
+                        <option value="Advisor didn't shared the TAT.">Advisor didn't shared the TAT.</option>
+                        <option value="Advisor didn't shared the email ID.">Advisor didn't shared the email ID.</option>
+                    </select>
+                    <textarea name="Remarks 23" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 24. Proactive information -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Proactive information (5 Marks)</span><span class="bn-label">নিজে থেকে প্রয়োজনীয় অতিরিক্ত তথ্য বা অফার জানানো</span></label>
+                <select name="Proactive information" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5</option>
+                    <option value="0">0</option>
+                </select>
+                <textarea name="Remarks 24" class="remarks-field" placeholder="Remarks 24 (Optional)"></textarea>
+            </div>
+
+            <!-- 25. Tagging accuracy/Tagging Status/Dispo (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Tagging accuracy/Tagging Status/Dispo (5 Marks / FATAL)</span><span class="bn-label">সিস্টেমে সঠিক ট্যাগিং বা ডিসপোজিশন সিলেক্ট করা</span></label>
+                <select name="Tagging accuracy/Tagging Status/Dispo" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="5">5 (Pass)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <textarea name="Remarks 25" class="remarks-field" placeholder="Remarks 25 (Optional)"></textarea>
+            </div>
+
+            <!-- 26. Disconnection/Call ignorance (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Disconnection/Call ignorance (0 Marks / FATAL)</span><span class="bn-label">ইচ্ছা করে কল কেটে দেওয়া বা কাস্টমারকে ইগনোর করা</span></label>
+                <select name="Disconnection/Call ignorance" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="0">0 (No Error)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Call was disconnected from the agent’s end without proper closure.">Call was disconnected from the agent’s end without proper closure.</option>
+                        <option value="Agent ignored the customer during the interaction.">Agent ignored the customer during the interaction.</option>
+                        <option value="Call was improperly handled due to disconnection/ignorance.">Call was improperly handled due to disconnection/ignorance.</option>
+                    </select>
+                    <textarea name="Remarks 26" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 27. Unprofessional on call/Rude/Sarcastic/slangs (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Unprofessional on call/Rude/Sarcastic/slangs (0 Marks / FATAL)</span><span class="bn-label">রুক্ষ আচরণ, ব্যঙ্গ করা বা অপেশাদার টোন ব্যবহার</span></label>
+                <select name="Unprofessional on call/Rude/Sarcastic/slangs" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="0">0 (No Error)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Agent’s behavior was unprofessional during the interaction.">Agent’s behavior was unprofessional during the interaction.</option>
+                        <option value="Agent used a rude tone while interacting with the customer.">Agent used a rude tone while interacting with the customer.</option>
+                        <option value="Sarcastic tone/remarks were observed during the call.">Sarcastic tone/remarks were observed during the call.</option>
+                        <option value="Agent used an unprofessional and inappropriate tone.">Agent used an unprofessional and inappropriate tone.</option>
+                    </select>
+                    <textarea name="Remarks 27" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 28. Escalation denial -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Escalation denial (3 Marks)</span><span class="bn-label">এসকেলেশন রিকোয়েস্ট সঠিকভাবে হ্যান্ডেল করা</span></label>
+                <select name="Escalation denial" required>
+                    <option value="">Select Score</option>
+                    <option value="3">3</option>
+                    <option value="0">0</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Agent denied the customer’s escalation request without proper justification.">Agent denied the customer’s escalation request without proper justification.</option>
+                        <option value="Agent avoided escalation despite customer request.">Agent avoided escalation despite customer request.</option>
+                        <option value="Agent denied/mishandled the escalation request without following proper process.">Agent denied/mishandled the escalation request without following proper process.</option>
+                    </select>
+                    <textarea name="Remarks 28" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+
+            <!-- 29. Cross Talk/laughing / Validation Failure (Fatal Option) -->
+            <div class="form-group">
+                <label class="required"><span class="en-label">Cross Talk/laughing / Validation Failure (0 Marks / FATAL)</span><span class="bn-label">সহকর্মীদের সাথে কথা বলা, হাসাহাসি করা বা ভ্যালিডেশন ফেইল</span></label>
+                <select name="Cross Talk/laughing / Validation Failure" class="fatal-select" required>
+                    <option value="">Select Score</option>
+                    <option value="0">0 (No Error)</option>
+                    <option value="FATAL">FATAL (Auto Fail)</option>
+                </select>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark --</option>
+                        <option value="Cross talk was observed, affecting proper communication flow.">Cross talk was observed, affecting proper communication flow.</option>
+                        <option value="Agent was laughing during the call, which is unprofessional.">Agent was laughing during the call, which is unprofessional.</option>
+                    </select>
+                    <textarea name="Remarks 29" placeholder="Or write custom remarks..."></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Section 3: Call Summary -->
+        <fieldset>
+            <legend>Section 3: Call Summary / অডিটর মন্তব্য</legend>
+            <div class="form-group">
+                <label class="required"><span class="en-label">Call Summary</span><span class="bn-label">কলের বিস্তারিত সারসংক্ষেপ</span></label>
+                <textarea name="Call Summary" style="height: 100px;" placeholder="Write inbound call details summary here..." required></textarea>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Audit Report / অডিট রিপোর্ট জমা দিন</button>
+    </form>
+</div>
+
+<!-- প্রিমিয়াম ভাসমান লাইভ স্কোরবোর্ড ড্যাশবোর্ড -->
+<div id="score-counter-box" style="position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; padding: 18px 28px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-family: 'Segoe UI', sans-serif; z-index: 1000; min-width: 160px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+  <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 5px;">Total Score / মোট নম্বর</div>
+  <div id="live-score" style="font-size: 38px; font-weight: 800; color: #10b981; line-height: 1;">0</div>
+  <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
+</div>
+
+<script>
+    document.addEventListener('change', calculateLiveScore);
+    document.addEventListener('input', calculateLiveScore);
+
+    function calculateLiveScore() {
+        // নতুন ১০০ নম্বর ডিস্ট্রিবিউশন অনুযায়ী ফিল্ডসমুহ
+        const scoreFields = [
+            "Opening", "Enthusiatic tone", "Assurance", "Closing", "Account Authentication/Security Checks",
+            "Query and system probing", "Empathy/Apology", "Paraphrasing/ Acknowledgement", "Hold / Transfer Procedure",
+            "Dead Air", "Active Listening/ Attentiveness", "Interruption", "Choice of words/Sentence formation",
+            "Clarity of speech/Rate of Speech", "Lack of confidence/fumbling", "Using Customer Language",
+            "Background Noice (Shouting / Screeming)", "Personalization & Rapport Building", "Jargon/Abbreviations",
+            "Enthusiasm/Energy level/Willing to help", "Impolite/commanding/Casual tone/Flat tone", "Incorrect information",
+            "Incomplete information", "Proactive information", "Tagging accuracy/Tagging Status/Dispo",
+            "Disconnection/Call ignorance", "Unprofessional on call/Rude/Sarcastic/slangs", "Escalation denial",
+            "Cross Talk/laughing / Validation Failure"
+        ];
+
+        let totalScore = 0;
+        let isFatal = false;
+
+        const allSelects = document.querySelectorAll('select');
+
+        allSelects.forEach(select => {
+            const fieldName = select.name;
+            const fieldValue = select.value;
+
+            if (scoreFields.includes(fieldName)) {
+                if (fieldValue === "FATAL") {
+                    isFatal = true;
+                } else {
+                    let score = parseFloat(fieldValue) || 0;
+                    totalScore += score;
+                }
+            }
+        });
+
+        const scoreDisplay = document.getElementById('live-score');
+        const statusDisplay = document.getElementById('live-status');
+
+        if (scoreDisplay && statusDisplay) {
+            if (isFatal) {
+                scoreDisplay.innerText = "0";
+                scoreDisplay.style.color = "#ef4444";
+                statusDisplay.innerText = "Status: Auto Fail";
+                statusDisplay.style.color = "#ef4444";
+                statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
+            } else {
+                scoreDisplay.innerText = totalScore;
+                scoreDisplay.style.color = "#10b981";
+                statusDisplay.innerText = "Status: Pass";
+                statusDisplay.style.color = "#10b981";
+                statusDisplay.style.background = "rgba(16, 185, 129, 0.1)";
+            }
+        }
+    }
+
+    // AJAX ব্যাকগ্রাউন্ড ফর্ম সাবমিশন (গুগল শিটের সাথে যোগাযোগের জন্য)
+    document.getElementById('auditForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerText = "Submitting Report... / ডেটা সেভ হচ্ছে...";
+        submitBtn.disabled = true;
+
+        const formData = new FormData(this);
+        const urlParams = new URLSearchParams();
+        
+        for (const pair of formData.entries()) {
+            urlParams.append(pair[0], pair[1]);
+        }
+
+        fetch(this.action, {
+            method: 'POST',
+            body: urlParams,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result === 'success') {
+                alert('Inbound Audit Report Saved Successfully!');
+                document.getElementById('auditForm').reset();
+                calculateLiveScore();
+            } else {
+                alert('Error: Data could not be saved.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Form submitted successfully! (Please verify inside Google Sheet).');
+            document.getElementById('auditForm').reset();
+            calculateLiveScore();
+        })
+        .finally(() => {
+            submitBtn.innerText = "Submit Audit Report / অডিট রিপোর্ট জমা দিন";
+            submitBtn.disabled = false;
+        });
+    });
+</script>
+</div>
+
+<script>
+
+// Page Load হলে Login Check
+window.onload = function() {
+
+    if(localStorage.getItem("auditLoggedIn") === "yes") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+    }
+
+};
+
+function checkLogin() {
+
+    var user = document.getElementById("username").value;
+    var pass = document.getElementById("password").value;
+
+    if(user === "qa" && pass === "gtpl2026") {
+
+        localStorage.setItem("auditLoggedIn", "yes");
+
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+
+    } else {
+
+        document.getElementById("loginError").innerHTML =
+        "Invalid Username or Password";
+
+    }
+}
+
+function logout() {
+
+    localStorage.removeItem("auditLoggedIn");
+    location.reload();
+
+}
+
+</script>
+</body>
+</html>

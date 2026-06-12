@@ -6,7 +6,7 @@
     <title>GTPL KCBPL - Call Quality Audit Form</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .form-container { max-width: 850px; background: #fff; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
+        .form-container { max-width: 850px; background: #fff; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
         /* প্রিমিয়াম হেডার স্টাইল */
         h1 { text-align: center; color: #1a365d; margin-bottom: 6px; font-size: 26px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -34,41 +34,21 @@
         
         .fatal-select { border-left: 4px solid #e53e3e; }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
-
-        /* --- লগইন এবং লগআউট সিস্টেমের জন্য নতুন CSS --- */
-        .login-box { max-width: 380px; background: #fff; margin: 60px auto 0 auto; padding: 40px 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; border: 1px solid #e2e8f0; }
-        .login-box h2 { color: #1a365d; margin-bottom: 25px; font-size: 22px; font-weight: 700; text-transform: uppercase; }
-        .login-input { padding: 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 18px; background-color: #f8fafc; }
-        .login-btn { background: linear-gradient(135deg, #2b6cb0, #1a365d); color: white; border: none; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; }
-        .error-msg { color: #e53e3e; font-size: 13px; font-weight: 600; margin-bottom: 15px; display: none; }
-        .logout-btn { position: absolute; top: 30px; right: 30px; background-color: #e53e3e; color: white; border: none; padding: 8px 16px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; z-index: 10; }
     </style>
 </head>
 <body>
 
-<!-- লোগো সেকশন -->
+<!-- লোগো সেকশন (এখানে আপনার লোগোর ইমেজ লিঙ্ক বসিয়ে দেবেন) -->
 <div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
-    <img src="logo.png" alt="GTPL KCBPL Logo" style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
+    <img src="logo.png" alt="GTPL KCBPL Logo" alt="GTPL KCBPL Logo" style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
 </div>
 
-<!-- লগইন বক্স সেকশন -->
-<div id="loginSection" class="login-box" style="display: none;">
-    <h2>Quality Team Login</h2>
-    <input type="text" id="username" class="login-input" placeholder="Enter Login ID">
-    <input type="password" id="password" class="login-input" placeholder="Enter Password">
-    <div id="loginError" class="error-msg">Incorrect ID or Password!</div>
-    <button type="button" class="login-btn" onclick="handleLogin()">Login</button>
-</div>
-
-<!-- মেইন ফর্ম কন্টেইনার সেকশন -->
-<div id="formSection" class="form-container" style="display: none;">
-    
-    <!-- লগআউট বাটন -->
-    <button type="button" class="logout-btn" onclick="handleLogout()">Logout</button>
-
+<div class="form-container">
     <h1>GTPL KCBPL – Call Quality Audit Form</h1>
     <h3>OUTBOUND (RETENTION) (TOTAL MARKS - 100) / আউটবাউন্ড (রিটেনশন) (মোট নম্বর - ১০০)</h3>
+
     <form id="auditForm" action="https://script.google.com/macros/s/AKfycbwxz1ey72WqCo901GpK3BqENJMTSSyUus-CZuwARjV0TvgH8_geD0Q5VGw2WFFi9gbUrg/exec" method="POST">
+
         <!-- Section 1: Basic Info -->
         <fieldset>
             <legend>Section 1: Basic Information / সাধারণ তথ্য</legend>
@@ -80,13 +60,13 @@
                 <div class="form-group">
                     <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
                     <select name="Associate Name" required>
-                        <option value="">Select Agent Name / এজেন্টের নাম নির্বাচন করুন</option>
-                        <option value="Jui Mondal">Jui Mondal</option>
-                        <option value="Priyanka Dolui">Priyanka Dolui</option>
-                        <option value="Titli Goswami">Titli Goswami</option>
-                        <option value="Priyanka Ghosh">Priyanka Ghosh</option>
-                        <option value="Moumita Roy(2)">Moumita Roy(2)</option>
-                    </select>
+    <option value="">Select Agent Name / এজেন্টের নাম নির্বাচন করুন</option>
+    <option value="Jui Mondal">Jui Mondal</option>
+    <option value="Priyanka Dolui">Priyanka Dolui</option>
+    <option value="Titli Goswami">Titli Goswami</option>
+    <option value="Priyanka Ghosh">Priyanka Ghosh</option>
+    <option value="Moumita Roy(2)">Moumita Roy(2)</option>
+</select>
                 </div>
             </div>
             <div class="form-inline">
@@ -111,9 +91,9 @@
                 <div class="form-group">
                     <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
                      <select name="TL Name" required>
-                        <option value="">Select TL Name / TL নাম নির্বাচন করুন</option>
-                        <option value="Dipankar Mondal">Dipankar Mondal</option>
-                    </select>
+    <option value="">Select TL Name / TL নাম নির্বাচন করুন</option>
+    <option value="Dipankar Mondal">Dipankar Mondal</option>
+</select>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
@@ -140,9 +120,11 @@
                 </div>
             </div>
         </fieldset>
+
         <!-- Section 2: Opening & Introduction -->
         <fieldset>
             <legend>Section 2: Opening & Introduction (10 Marks) / ওপেনিং এবং পরিচয়</legend>
+            
             <div class="form-group">
                 <label class="required"><span class="en-label">Opening within 3 seconds (2)</span><span class="bn-label">৩ সেকেন্ডের মধ্যে কল রিসিভ করা বা কথা বলা</span></label>
                 <select name="Opening 3s" required>
@@ -152,6 +134,7 @@
                 </select>
                 <textarea name="Remarks 1" class="remarks-field" placeholder="Remarks 1 / মন্তব্য ১ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Appropriate greeting used (2)</span><span class="bn-label">সঠিক গ্রিটিংস বা সম্ভাষণ ব্যবহার করা</span></label>
                 <select name="Greeting" required>
@@ -161,6 +144,7 @@
                 </select>
                 <textarea name="Remarks 2" class="remarks-field" placeholder="Remarks 2 / মন্তব্য ২ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Properly branded the call mentioning company name (2)</span><span class="bn-label">কোম্পানির নাম উল্লেখ করে সঠিক ব্র্যান্ডিং করা</span></label>
                 <select name="Branding" required>
@@ -170,6 +154,7 @@
                 </select>
                 <textarea name="Remarks 3" class="remarks-field" placeholder="Remarks 3 / মন্তব্য ৩ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Agent introduced himself/herself (2)</span><span class="bn-label">প্রতিনিধি নিজের নাম বা পরিচয় দিয়েছেন</span></label>
                 <select name="Introduction" required>
@@ -179,6 +164,7 @@
                 </select>
                 <textarea name="Remarks 4" class="remarks-field" placeholder="Remarks 4 / মন্তব্য ৪ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Professional and courteous opening (2)</span><span class="bn-label">পেশাদার এবং নম্রভাবে কল শুরু করা</span></label>
                 <select name="Professional Opening" required>
@@ -189,9 +175,11 @@
                 <textarea name="Remarks 5" class="remarks-field" placeholder="Remarks 5 / মন্তব্য ৫ (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 3: Communication & Customer Engagement -->
         <fieldset>
             <legend>Section 3: Communication & Customer Engagement (20 Marks) / যোগাযোগ ও কাস্টমার এনগেজমেন্ট</legend>
+            
             <div class="form-group">
                 <label class="required"><span class="en-label">Displayed active listening skills (4)</span><span class="bn-label">মনোযোগ দিয়ে কাস্টমারের কথা শোনার দক্ষতা</span></label>
                 <select name="Listening" required>
@@ -201,6 +189,7 @@
                 </select>
                 <textarea name="Remarks 6" class="remarks-field" placeholder="Remarks 6 / মন্তব্য ৬ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Usage of empathy statement where applicable (4)</span><span class="bn-label">প্রয়োজন অনুযায়ী সহানুভূতি বা এমপ্যাথি প্রকাশ করা</span></label>
                 <select name="Empathy" required>
@@ -210,6 +199,7 @@
                 </select>
                 <textarea name="Remarks 7" class="remarks-field" placeholder="Remarks 7 / মন্তব্য ৭ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Built rapport with the customer (3)</span><span class="bn-label">কাস্টমারের সাথে সুসম্পর্ক বা র‍্যাপো তৈরি করা</span></label>
                 <select name="Rapport" required>
@@ -219,6 +209,7 @@
                 </select>
                 <textarea name="Remarks 8" class="remarks-field" placeholder="Remarks 8 / মন্তব্য ৮ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Spoke clearly and professionally (3)</span><span class="bn-label">পরিষ্কার এবং পেশাদারভাবে কথা বলা</span></label>
                 <select name="Clear Speaking" required>
@@ -228,6 +219,7 @@
                 </select>
                 <textarea name="Remarks 9" class="remarks-field" placeholder="Remarks 9 / মন্তব্য ৯ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Polite and respectful behavior (3)</span><span class="bn-label">নম্র এবং শ্রদ্ধাশীল আচরণ করা</span></label>
                 <select name="Polite Behavior" required>
@@ -237,6 +229,7 @@
                 </select>
                 <textarea name="Remarks 10" class="remarks-field" placeholder="Remarks 10 / মন্তব্য ১০ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Enthusiasm and positive energy (3)</span><span class="bn-label">কথা বলার মধ্যে উৎসাহ এবং পজিটিভ এনার্জি রাখা</span></label>
                 <select name="Enthusiasm" required>
@@ -247,9 +240,11 @@
                 <textarea name="Remarks 11" class="remarks-field" placeholder="Remarks 11 / মন্তব্য ১১ (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 4: Retention & Renewal Skills -->
         <fieldset>
             <legend>Section 4: Retention & Renewal Skills (50 Marks) / রিটেনশন এবং রিনিউয়াল স্কিল</legend>
+            
             <div class="form-group">
                 <label class="required"><span class="en-label">Identified actual non-renewal reason through effective probing (10)</span><span class="bn-label">সঠিক অনুসন্ধানের (Probing) মাধ্যমে রিনিউ না করার আসল কারণ খুঁজে বের করা</span></label>
                 <select name="Probing" required>
@@ -258,6 +253,7 @@
                 </select>
                 <textarea name="Remarks 12" class="remarks-field" placeholder="Remarks 12 / মন্তব্য ১২ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Demonstrated confidence and ownership during discussion (5)</span><span class="bn-label">আলোচনার সময় আত্মবিশ্বাস এবং দায়িত্বশীলতা (Ownership) দেখানো</span></label>
                 <select name="Confidence" required>
@@ -266,6 +262,7 @@
                 </select>
                 <textarea name="Remarks 13" class="remarks-field" placeholder="Remarks 13 / মন্তব্য ১৩ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Explained renewal plan benefits effectively (5)</span><span class="bn-label">রিনিউয়াল প্ল্যানের সুবিধা বা অফারগুলো ভালোভাবে বোঝানো</span></label>
                 <select name="Renewal Plan" required>
@@ -274,6 +271,7 @@
                 </select>
                 <textarea name="Remarks 14" class="remarks-field" placeholder="Remarks 14 / মন্তব্য ১৪ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Explained OTT benefits and value-added services correctly (5)</span><span class="bn-label">OTT বেনিফিট এবং অন্যান্য অতিরিক্ত সুবিধাগুলো সঠিকভাবে বোঝানো</span></label>
                 <select name="OTT Benefits" required>
@@ -282,6 +280,7 @@
                 </select>
                 <textarea name="Remarks 15" class="remarks-field" placeholder="Remarks 15 / মন্তব্য ১৫ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Customized retention pitch according to customer requirement (5)</span><span class="bn-label">কাস্টমারের প্রয়োজন অনুযায়ী কাস্টমাইজড রিটেনশন অফার দেওয়া</span></label>
                 <select name="Customized Pitch" required>
@@ -290,6 +289,7 @@
                 </select>
                 <textarea name="Remarks 16" class="remarks-field" placeholder="Remarks 16 / মন্তব্য ১৬ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Retention attempt made before accepting refusal (5)</span><span class="bn-label">কাস্টমারের রিফিউসাল বা অস্বীকৃতি মানার আগে রিটেনশনের চেষ্টা করা</span></label>
                 <select name="Retention Attempt" required>
@@ -298,14 +298,16 @@
                 </select>
                 <textarea name="Remarks 17" class="remarks-field" placeholder="Remarks 17 / মন্তব্য ১৭ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
-                <label class="required"><span class="en-label">Objection Handling (10)</span><span class="bn-label">কাস্টমারের आपत्ति বা অবজেকশন সঠিকভাবে হ্যান্ডেল করা</span></label>
+                <label class="required"><span class="en-label">Objection Handling (10)</span><span class="bn-label">কাস্টমারের আপত্তি বা অবজেকশন সঠিকভাবে হ্যান্ডেল করা</span></label>
                 <select name="Objection Handling" required>
                     <option value="">Select Score / নম্বর বাছুন</option>
                     <option value="10">10</option><option value="8">8</option><option value="6">6</option><option value="4">4</option><option value="2">2</option><option value="0">0</option>
                 </select>
                 <textarea name="Remarks 18" class="remarks-field" placeholder="Remarks 18 / মন্তব্য ১৮ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Convincing & Persuasion Skills (5)</span><span class="bn-label">কাস্টমারকে রাজি করানোর দক্ষতা (কনভিন্সিং স্কিল)</span></label>
                 <select name="Persuasion" required>
@@ -315,9 +317,11 @@
                 <textarea name="Remarks 19" class="remarks-field" placeholder="Remarks 19 / মন্তব্য ১৯ (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 5: Renewal Closing -->
         <fieldset>
             <legend>Section 5: Renewal Closing (10 Marks) / রিনিউয়াল ক্লোজিং</legend>
+            
             <div class="form-group">
                 <label class="required"><span class="en-label">Attempted to secure customer renewal commitment (5)</span><span class="bn-label">কাস্টমারের কাছ থেকে রিনিউ করার স্পষ্ট প্রতিশ্রুতি নেওয়ার চেষ্টা করা</span></label>
                 <select name="Renewal Commitment" required>
@@ -326,6 +330,7 @@
                 </select>
                 <textarea name="Remarks 20" class="remarks-field" placeholder="Remarks 20 / মন্তব্য ২০ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Provided correct recharge/renewal guidance if required (2)</span><span class="bn-label">প্রয়োজন অনুযায়ী রিচার্জ বা রিনিউ করার সঠিক নির্দেশিকা দেওয়া</span></label>
                 <select name="Recharge Guidance" required>
@@ -334,6 +339,7 @@
                 </select>
                 <textarea name="Remarks 21" class="remarks-field" placeholder="Remarks 21 / মন্তব্য ২১ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Proper closing script followed (2)</span><span class="bn-label">সঠিক ক্লোজিং স্ক্রিপ্ট অনুসরণ করা</span></label>
                 <select name="Closing Script" required>
@@ -342,18 +348,21 @@
                 </select>
                 <textarea name="Remarks 22" class="remarks-field" placeholder="Remarks 22 / মন্তব্য ২২ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Thanked customer before ending call (1)</span><span class="bn-label">কল শেষ করার আগে কাস্টমারকে ধন্যবাদ জানানো</span></label>
                 <select name="Thanked Customer" required>
                     <option value="">Select Score / নম্বর বাছুন</option>
                     <option value="1">1</option><option value="0">0</option>
                 </select>
-                <textarea name="Remarks 23" class="remarks-field" placeholder="Remarks 23 / মন্তব্য XXIII (Optional)"></textarea>
+                <textarea name="Remarks 23" class="remarks-field" placeholder="Remarks 23 / মন্তব্য ২৩ (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 6: Call Control & Professionalism -->
         <fieldset>
             <legend>Section 6: Call Control & Professionalism (10 Marks) / কল কন্ট্রোল ও প্রফেশনালিজম</legend>
+            
             <div class="form-group">
                 <label class="required"><span class="en-label">Avoided interruption/talking over customer (3)</span><span class="bn-label">কাস্টমারের কথার মাঝে বাধা না দেওয়া বা ওপর দিয়ে কথা না বলা</span></label>
                 <select name="No Interruption" required>
@@ -362,6 +371,7 @@
                 </select>
                 <textarea name="Remarks 24" class="remarks-field" placeholder="Remarks 24 / মন্তব্য ২৪ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Minimized dead air/silence (2)</span><span class="bn-label">ডেড এয়ার বা অপ্রয়োজনীয় নীরবতা নিয়ন্ত্রণে রাখা</span></label>
                 <select name="Minimized Dead Air" required>
@@ -370,6 +380,7 @@
                 </select>
                 <textarea name="Remarks 25" class="remarks-field" placeholder="Remarks 25 / মন্তব্য ২৫ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Responded promptly to customer queries (2)</span><span class="bn-label">কাস্টমারের প্রশ্নের দ্রুত ও সঠিক উত্তর দেওয়া</span></label>
                 <select name="Prompt Response" required>
@@ -378,6 +389,7 @@
                 </select>
                 <textarea name="Remarks 26" class="remarks-field" placeholder="Remarks 26 / মন্তব্য ২৬ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">Used customer preferred language effectively (Hindi/Bengali) (2)</span><span class="bn-label">কাস্টমারের পছন্দের ভাষাটি (হিন্দি/বাংলা) সঠিকভাবে ব্যবহার করা</span></label>
                 <select name="Preferred Language" required>
@@ -386,6 +398,7 @@
                 </select>
                 <textarea name="Remarks 27" class="remarks-field" placeholder="Remarks 27 / মন্তব্য ২৭ (Optional)"></textarea>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">No background noise/disturbance (1)</span><span class="bn-label">ব্যাকগ্রাউন্ডে কোনো গোলমাল বা আওয়াজ না থাকা</span></label>
                 <select name="No Noise" required>
@@ -395,9 +408,11 @@
                 <textarea name="Remarks 28" class="remarks-field" placeholder="Remarks 28 / মন্তব্য ২৮ (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 7: Fatal Error Check -->
         <fieldset>
             <legend>Section 7: Fatal Error Check (Auto Fail) / ফেটাল এরর চেক (অটো ফেইল)</legend>
+            
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Usage of profanity or abusive language</span><span class="bn-label">গালিগালাজ বা অসম্মানজনক ভাষার ব্যবহার</span></label>
@@ -414,6 +429,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Providing false or misleading info</span><span class="bn-label">ভুল বা বিভ্রান্তিকর তথ্য দেওয়া</span></label>
@@ -430,6 +446,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Incorrect disposition of call</span><span class="bn-label">কলের ভুল ডিসপোজিশন সিলেক্ট করা</span></label>
@@ -441,11 +458,12 @@
                 <div class="form-group">
                     <label class="required"><span class="en-label">Incomplete/incorrect info capture</span><span class="bn-label">সিস্টেমে অসম্পূর্ণ বা ভুল তথ্য রেকর্ড করা</span></label>
                     <select name="Incomplete Info" class="fatal-select" required>
-                        <option value="No">No / na</option>
+                        <option value="No">No / না</option>
                         <option value="Yes (Fatal)">Yes (Fatal) / হ্যাঁ (ফেটাল)</option>
                     </select>
                 </div>
             </div>
+
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Missing mandatory retention attempt</span><span class="bn-label">বাধ্যতামূলক রিটেনশনের চেষ্টা না করা</span></label>
@@ -462,6 +480,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Intentional call disconnection</span><span class="bn-label">ইচ্ছা করে কল কেটে দেওয়া (কল ডিসকানেকশন)</span></label>
@@ -478,6 +497,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="required"><span class="en-label">No callback attempt after unexpected disconnection</span><span class="bn-label">হঠাৎ কল কেটে যাওয়ার পর পুনরায় ব্যাক-কল না করা</span></label>
                 <select name="No Callback" class="fatal-select" required>
@@ -485,10 +505,12 @@
                     <option value="Yes (Fatal)">Yes (Fatal) / হ্যাঁ (ফেটাল)</option>
                 </select>
             </div>
+
             <div class="form-group" style="margin-top: 10px;">
                 <textarea name="Remarks 29" class="remarks-field" placeholder="Section 7 Fatal Remarks / ফেটাল মন্তব্য (Optional)"></textarea>
             </div>
         </fieldset>
+
         <!-- Section 8: Auditor Remarks -->
         <fieldset>
             <legend>Section 8: Auditor Remarks / অডিটর মন্তব্য</legend>
@@ -497,77 +519,24 @@
                 <textarea name="Call Summary" style="height: 100px;" placeholder="Write call details summary here... / এখানে কলের সারসংক্ষেপ লিখুন..." required></textarea>
             </div>
         </fieldset>
+
         <button type="submit" class="submit-btn" id="submitBtn">Submit Audit Report / অডিট রিপোর্ট জমা দিন</button>
     </form>
 </div>
 
 <!-- প্রিমিয়াম ড্যাশবোর্ড লাইভ স্কোর বক্স -->
-<div id="score-counter-box" style="position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; padding: 18px 28px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-family: 'Segoe UI', sans-serif; z-index: 1000; min-width: 160px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: none;">
+<div id="score-counter-box" style="position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; padding: 18px 28px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-family: 'Segoe UI', sans-serif; z-index: 1000; min-width: 160px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
   <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 5px;">Total Score / মোট নম্বর</div>
   <div id="live-score" style="font-size: 38px; font-weight: 800; color: #10b981; line-height: 1;">0</div>
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
 </div>
 
 <script>
-    // --- লগইন এবং লগআউট সিস্টেমের জাভাস্ক্রিপ্ট সেটিংস ---
-    const CONFIG_ID = "admin";
-    const CONFIG_PASS = "gtpl2026";
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('gtpl_logged_in') === 'true') {
-            showAuditForm();
-        } else {
-            showLoginScreen();
-        }
-
-        // Enter চাপলে লগইন ট্রিগার করার জন্য লিসেনার
-        document.getElementById('username').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
-        document.getElementById('password').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
-    });
-
-    function showAuditForm() {
-        document.getElementById('loginSection').style.display = 'none';
-        document.getElementById('formSection').style.display = 'block';
-        if(document.getElementById('score-counter-box')) document.getElementById('score-counter-box').style.display = 'block';
-        calculateLiveScore(); 
-    }
-
-    function showLoginScreen() {
-        document.getElementById('loginSection').style.display = 'block';
-        document.getElementById('formSection').style.display = 'none';
-        if(document.getElementById('score-counter-box')) document.getElementById('score-counter-box').style.display = 'none';
-        document.getElementById('username').value = "";
-        document.getElementById('password').value = "";
-        document.getElementById('loginError').style.display = 'none';
-    }
-
-    function handleLogin() {
-        const uName = document.getElementById('username').value.trim();
-        const uPass = document.getElementById('password').value.trim();
-        if (uName === CONFIG_ID && uPass === CONFIG_PASS) {
-            localStorage.setItem('gtpl_logged_in', 'true');
-            showAuditForm();
-        } else {
-            document.getElementById('loginError').style.display = 'block';
-        }
-    }
-
-    function handleLogout() {
-        if (confirm("Are you sure you want to logout?")) {
-            localStorage.removeItem('gtpl_logged_in');
-            document.getElementById('auditForm').reset(); 
-            showLoginScreen();
-        }
-    }
-
     // ১. রিয়েল-টাইম লাইভ স্কোর ক্যালকুলেশন জাভাস্ক্রিপ্ট
     document.addEventListener('change', calculateLiveScore);
     document.addEventListener('input', calculateLiveScore);
-    
-    function calculateLiveScore() {
-        // যদি লগইন করা না থাকে তবে ক্যালকুলেশন বন্ধ থাকবে
-        if (localStorage.getItem('gtpl_logged_in') !== 'true') return;
 
+    function calculateLiveScore() {
         const scoreFields = [
             "Opening 3s", "Greeting", "Branding", "Introduction", "Professional Opening",
             "Listening", "Empathy", "Rapport", "Clear Speaking", "Polite Behavior", "Enthusiasm",
@@ -575,22 +544,29 @@
             "Renewal Commitment", "Recharge Guidance", "Closing Script", "Thanked Customer",
             "No Interruption", "Minimized Dead Air", "Prompt Response", "Preferred Language", "No Noise"
         ];
+
         const fatalFields = [
             "Profanity", "Rude Behavior", "False Info", "Wrong Commitment", "Incorrect Disposition",
             "Incomplete Info", "Missing Retention", "Privacy Violation", "Intentional Disconnection",
             "Misconduct Escalation", "No Callback"
         ];
+
         let totalScore = 0;
         let isFatal = false;
 
+        // পেজের সব সিলেক্ট ড্রপডাউন একসাথে ট্র্যাক করা
         const allSelects = document.querySelectorAll('select');
+
         allSelects.forEach(select => {
             const fieldName = select.name;
             const fieldValue = select.value;
-            
+
+            // ফেটাল এরর চেক
             if (fatalFields.includes(fieldName) && fieldValue === "Yes (Fatal)") {
                 isFatal = true;
             }
+
+            // স্কোরিং যোগ করা
             if (scoreFields.includes(fieldName)) {
                 let score = parseFloat(fieldValue) || 0;
                 totalScore += score;
@@ -599,16 +575,19 @@
 
         const scoreDisplay = document.getElementById('live-score');
         const statusDisplay = document.getElementById('live-status');
+
         if (scoreDisplay && statusDisplay) {
             if (isFatal) {
                 scoreDisplay.innerText = "0";
                 scoreDisplay.style.color = "#ef4444";
+                
                 statusDisplay.innerText = "Status: Auto Fail";
                 statusDisplay.style.color = "#ef4444";
                 statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
             } else {
                 scoreDisplay.innerText = totalScore;
                 scoreDisplay.style.color = "#10b981";
+                
                 statusDisplay.innerText = "Status: Pass";
                 statusDisplay.style.color = "#10b981";
                 statusDisplay.style.background = "rgba(16, 185, 129, 0.1)";
@@ -623,12 +602,14 @@
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.innerText = "Submitting Data... Please Wait. / ডেটা সেভ হচ্ছে...";
         submitBtn.disabled = true;
+
         const formData = new FormData(this);
         const urlParams = new URLSearchParams();
         
         for (const pair of formData.entries()) {
             urlParams.append(pair[0], pair[1]);
         }
+
         fetch(this.action, {
             method: 'POST',
             body: urlParams,
@@ -641,7 +622,7 @@
             if(data.result === 'success') {
                 alert('Audit Report Saved Successfully inside Google Sheet!');
                 document.getElementById('auditForm').reset();
-                calculateLiveScore(); 
+                calculateLiveScore(); // রিসেট করার পর স্কোর ০ করার জন্য
             } else {
                 alert('Error: Data could not be saved.');
             }
@@ -658,5 +639,6 @@
         });
     });
 </script>
+
 </body>
 </html>

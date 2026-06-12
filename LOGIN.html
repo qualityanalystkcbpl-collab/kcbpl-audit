@@ -1,62 +1,233 @@
-<div style="text-align:center; margin-top:50px;">
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <h1 style="color:#1a365d; margin-bottom:40px;">
-        GTPL KCBPL Audit
-    </h1>
+<title>GTPL KCBPL Audit Dashboard</title>
 
-    <button onclick="location.href='inbound.html'"
-        style="
-        width:450px;
-        padding:25px;
-        margin:15px;
-        font-size:24px;
-        font-weight:bold;
-        color:white;
-        background:linear-gradient(135deg,#2563eb,#1e40af);
-        border:none;
-        border-radius:15px;
-        cursor:pointer;
-        box-shadow:0 8px 20px rgba(37,99,235,0.3);
-        transition:0.3s;">
-        📞 INBOUND (ALL PROCESS)
+<style>
+
+body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#dbeafe,#e0f2fe,#f8fafc,#bfdbfe);
+}
+
+/* Login Box */
+
+#loginBox{
+    max-width:400px;
+    margin:120px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+    text-align:center;
+}
+
+#loginBox h2{
+    color:#1a365d;
+}
+
+#loginBox input{
+    width:90%;
+    padding:12px;
+    margin:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.login-btn{
+    width:95%;
+    padding:12px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* Dashboard */
+
+#dashboard{
+    display:none;
+}
+
+.logout-box{
+    text-align:right;
+    padding:20px;
+}
+
+.logout-btn{
+    background:red;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.dashboard-container{
+    text-align:center;
+    margin-top:20px;
+}
+
+.dashboard-title{
+    color:#1a365d;
+    margin-bottom:40px;
+    font-size:38px;
+}
+
+.audit-btn{
+    width:450px;
+    padding:25px;
+    margin:15px;
+    font-size:24px;
+    font-weight:bold;
+    color:white;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.inbound{
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    box-shadow:0 8px 20px rgba(37,99,235,0.3);
+}
+
+.outbound{
+    background:linear-gradient(135deg,#16a34a,#166534);
+    box-shadow:0 8px 20px rgba(22,163,74,0.3);
+}
+
+.business{
+    background:linear-gradient(135deg,#f97316,#c2410c);
+    box-shadow:0 8px 20px rgba(249,115,22,0.3);
+}
+
+.audit-btn:hover{
+    transform:translateY(-3px);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Login -->
+
+<div id="loginBox">
+
+    <h2>GTPL KCBPL Audit Login</h2>
+
+    <input type="text" id="username" placeholder="Username">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <button class="login-btn" onclick="checkLogin()">
+        Login
     </button>
 
-    <br>
-
-    <button onclick="location.href='index.html'"
-        style="
-        width:450px;
-        padding:25px;
-        margin:15px;
-        font-size:24px;
-        font-weight:bold;
-        color:white;
-        background:linear-gradient(135deg,#16a34a,#166534);
-        border:none;
-        border-radius:15px;
-        cursor:pointer;
-        box-shadow:0 8px 20px rgba(22,163,74,0.3);
-        transition:0.3s;">
-        🎯 OUTBOUND RETENTION
-    </button>
-
-    <br>
-
-    <button onclick="location.href='businessdevbb.html'"
-        style="
-        width:450px;
-        padding:25px;
-        margin:15px;
-        font-size:24px;
-        font-weight:bold;
-        color:white;
-        background:linear-gradient(135deg,#f97316,#c2410c);
-        border:none;
-        border-radius:15px;
-        cursor:pointer;
-        box-shadow:0 8px 20px rgba(249,115,22,0.3);
-        transition:0.3s;">
-        🚀 BusinessDevBB
-    </button>
+    <p id="loginError" style="color:red;"></p>
 
 </div>
+
+<!-- Dashboard -->
+
+<div id="dashboard">
+
+    <div class="logout-box">
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+    <div class="dashboard-container">
+
+        <h1 class="dashboard-title">
+            GTPL KCBPL Audit Dashboard
+        </h1>
+
+        <button class="audit-btn inbound"
+        onclick="location.href='inbound.html'">
+            📞 INBOUND (ALL PROCESS)
+        </button>
+
+        <br>
+
+        <button class="audit-btn outbound"
+        onclick="location.href='index.html'">
+            🎯 OUTBOUND RETENTION
+        </button>
+
+        <br>
+
+        <button class="audit-btn business"
+        onclick="location.href='businessdevbb.html'">
+            🚀 BusinessDevBB
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+window.onload = function(){
+
+    if(localStorage.getItem("gtpl_login") === "yes"){
+
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+    }
+
+}
+
+function checkLogin(){
+
+    var user = document.getElementById("username").value;
+    var pass = document.getElementById("password").value;
+
+    if(user === "qa" && pass === "gtpl2026"){
+
+        localStorage.setItem("gtpl_login","yes");
+
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+    }
+
+    else{
+
+        document.getElementById("loginError").innerHTML =
+        "Invalid Username or Password";
+
+    }
+
+}
+
+function logout(){
+
+    localStorage.removeItem("gtpl_login");
+
+    location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
+```

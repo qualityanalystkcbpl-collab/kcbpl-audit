@@ -11,14 +11,16 @@
             margin: 0;
             padding: 20px;
             color: #333;
+            position: relative;
         }
         .form-container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             background: #fff;
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 80px; /* Space for sticky score badge */
         }
         h2 {
             text-align: center;
@@ -55,6 +57,20 @@
             margin-bottom: 5px;
             color: #34495e;
             font-size: 14px;
+            line-height: 1.5;
+        }
+        .label-en {
+            color: #2c3e50;
+        }
+        .label-bn {
+            color: #7f8c8d;
+            font-size: 13px;
+            display: block;
+            margin-top: 4px;
+        }
+        .max-badge {
+            color: #e67e22;
+            font-weight: bold;
         }
         input[type="text"], input[type="date"], input[type="time"], select, textarea {
             padding: 10px;
@@ -63,6 +79,8 @@
             font-size: 14px;
             width: 100%;
             box-sizing: border-box;
+            background-color: #fff;
+            transition: all 0.3s ease;
         }
         input:focus, select:focus, textarea:focus {
             border-color: #2980b9;
@@ -78,6 +96,7 @@
         }
         .parameter-row.fatal-style {
             border-left: 5px solid #e74c3c;
+            background: #fff5f5;
         }
         .param-inputs {
             display: grid;
@@ -107,421 +126,653 @@
             font-weight: bold;
             font-size: 16px;
         }
+        /* Live Score Sticky Badge */
+        .live-score-badge {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #2c3e50;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border: 3px solid #fff;
+            transition: all 0.3s ease;
+        }
+        .live-score-badge.fatal-active {
+            background: #e74c3c;
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body>
+
+<div class="live-score-badge" id="liveScoreBadge">Score: 0 / 100</div>
 
 <div class="form-container">
     <h2>Business Development – Broadband</h2>
     <div class="subtitle">TOTAL MARKS - 100</div>
 
-    <!-- এখানে ACTION এর ভেতর আপনার Google Apps Web App URL টি বসাবেন -->
     <form id="auditForm" action="YOUR_GOOGLE_WEB_APP_URL_HERE" method="POST">
         
-        <!-- SECTION 1: METADATA -->
-        <div class="section-title">Associate & Call Details</div>
+        <div class="section-title">Associate & Call Details / এসোসিয়েট এবং কলের বিবরণ</div>
         <div class="grid-2">
             <div class="form-group">
-                <label>Process *</label>
+                <label><span class="label-en">Process *</span><span class="label-bn">প্রসেস *</span></label>
                 <input type="text" name="Process" required value="Business Development – Broadband">
             </div>
             <div class="form-group">
-                <label>Associate Emp ID *</label>
+                <label><span class="label-en">Associate Emp ID *</span><span class="label-bn">এসোসিয়েট আইডি *</span></label>
                 <input type="text" name="Associate Emp ID" required>
             </div>
             <div class="form-group">
-                <label>Associate Name *</label>
+                <label><span class="label-en">Associate Name *</span><span class="label-bn">এসোসিয়েটের নাম *</span></label>
                 <input type="text" name="Associate Name" required>
             </div>
             <div class="form-group">
-                <label>Calling Number *</label>
+                <label><span class="label-en">Calling Number *</span><span class="label-bn">কলিং নম্বর *</span></label>
                 <input type="text" name="Calling Number" required>
             </div>
             <div class="form-group">
-                <label>Call Date *</label>
+                <label><span class="label-en">Call Date *</span><span class="label-bn">কলের তারিখ *</span></label>
                 <input type="date" name="Call Date" required>
             </div>
             <div class="form-group">
-                <label>Call time *</label>
+                <label><span class="label-en">Call time *</span><span class="label-bn">কলের সময় *</span></label>
                 <input type="time" name="Call time" required>
             </div>
             <div class="form-group">
-                <label>Call ID *</label>
+                <label><span class="label-en">Call ID *</span><span class="label-bn">কল আইডি *</span></label>
                 <input type="text" name="Call ID" required>
             </div>
             <div class="form-group">
-                <label>TL Name *</label>
+                <label><span class="label-en">TL Name *</span><span class="label-bn">টিএল-এর নাম *</span></label>
                 <input type="text" name="TL Name" required>
             </div>
             <div class="form-group">
-                <label>Language *</label>
+                <label><span class="label-en">Language *</span><span class="label-bn">ভাষা *</span></label>
                 <select name="Language" required>
                     <option value="">Select Language</option>
-                    <option value="Bengali">Bengali</option>
-                    <option value="English">English</option>
-                    <option value="Hindi">Hindi</option>
-                    <option value="Other">Other</option>
+                    <option value="Bengali">Bengali / বাংলা</option>
+                    <option value="English">English / ইংরেজি</option>
+                    <option value="Hindi">Hindi / হিন্দি</option>
+                    <option value="Other">Other / অন্যান্য</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Call Duration *</label>
+                <label><span class="label-en">Call Duration *</span><span class="label-bn">কলের সময়সীমা *</span></label>
                 <input type="text" name="Call Duration" placeholder="e.g. 02:30" required>
             </div>
             <div class="form-group">
-                <label>Call Link *</label>
+                <label><span class="label-en">Call Link *</span><span class="label-bn">কলের লিঙ্ক *</span></label>
                 <input type="text" name="Call Link" required>
             </div>
             <div class="form-group">
-                <label>Disposition *</label>
+                <label><span class="label-en">Disposition *</span><span class="label-bn">ডিসপজিশন *</span></label>
                 <input type="text" name="Disposition" required>
             </div>
         </div>
 
-        <!-- SECTION 2: AUDIT PARAMETERS -->
-        <div class="section-title">Quality & Performance Parameters</div>
+        <div class="section-title">Quality & Performance Parameters / কোয়ালিটি প্যারামিটারসমূহ</div>
 
-        <!-- P1 -->
         <div class="parameter-row">
-            <label>1. Opening given within 3 seconds *</label>
+            <label>
+                <span class="label-en">1. Opening given within 3 seconds <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">১. ৩ সেকেন্ডের মধ্যে ওপেনিং দেওয়া (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p1" placeholder="Score / FATAL" required>
-                <input type="text" name="r1" placeholder="Remarks">
+                <select name="p1" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r1" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P2 -->
         <div class="parameter-row">
-            <label>2. Appropriate greeting used. *</label>
+            <label>
+                <span class="label-en">2. Appropriate greeting used. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">২. সঠিক অভিবাদন ব্যবহার করা (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p2" placeholder="Score / FATAL" required>
-                <input type="text" name="r2" placeholder="Remarks">
+                <select name="p2" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r2" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P3 -->
         <div class="parameter-row">
-            <label>3. Properly branded the call mentioning the company's name. *</label>
+            <label>
+                <span class="label-en">3. Properly branded the call mentioning the company's name. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">৩. কোম্পানির নাম উল্লেখ করে ব্র্যান্ডিং করা (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p3" placeholder="Score / FATAL" required>
-                <input type="text" name="r3" placeholder="Remarks">
+                <select name="p3" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r3" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P4 -->
         <div class="parameter-row">
-            <label>4. Agent mentioned his/her name in the opening statement. *</label>
+            <label>
+                <span class="label-en">4. Agent mentioned his/her name in the opening statement. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">৪. ওপেনিং স্টেটমেন্টে এজেন্ট নিজের নাম বলেছে কিনা (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p4" placeholder="Score / FATAL" required>
-                <input type="text" name="r4" placeholder="Remarks">
+                <select name="p4" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r4" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P5 -->
         <div class="parameter-row">
-            <label>5. Asked all the necessary questions/information necessary for capturing the lead details. *</label>
+            <label>
+                <span class="label-en">5. Asked all the necessary questions/information necessary for capturing the lead details. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-bn">৫. লিড ডিটেইলস নেওয়ার জন্য প্রয়োজনীয় সব প্রশ্ন করা (সর্বোচ্চ: ১) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p5" placeholder="Score / FATAL" required>
-                <input type="text" name="r5" placeholder="Remarks">
+                <select name="p5" required>
+                    <option value="">Select Score</option><option value="1">1</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r5" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P6 -->
         <div class="parameter-row">
-            <label>6. Callback time/number confirmed by the agent. *</label>
+            <label>
+                <span class="label-en">6. Callback time/number confirmed by the agent. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-bn">৬. কলব্যাক সময়/নম্বর কনফার্ম করা (সর্বোচ্চ: ১) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p6" placeholder="Score / FATAL" required>
-                <input type="text" name="r6" placeholder="Remarks">
+                <select name="p6" required>
+                    <option value="">Select Score</option><option value="1">1</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r6" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P7 -->
         <div class="parameter-row">
-            <label>7. Did the agent follow the script/guidelines as per the process. *</label>
+            <label>
+                <span class="label-en">7. Did the agent follow the script/guidelines as per the process. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-bn">৭. স্ক্রিপ্ট/গাইডলাইন মেনে চলা (সর্বোচ্চ: ১) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p7" placeholder="Score / FATAL" required>
-                <input type="text" name="r7" placeholder="Remarks">
+                <select name="p7" required>
+                    <option value="">Select Score</option><option value="1">1</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r7" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P8 -->
         <div class="parameter-row">
-            <label>8. Displayed active listening skills. *</label>
+            <label>
+                <span class="label-en">8. Displayed active listening skills. <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">৮. মনোযোগ দিয়ে শোনার দক্ষতা (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p8" placeholder="Score / FATAL" required>
-                <input type="text" name="r8" placeholder="Remarks">
+                <select name="p8" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r8" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P9 -->
         <div class="parameter-row">
-            <label>9. Did the agent speak clearly while providing information. *</label>
+            <label>
+                <span class="label-en">9. Did the agent speak clearly while providing information. <span class="max-badge">(Max: 5)</span> *</span>
+                <span class="label-bn">৯. তথ্য দেওয়ার সময় স্পষ্ট করে কথা বলা (সর্বোচ্চ: ৫) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p9" placeholder="Score / FATAL" required>
-                <input type="text" name="r9" placeholder="Remarks">
+                <select name="p9" required>
+                    <option value="">Select Score</option><option value="5">5</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r9" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P10 -->
         <div class="parameter-row">
-            <label>10. Was the agent successful in building rapport with the caller. *</label>
+            <label>
+                <span class="label-en">10. Was the agent successful in building rapport with the caller. <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-bn">১০. কাস্টমারের সাথে সুসম্পর্ক তৈরি করা (সর্বোচ্চ: ৪) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p10" placeholder="Score / FATAL" required>
-                <input type="text" name="r10" placeholder="Remarks">
+                <select name="p10" required>
+                    <option value="">Select Score</option><option value="4">4</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r10" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P11 -->
         <div class="parameter-row">
-            <label>11. Did the agent speak with confidence. *</label>
+            <label>
+                <span class="label-en">11. Did the agent speak with confidence. <span class="max-badge">(Max: 5)</span> *</span>
+                <span class="label-bn">১১. আত্মবিশ্বাসের সাথে কথা বলা (সর্বোচ্চ: ৫) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p11" placeholder="Score / FATAL" required>
-                <input type="text" name="r11" placeholder="Remarks">
+                <select name="p11" required>
+                    <option value="">Select Score</option><option value="5">5</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r11" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P12 -->
         <div class="parameter-row">
-            <label>12. Did the agent speak politely to the caller. *</label>
+            <label>
+                <span class="label-en">12. Did the agent speak politely to the caller. <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-bn">১২. নম্রভাবে কথা বলা (সর্বোচ্চ: ৭) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p12" placeholder="Score / FATAL" required>
-                <input type="text" name="r12" placeholder="Remarks">
+                <select name="p12" required>
+                    <option value="">Select Score</option><option value="7">7</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r12" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P13 -->
         <div class="parameter-row">
-            <label>13. Was the agent's tone appropriate. *</label>
+            <label>
+                <span class="label-en">13. Was the agent's tone appropriate. <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-bn">১৩. কণ্ঠস্বর বা টোন সঠিক ছিল কিনা (সর্বোচ্চ: ৭) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p13" placeholder="Score / FATAL" required>
-                <input type="text" name="r13" placeholder="Remarks">
+                <select name="p13" required>
+                    <option value="">Select Score</option><option value="7">7</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r13" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P14 -->
         <div class="parameter-row">
-            <label>14. Did the agent avoid interrupting/talking over the caller. *</label>
+            <label>
+                <span class="label-en">14. Did the agent avoid interrupting/talking over the caller. <span class="max-badge">(Max: 9)</span> *</span>
+                <span class="label-bn">১৪. কাস্টমারের কথার মাঝে বাধা না দেওয়া (সর্বোচ্চ: ৯) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p14" placeholder="Score / FATAL" required>
-                <input type="text" name="r14" placeholder="Remarks">
+                <select name="p14" required>
+                    <option value="">Select Score</option><option value="9">9</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r14" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P15 -->
         <div class="parameter-row">
-            <label>15. Did the agent minimize long silences/Dead Air.(10 sec max) *</label>
+            <label>
+                <span class="label-en">15. Did the agent minimize long silences/Dead Air.(10 sec max) <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">১৫. দীর্ঘ নীরবতা বা ডেড এয়ার এড়িয়ে চলা (সর্বোচ্চ ১০ সেকেন্ড) (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p15" placeholder="Score / FATAL" required>
-                <input type="text" name="r15" placeholder="Remarks">
+                <select name="p15" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r15" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P16 -->
         <div class="parameter-row">
-            <label>16. Did the agent respond promptly to the caller's questions. *</label>
+            <label>
+                <span class="label-en">16. Did the agent respond promptly to the caller's questions. <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">১৬. কাস্টমারের প্রশ্নের দ্রুত উত্তর দেওয়া (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p16" placeholder="Score / FATAL" required>
-                <input type="text" name="r16" placeholder="Remarks">
+                <select name="p16" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r16" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P17 -->
         <div class="parameter-row">
-            <label>17. Did the agent match the caller's Rate of Speech./Clarity of speech *</label>
+            <label>
+                <span class="label-en">17. Did the agent match the caller's Rate of Speech./Clarity of speech <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-bn">১৭. কাস্টমারের কথা বলার গতির সাথে মেলানো/স্পষ্টতা (সর্বোচ্চ: ৪) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p17" placeholder="Score / FATAL" required>
-                <input type="text" name="r17" placeholder="Remarks">
+                <select name="p17" required>
+                    <option value="">Select Score</option><option value="4">4</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r17" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P18 -->
         <div class="parameter-row">
-            <label>18. Did the agent follow proper hold procedure. (2 min max) *</label>
+            <label>
+                <span class="label-en">18. Did the agent follow proper hold procedure. (2 min max) <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-bn">১৮. সঠিক হোল্ড প্রসিডিউর মেনে চলা (সর্বোচ্চ ২ মিনিট) (সর্বোচ্চ: ৪) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p18" placeholder="Score / FATAL" required>
-                <input type="text" name="r18" placeholder="Remarks">
+                <select name="p18" required>
+                    <option value="">Select Score</option><option value="4">4</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r18" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P19 -->
         <div class="parameter-row">
-            <label>19. Background Noice (Shouting / Screeming) *</label>
+            <label>
+                <span class="label-en">19. Background Noise (Shouting / Screaming) <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">১৯. ব্যাকগ্রাউন্ড নয়েজ বা চিৎকার (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p19" placeholder="Score / FATAL" required>
-                <input type="text" name="r19" placeholder="Remarks">
+                <select name="p19" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r19" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P20 -->
         <div class="parameter-row">
-            <label>20. Usage of customers languages. (English/Hindi/Bengali) *</label>
+            <label>
+                <span class="label-en">20. Usage of customers languages. (English/Hindi/Bengali) <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">২০. কাস্টমারের ভাষা ব্যবহার করা (ইংরেজি/হিন্দি/বাংলা) (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p20" placeholder="Score / FATAL" required>
-                <input type="text" name="r20" placeholder="Remarks">
+                <select name="p20" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r20" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P21 -->
         <div class="parameter-row">
-            <label>21. Grammatical error/Choice of words/Sentence formation *</label>
+            <label>
+                <span class="label-en">21. Grammatical error/Choice of words/Sentence formation <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">২১. ব্যাকরণগত ভুল/শব্দ চয়ন/বাক্য গঠন (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p21" placeholder="Score / FATAL" required>
-                <input type="text" name="r21" placeholder="Remarks">
+                <select name="p21" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r21" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P22 -->
         <div class="parameter-row">
-            <label>22. Objection Handling and Convincing Skills *</label>
+            <label>
+                <span class="label-en">22. Objection Handling and Convincing Skills <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-bn">২২. অবজেকশন হ্যান্ডলিং ও কাস্টমারকে কনভিন্স করার দক্ষতা (সর্বোচ্চ: ৭) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p22" placeholder="Score / FATAL" required>
-                <input type="text" name="r22" placeholder="Remarks">
+                <select name="p22" required>
+                    <option value="">Select Score</option><option value="7">7</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r22" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P23 -->
         <div class="parameter-row">
-            <label>23. Thanking the Customer *</label>
+            <label>
+                <span class="label-en">23. Thanking the Customer <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">২৩. কাস্টমারকে ধন্যবাদ জানানো (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p23" placeholder="Score / FATAL" required>
-                <input type="text" name="r23" placeholder="Remarks">
+                <select name="p23" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r23" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P24 -->
         <div class="parameter-row">
-            <label>24. Listening skills + Alertness on call *</label>
+            <label>
+                <span class="label-en">24. Listening skills + Alertness on call <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-bn">২৪. শোনার দক্ষতা + কলে সতর্কতা ও সক্রিয়তা (সর্বোচ্চ: ৩) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p24" placeholder="Score / FATAL" required>
-                <input type="text" name="r24" placeholder="Remarks">
+                <select name="p24" required>
+                    <option value="">Select Score</option><option value="3">3</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r24" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P25 -->
         <div class="parameter-row">
-            <label>25. Enthusiasm and Energy *</label>
+            <label>
+                <span class="label-en">25. Enthusiasm and Energy <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">২৫. উৎসাহ এবং এনার্জি লেভেল (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p25" placeholder="Score / FATAL" required>
-                <input type="text" name="r25" placeholder="Remarks">
+                <select name="p25" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r25" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P26 -->
         <div class="parameter-row">
-            <label>26. Confidence, Avoidance of fillers, fumbling *</label>
+            <label>
+                <span class="label-en">26. Confidence, Avoidance of fillers, fumbling <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-bn">২৬. আত্মবিশ্বাস এবং ফাম্বলিং/ফিলার শব্দ এড়িয়ে চলা (সর্বোচ্চ: ৪) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p26" placeholder="Score / FATAL" required>
-                <input type="text" name="r26" placeholder="Remarks">
+                <select name="p26" required>
+                    <option value="">Select Score</option><option value="4">4</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r26" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P27 -->
         <div class="parameter-row">
-            <label>27. Probing *</label>
+            <label>
+                <span class="label-en">27. Probing <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-bn">২৭. প্রোবিং বা সঠিক অনুসন্ধান করা (সর্বোচ্চ: ৪) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p27" placeholder="Score / FATAL" required>
-                <input type="text" name="r27" placeholder="Remarks">
+                <select name="p27" required>
+                    <option value="">Select Score</option><option value="4">4</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r27" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P28 -->
         <div class="parameter-row">
-            <label>28. Did the agent follow the correct closing script. *</label>
+            <label>
+                <span class="label-en">28. Did the agent follow the correct closing script. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">২৮. সঠিক ক্লোজিং স্ক্রিপ্ট মেনে চলা (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p28" placeholder="Score / FATAL" required>
-                <input type="text" name="r28" placeholder="Remarks">
+                <select name="p28" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r28" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P29 -->
         <div class="parameter-row">
-            <label>29. Did the agent thank the caller before ending the call. *</label>
+            <label>
+                <span class="label-en">29. Did the agent thank the caller before ending the call. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-bn">২৯. কল শেষ করার আগে কাস্টমারকে ধন্যবাদ দেওয়া (সর্বোচ্চ: ২) *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p29" placeholder="Score / FATAL" required>
-                <input type="text" name="r29" placeholder="Remarks">
+                <select name="p29" required>
+                    <option value="">Select Score</option><option value="2">2</option><option value="0">0</option>
+                </select>
+                <input type="text" name="r29" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P30 (Critical Fatal Example) -->
         <div class="parameter-row fatal-style">
-            <label>30. Usage of Profanity/Usage of sarcastic remarks./dishonest statements./rude behaviour/shouting *</label>
+            <label>
+                <span class="label-en">30. Usage of Profanity/Usage of sarcastic remarks./dishonest statements./rude behaviour/shouting [FATAL] *</span>
+                <span class="label-bn">৩০. গালিগালাজ/ব্যঙ্গাত্মক মন্তব্য/অসৎ আচরণ/রূঢ় ব্যবহার/চিৎকার করা [FATAL] *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p30" placeholder="Score / FATAL" required>
-                <input type="text" name="r30" placeholder="Remarks">
+                <select name="p30" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r30" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P31 -->
-        <div class="parameter-row">
-            <label>31. Call Back capturing when required *</label>
-            <div class="param-inputs">
-                <input type="text" name="p31" placeholder="Score / FATAL" required>
-                <input type="text" name="r31" placeholder="Remarks">
-            </div>
-        </div>
-
-        <!-- P32 -->
-        <div class="parameter-row">
-            <label>32. CRM/Google sheet correct updation *</label>
-            <div class="param-inputs">
-                <input type="text" name="p32" placeholder="Score / FATAL" required>
-                <input type="text" name="r32" placeholder="Remarks">
-            </div>
-        </div>
-
-        <!-- P33 -->
         <div class="parameter-row fatal-style">
-            <label>33. Cross Talk/laughing *</label>
+            <label>
+                <span class="label-en">31. Call Back capturing when required [FATAL] *</span>
+                <span class="label-bn">৩১. প্রয়োজন অনুযায়ী কলব্যাক ইনফরমেশন ক্যাপচার করা [FATAL] *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p33" placeholder="Score / FATAL" required>
-                <input type="text" name="r33" placeholder="Remarks">
+                <select name="p31" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r31" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P34 -->
         <div class="parameter-row fatal-style">
-            <label>34. Wrong Information Capturing *</label>
+            <label>
+                <span class="label-en">32. CRM/Google sheet correct updation [FATAL] *</span>
+                <span class="label-bn">৩২. সিআরএম (CRM) বা গুগল শিটে সঠিক আপডেট করা [FATAL] *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p34" placeholder="Score / FATAL" required>
-                <input type="text" name="r34" placeholder="Remarks">
+                <select name="p32" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r32" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- P35 -->
         <div class="parameter-row fatal-style">
-            <label>35. Others (Wrong dispo/Incorrect/Incomplete Information) *</label>
+            <label>
+                <span class="label-en">33. Cross Talk/laughing [FATAL] *</span>
+                <span class="label-bn">৩৩. ক্রস টক বা হাসাহাসি করা [FATAL] *</span>
+            </label>
             <div class="param-inputs">
-                <input type="text" name="p35" placeholder="Score / FATAL" required>
-                <input type="text" name="r35" placeholder="Remarks">
+                <select name="p33" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r33" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
 
-        <!-- SECTION 3: SUMMARY -->
-        <div class="section-title">Audit Summary</div>
+        <div class="parameter-row fatal-style">
+            <label>
+                <span class="label-en">34. Wrong Information Capturing [FATAL] *</span>
+                <span class="label-bn">৩৪. ভুল তথ্য ক্যাপচার করা [FATAL] *</span>
+            </label>
+            <div class="param-inputs">
+                <select name="p34" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r34" placeholder="Remarks / মন্তব্য">
+            </div>
+        </div>
+
+        <div class="parameter-row fatal-style">
+            <label>
+                <span class="label-en">35. Others (Wrong dispo/Incorrect/Incomplete Information) [FATAL] *</span>
+                <span class="label-bn">৩৫. অন্যান্য ভুল (ভুল ডিসপো/ভুল বা অসম্পূর্ণ তথ্য) [FATAL] *</span>
+            </label>
+            <div class="param-inputs">
+                <select name="p35" required>
+                    <option value="">Select Score</option><option value="0">0</option><option value="FATAL">FATAL</option>
+                </select>
+                <input type="text" name="r35" placeholder="Remarks / মন্তব্য">
+            </div>
+        </div>
+
+        <div class="section-title">Audit Summary / অডিট সামারি</div>
         <div class="form-group">
-            <label>Call Summary *</label>
-            <textarea name="Call Summary" rows="4" required placeholder="কলের সংক্ষিপ্ত বিবরণ এখানে লিখুন..."></textarea>
+            <label><span class="label-en">Call Summary *</span><span class="label-bn">কল সামারি (সংক্ষিপ্ত বিবরণ) *</span></label>
+            <textarea name="Call Summary" rows="4" required placeholder="The advisor called regarding a new connection..."></textarea>
         </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">Submit Audit</button>
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Audit / অডিট সাবমিট করুন</button>
     </form>
 
     <div id="responseMessage"></div>
 </div>
 
 <script>
-    // ফর্ম সাবমিশন ব্যাকএন্ডে স্মুথলি পাঠানোর জন্য জাভাস্ক্রিপ্ট লজিক
+    // Live Score Calculation Engine
+    function calculateLiveScore() {
+        let totalScore = 0;
+        let isFatalActive = false;
+
+        // Loop through parameters 1 to 29 to sum up scores
+        for (let i = 1; i <= 29; i++) {
+            const selectEl = document.querySelector(`select[name="p${i}"]`);
+            if (selectEl && selectEl.value !== "") {
+                totalScore += parseInt(selectEl.value);
+            }
+        }
+
+        // Loop through fatal parameters 30 to 35 to check for FATAL
+        for (let i = 30; i <= 35; i++) {
+            const selectEl = document.querySelector(`select[name="p${i}"]`);
+            if (selectEl && selectEl.value === "FATAL") {
+                isFatalActive = true;
+            }
+        }
+
+        const scoreBadge = document.getElementById('liveScoreBadge');
+        if (isFatalActive) {
+            scoreBadge.innerText = "Score: 0 / 100 (FATAL)";
+            scoreBadge.classList.add('fatal-active');
+        } else {
+            scoreBadge.innerText = `Score: ${totalScore} / 100`;
+            scoreBadge.classList.remove('fatal-active');
+        }
+    }
+
+    // Dynamic Remarks Validation Logic & Live Score trigger
+    document.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', function() {
+            const name = this.name;
+            if (name.startsWith('p')) {
+                const paramNumber = parseInt(name.replace('p', ''));
+                const row = this.closest('.param-inputs');
+                const remarksInput = row ? row.querySelector('input[type="text"]') : null;
+                
+                if (remarksInput) {
+                    const value = this.value;
+                    let isMandatory = false;
+
+                    if (paramNumber >= 1 && paramNumber <= 29) {
+                        // 1-29 er moddhe '0' select korle mandatory
+                        if (value === '0') isMandatory = true;
+                    } else if (paramNumber >= 30 && paramNumber <= 35) {
+                        // 30-35 er moddhe 'FATAL' select korle mandatory
+                        if (value === 'FATAL') isMandatory = true;
+                    }
+
+                    if (isMandatory) {
+                        remarksInput.required = true;
+                        remarksInput.placeholder = "Remarks (Mandatory) * / মন্তব্য (বাধ্যতামূলক) *";
+                        remarksInput.style.borderColor = "#e74c3c";
+                        remarksInput.style.backgroundColor = "#fff6f6";
+                    } else {
+                        remarksInput.required = false;
+                        remarksInput.placeholder = "Remarks / মন্তব্য";
+                        remarksInput.style.borderColor = "#ccc";
+                        remarksInput.style.backgroundColor = "#fff";
+                    }
+                }
+            }
+            // Recalculate score live
+            calculateLiveScore();
+        });
+    });
+
+    // Form Submission Handler
     document.getElementById('auditForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // পেজ রিফ্রেশ বন্ধ করা হলো
+        e.preventDefault();
         
         const form = e.target;
         const submitBtn = document.getElementById('submitBtn');
         const responseMessage = document.getElementById('responseMessage');
         
         submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting...";
+        submitBtn.innerText = "Submitting / সাবমিট হচ্ছে...";
         responseMessage.innerText = "";
 
-        // ফর্মের ডেটা FormData অবজেক্টে নেওয়া হচ্ছে
         const formData = new FormData(form);
         const searchParams = new URLSearchParams();
 
@@ -529,7 +780,6 @@
             searchParams.append(pair[0], pair[1]);
         }
 
-        // গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপে ডেটা পাঠানো হচ্ছে
         fetch(form.action, {
             method: 'POST',
             body: searchParams,
@@ -541,21 +791,31 @@
         .then(data => {
             if(data.result === 'success') {
                 responseMessage.style.color = 'green';
-                responseMessage.innerText = "✓ অডিট ডেটা সফলভাবে গুগল শিটে সেভ হয়েছে!";
-                form.reset(); // ফর্ম খালি করা হলো
+                responseMessage.innerText = "✓ Audit data successfully saved to Google Sheet! / অডিট ডেটা সফলভাবে সেভ হয়েছে!";
+                form.reset();
+                
+                // Reset all custom styling after form reset
+                document.querySelectorAll('input[type="text"]').forEach(input => {
+                    input.style.borderColor = "#ccc";
+                    input.style.backgroundColor = "#fff";
+                    if(input.name.startsWith('r')) input.placeholder = "Remarks / মন্তব্য";
+                });
+                
+                // Reset live score display
+                calculateLiveScore();
             } else {
                 responseMessage.style.color = 'red';
-                responseMessage.innerText = "এরর: " + data.error;
+                responseMessage.innerText = "Error / এরর: " + data.error;
             }
         })
         .catch(error => {
             responseMessage.style.color = 'red';
-            responseMessage.innerText = "সার্ভারের সাথে কানেক্ট করা যায়নি। দয়া করে আপনার Web App URL চেক করুন।";
+            responseMessage.innerText = "Connection failed. Please check your Web App URL. / সার্ভার কানেকশন ব্যর্থ হয়েছে।";
             console.error('Error:', error);
         })
         .finally(() => {
             submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Audit";
+            submitBtn.innerText = "Submit Audit / অডিট সাবমিট করুন";
         });
     });
 </script>

@@ -34,6 +34,56 @@
         
         .fatal-select { border-left: 4px solid #e53e3e; }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
+
+        /* ─── প্রিমিয়াম ভাসমান ক্লক ও টাইমার স্ট্যাক (পিক্সেল পারফেক্ট অ্যালাইনমেন্ট) ─── */
+        .audit-tracker-container {
+            position: fixed;
+            right: 25px;       /* নিচের স্কোর বক্সের ডানদিকের গ্যাপের সাথে হুবহু মিল রেখে */
+            bottom: 155px;     /* স্কোর বক্সের ঠিক ওপরে পারফেক্ট দূরত্বে রাখার জন্য */
+            display: flex;
+            flex-direction: column;
+            gap: 12px;         
+            z-index: 9999;
+            width: 242px;      /* স্কোর বক্সের চওড়ার সাথে ১০০% ম্যাচ করা হলো */
+            box-sizing: border-box;
+        }
+
+        .tracker-box {
+            background: #16222f; /* কাস্টম ডার্ক থিম */
+            color: #f8fafc;
+            padding: 14px;
+            border-radius: 14px; /* স্কোর বক্সের রাউন্ড শেপের সাথে সামঞ্জস্যপূর্ণ */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .tracker-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .tracker-value {
+            font-size: 22px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #liveClock { color: #38bdf8; }   /* মডার্ন স্কাই ব্লু */
+        #auditTimer { color: #4ade80; }  /* নিয়ন গ্রিন টাইমার */
+
+        /* স্কোর বক্সটিকেও টাইমারের সাথে সমান চওড়া (242px) করার জন্য ওভাররাইড */
+        #score-counter-box {
+            width: 242px !important;
+            min-width: unset !important;
+            box-sizing: border-box !important;
+        }
     </style>
 </head>
 <body>
@@ -43,13 +93,11 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
 }
 </script>
 <div id="mainContent">
-
 <div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
     <img src="gtpl_logo.png" alt="GTPL KCBPL Logo"
          style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
 </div>
 <div style="text-align:right; margin-bottom:15px;">
-
     <button onclick="location.href='LOGIN.html'"
     style="
     background:linear-gradient(135deg,#2563eb,#1e40af);
@@ -62,11 +110,8 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     font-weight:bold;
     box-shadow:0 4px 12px rgba(37,99,235,0.3);
     transition:0.3s;">
-
         🏠 Back to Home
-
     </button>
-
 </div>
 <div class="form-container">
     <h1>GTPL KCBPL – Call Quality Audit Form</h1>
@@ -463,7 +508,7 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
                         <option value="">-- Choose Predefined Remark --</option>
                         <option value="Technical jargon was used without proper explanation.">Technical jargon was used without proper explanation.</option>
                         <option value="Use of complex terms affected customer understanding.">Use of complex terms affected customer understanding.</option>
-                        <option value="Internal terminology was used instead of customer-friendly language.">Internal terminology was used instead of customer-friendly language.</option>
+                        <option value="Internal terminology was used instead of customer-friendly language.">Internal terminology was used instead of customer-friendly language..</option>
                         <option value="Agent should use simple, customer-friendly language and explain any necessary terms.">Agent should use simple, customer-friendly language and explain any necessary terms.</option>
                     </select>
                     <textarea name="Remarks 19" placeholder="Or write custom remarks..."></textarea>
@@ -640,16 +685,81 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     </form>
 </div>
 
+<!-- 🕒 রাইট সাইড ভাসমান লাইভ ক্লক ও টাইমার ড্যাশবোর্ড স্ট্যাক -->
+<div class="audit-tracker-container">
+    <div class="tracker-box">
+        <div class="tracker-label">Live Clock / লাইভ ঘড়ি</div>
+        <div id="liveClock" class="tracker-value">00:00:00 AM</div>
+    </div>
+    <div class="tracker-box">
+        <div class="tracker-label">Audit Duration / অডিট সময়</div>
+        <div id="auditTimer" class="tracker-value">00:00</div>
+    </div>
+</div>
+
 <!-- প্রিমিয়াম ভাসমান লাইভ স্কোরবোর্ড ড্যাশবোর্ড -->
-<div id="score-counter-box" style="position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; padding: 18px 28px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-family: 'Segoe UI', sans-serif; z-index: 1000; min-width: 160px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+<div id="score-counter-box" style="position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; padding: 18px 28px; border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); font-family: 'Segoe UI', sans-serif; z-index: 1000; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
   <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 5px;">Total Score / মোট নম্বর</div>
   <div id="live-score" style="font-size: 38px; font-weight: 800; color: #10b981; line-height: 1;">0</div>
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
 </div>
 
 <script>
+    // টাইমার কন্ট্রোল ভ্যারিয়েবলস
+    let timerInterval;
+    let totalSeconds = 0;
+
+    // লাইভ ঘড়ি আপডেট করার ফাংশন
+    function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; 
+        const formattedHours = String(hours).padStart(2, '0');
+        
+        const clockDisplay = document.getElementById('liveClock');
+        if (clockDisplay) {
+            clockDisplay.innerText = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+        }
+    }
+
+    // টাইমার শুরু করার ফাংশন
+    function startAuditTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalSeconds = 0;
+        timerInterval = setInterval(() => {
+            totalSeconds++;
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            const timerDisplay = document.getElementById('auditTimer');
+            if (timerDisplay) {
+                timerDisplay.innerText = `${minutes}:${seconds}`;
+            }
+        }, 1000);
+    }
+
+    // টাইমার রিসেট করার ফাংশন (সাবমিটের পর এটি কাজ করবে)
+    function resetAuditTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalSeconds = 0;
+        const timerDisplay = document.getElementById('auditTimer');
+        if (timerDisplay) {
+            timerDisplay.innerText = "00:00";
+        }
+        startAuditTimer(); // আবার ফ্রেশ গণনা শুরু করবে
+    }
+
+    // পেজ লোড হওয়ার সাথে সাথে ঘড়ি ও টাইমার চালু করা
+    setInterval(updateClock, 1000);
+    updateClock();
+    startAuditTimer();
+
     document.addEventListener('change', calculateLiveScore);
     document.addEventListener('input', calculateLiveScore);
+    
     function calculateLiveScore() {
         const scoreFields = [
             "Opening", "Enthusiatic tone", "Assurance", "Closing", "Account Authentication/Security Checks",
@@ -719,6 +829,8 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
                 alert('Inbound Audit Report Saved Successfully!');
                 document.getElementById('auditForm').reset();
                 calculateLiveScore();
+                // ⏳ সফলভাবে সেভ হওয়ার পর টাইমার রিসেট করা হলো
+                resetAuditTimer();
             } else {
                 alert('Error: Data could not be saved.');
             }
@@ -728,6 +840,8 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
             alert('Form submitted successfully! (Please verify inside Google Sheet).');
             document.getElementById('auditForm').reset();
             calculateLiveScore();
+            // ⏳ ক্যাচ ব্লকেও টাইমার রিসেট নিশ্চিত করা হলো
+            resetAuditTimer();
         })
         .finally(() => {
             submitBtn.innerText = "Submit Audit Report / অডিট রিপোর্ট জমা দিন";

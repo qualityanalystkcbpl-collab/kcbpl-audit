@@ -1071,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Reset live score display
                 calculateLiveScore();
+                resetAuditTimer();
             } else {
                 responseMessage.style.color = '#ef4444';
                 responseMessage.innerText = "Error / এরর: " + data.error;

@@ -47,7 +47,7 @@
         cursor: pointer;
     }
 
-    /* 🔐 প্রিমিয়াম লগইন বক্স */
+    /* 🔐 প্রিমিয়াম লগইন باکس */
     #loginBox {
         max-width: 400px;
         margin: 80px auto;
@@ -136,7 +136,7 @@
     /* 🧱 সাইড ট্যাব এবং মেইন বাটন গ্রিড লেআউট */
     .dashboard-grid {
         display: grid;
-        grid-template-columns: 350px 1fr;
+        grid-template-columns: 360px 1fr;
         gap: 30px;
         align-items: start;
     }
@@ -147,57 +147,102 @@
         }
     }
 
-    /* 🗂️ সাইড ট্যাব স্টাইল */
+    /* 🗂️ অ্যানিমেটেড সাইড প্যানেল */
     .side-panel {
         background: white;
         border-radius: 20px;
         padding: 25px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.04);
         border: 1px solid #e2e8f0;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
+    
+    /* সাইড প্যানেলের হোভার অ্যানিমেশন */
+    .side-panel:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(13, 148, 136, 0.12);
+        border-color: rgba(13, 148, 136, 0.25);
+    }
+
     .tab-menu {
         display: flex;
-        gap: 8px;
+        gap: 4px;
         border-bottom: 2px solid #f1f5f9;
         margin-bottom: 20px;
     }
     .tab-btn {
         flex: 1;
-        padding: 10px;
+        padding: 12px 6px;
         background: none;
         border: none;
-        font-size: 14px;
+        font-size: 13.5px;
         font-weight: 700;
         color: #64748b;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.3s ease;
         border-bottom: 3px solid transparent;
         margin-bottom: -2px;
+    }
+    .tab-btn:hover {
+        color: var(--primary-color);
+        background: rgba(13, 148, 136, 0.04);
+        border-radius: 8px 8px 0 0;
     }
     .tab-btn.active {
         color: var(--primary-color);
         border-bottom-color: var(--primary-color);
     }
+
+    /* ট্যাবের ভেতরের কন্টেন্ট অ্যানিমেশন */
     .tab-content {
         display: none;
-        animation: fadeIn 0.4s ease;
     }
     .tab-content.active {
         display: block;
     }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
-        to { opacity: 1; transform: translateY(0); }
+    
+    /* লিস্টের ভেতরের li গুলোর স্লাইড এবং ফেইড-ইন অ্যানিমেশন */
+    .tab-content.active li {
+        animation: slideInRight 0.5s ease forwards;
+        opacity: 0;
     }
+
+    /* Staggered Delay যাতে লেখাগুলো একটার পর একটা স্মুথলি আসে */
+    .tab-content.active li:nth-child(1) { animation-delay: 0.05s; }
+    .tab-content.active li:nth-child(2) { animation-delay: 0.10s; }
+    .tab-content.active li:nth-child(3) { animation-delay: 0.15s; }
+    .tab-content.active li:nth-child(4) { animation-delay: 0.20s; }
+    .tab-content.active li:nth-child(5) { animation-delay: 0.25s; }
+    .tab-content.active li:nth-child(6) { animation-delay: 0.30s; }
+    .tab-content.active li:nth-child(7) { animation-delay: 0.35s; }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(-15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
     .info-list {
         padding-left: 18px;
         margin: 0;
     }
     .info-list li {
-        margin-bottom: 12px;
+        margin-bottom: 14px;
         font-size: 13.5px;
-        line-height: 1.5;
+        line-height: 1.6;
         color: #475569;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+    
+    /* টেক্সটের ওপর মাউস নিলে হালকা ডানদিকে সরার অ্যানিমেশন */
+    .info-list li:hover {
+        transform: translateX(4px);
+        color: #0f172a;
     }
 
     /* 🎯 অডিট বাটন স্টাইল */
@@ -282,7 +327,7 @@
     <h1 class="dashboard-title">GTPL KCBPL Audit (Only for QA team use)</h1>
 
     <div class="dashboard-grid">
-        <!-- 🗂️ সাইড প্যানেল (ট্যাব সিস্টেম) -->
+        <!-- 🗂️ সাইড প্যানেল (অ্যানিমেটেড ট্যাব সিস্টেম) -->
         <div class="side-panel">
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="switchTab(event, 'rules')">📋 Guidelines</button>
@@ -294,14 +339,12 @@
             <div id="rules" class="tab-content active">
                 <h4 style="margin-top:0; color:var(--primary-color);">Audit Guidelines</h4>
                 <ul class="info-list">
-                    <li>Fatal Error চিহ্নিত হওয়া মাত্রই কল স্কোর সরাসরি <b>০ (Zero)</b> হয়ে যাবে।</li>
-                    <li>প্রতিটি ইভ্যালুয়েশনে কাস্টমারের অবজেকশন হ্যান্ডলিং পুঙ্খানুপুঙ্খভাবে চেক করুন।</li>
+                    <li>Fatal Error চিহ্নিত হওয়া মাত্রই কল স্কোর সরাসরি <b>০ (Zero)</b> হয়ে যাবে।</li>
+                    <li>প্রতিটি ইভ্যালুয়েশনে কাস্টমারের অবজেকশন হ্যান্ডলিং পুঙ্খানুপুঙ্খভাবে চেক করুন।</li>
                     <li>সঠিক Disposition ম্যাপ করা বাধ্যতামূলক।</li>
-		<li>Customer Authentication সম্পূর্ণ না হলে
-  Fatal Error হিসেবে গণ্য হবে।</li>
-<li>Hold, Transfer ও Dead Air Guidelines
-  কঠোরভাবে অনুসরণ করতে হবে।</li>
-<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                    <li>Customer Authentication সম্পূর্ণ না হলে Fatal Error হিসেবে গণ্য হবে।</li>
+                    <li>Hold, Transfer ও Dead Air Guidelines কঠোরভাবে অনুসরণ করতে হবে।</li>
+                    <li><b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</b></li>
                 </ul>
             </div>
             
@@ -309,13 +352,13 @@
             <div id="targets" class="tab-content">
                 <h4 style="margin-top:0; color:var(--primary-color);">QA Target KPIs</h4>
                 <ul class="info-list">
-                    <li><b>Conduct daily/weekly/monthly call audits of randomly selected agent calls.Conduct feedback  call sessions with call centre teams 4 calls /week / agent</li>
-                    <li><b>Planning,organising and time management skills- Has the ability to plan and priortize tasks to perform within timelines</li>
-<li><b>Monitoring and Maintaining the login hours/break timings/and extra pause timings for the team as per the specified target</li>
-<li><b>Effective communciation skills-Listens and understand the work delegated by supervisor and provides regular update pro actively</li>
-<li><b>Team work- Co-ordinates, co-operates, accomodates and adapts with team members effectively.</li>
-<li><b>Identify the need of training (TNI) for the different agents from all teams and conduct the same in coordination with HR for improvement in call quality</li>
-<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                    <li><b>Conduct daily/weekly/monthly call audits of randomly selected agent calls.Conduct feedback  call sessions with call centre teams 4 calls /week / agent</b></li>
+                    <li><b>Planning,organising and time management skills- Has the ability to plan and priortize tasks to perform within timelines</b></li>
+                    <li><b>Monitoring and Maintaining the login hours/break timings/and extra pause timings for the team as per the specified target</b></li>
+                    <li><b>Effective communciation skills-Listens and understand the work delegated by supervisor and provides regular update pro actively</b></li>
+                    <li><b>Team work- Co-ordinates, co-operates, accomodates and adapts with team members effectively.</b></li>
+                    <li><b>Identify the need of training (TNI) for the different agents from all teams and conduct the same in coordination with HR for improvement in call quality</b></li>
+                    <li><b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</b></li>
                 </ul>
             </div>
             
@@ -326,12 +369,12 @@
                     <li><b>Version:</b> • Latest QA Audit Form v1.0 Released</li>
                     <li><b>Database Link:</b> Google App Script Integration Active.</li>
                     <li>Audit Submission Success Animation Added</li>
-<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                    <li><b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</b></li>
                 </ul>
             </div>
         </div>
 
-        <!-- 🎯 মেইন অডিট বাটন এরিয়া -->
+        <!-- 🎯 মেইন অডিট বাটন এরিয়া -->
         <div class="buttons-area">
             <button class="audit-btn inbound" onclick="location.href='inbound.html'">
                 📞 INBOUND (ALL PROCESS)
@@ -348,7 +391,7 @@
     </div>
 </div>
 
-<!-- 🛠️ ফিক্সড প্রিমিয়াম ফুটার -->
+<!-- 🛠️ ফিক্সড প্রিমিয়াম ফুটার -->
 <div style="position:fixed; bottom:15px; right:15px; background:rgba(15,23,42,0.96); padding:12px 18px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); z-index:999; text-align:right;">
     <div style="color:#e2e8f0; font-size:12px; font-weight:700; margin-bottom:4px;">
         GTPL KCBPL Call Quality Audit System
@@ -388,7 +431,7 @@ function logout(){
     location.reload();
 }
 
-// 🗂️ সাইড ট্যাব কন্ট্রোল ফাংশন
+// 🗂️ সাইড ট্যাব কন্ট্রোল এবং অ্যানিমেশন রি-ট্রিগার ফাংশন
 function switchTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");
@@ -399,8 +442,18 @@ function switchTab(evt, tabName) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].classList.remove("active");
     }
-    document.getElementById(tabName).classList.add("active");
+    
+    const targetTab = document.getElementById(tabName);
+    targetTab.classList.add("active");
     evt.currentTarget.classList.add("active");
+    
+    // প্রতিবার ট্যাব পরিবর্তনের সময় অ্যানিমেশন নতুন করে শুরু করার স্ক্রিপ্ট
+    const listItems = targetTab.querySelectorAll("li");
+    listItems.forEach((li) => {
+        li.style.animation = 'none';
+        li.offsetHeight; /* রিফ্লো (Reflow) */
+        li.style.animation = null; 
+    });
 }
 </script>
 </body>

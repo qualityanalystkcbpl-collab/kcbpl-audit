@@ -3,49 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Development – Broadband Audit Form</title>
+    <title>GTPL KCBPL – Call Quality Audit Form</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: #f0f4f8;
             margin: 0;
             padding: 20px;
             color: #333;
-            position: relative;
         }
+        /* Top Header Area for Logo and Home Button */
+        .header-container {
+            max-width: 950px;
+            margin: 0 auto 20px auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo-area {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .logo-area img {
+            max-width: 100%;
+            height: auto;
+            max-height: 120px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .top-nav {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+        .home-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Main Form Container */
         .form-container {
             max-width: 950px;
-            margin: 0 auto;
+            margin: 0 auto 100px auto;
             background: #fff;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 80px; /* Space for sticky score badge */
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
-        h2 {
+        
+        /* Form Headings */
+        h2.main-title {
             text-align: center;
-            color: #2c3e50;
-            margin-bottom: 5px;
+            color: #1e293b;
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.5px;
         }
         .subtitle {
             text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            font-weight: bold;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 35px;
+            font-weight: 600;
+            text-transform: uppercase;
         }
+        
+        /* Section Titles styled as image */
         .section-title {
-            background: #2980b9;
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 18px;
+            color: #1e3a8a;
+            font-size: 16px;
+            font-weight: 700;
             margin-top: 30px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
         }
+        
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 24px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -54,151 +107,212 @@
         }
         label {
             font-weight: 600;
-            margin-bottom: 5px;
-            color: #34495e;
+            margin-bottom: 6px;
+            color: #334155;
             font-size: 14px;
-            line-height: 1.5;
         }
         .label-en {
-            color: #2c3e50;
+            display: block;
+            color: #1e293b;
         }
         .label-bn {
-            color: #7f8c8d;
-            font-size: 13px;
+            color: #64748b;
+            font-size: 12px;
             display: block;
-            margin-top: 4px;
+            margin-top: 2px;
+        }
+        .required-star {
+            color: #ef4444;
+            margin-left: 2px;
         }
         .max-badge {
-            color: #e67e22;
+            color: #f97316;
             font-weight: bold;
+            font-size: 12px;
         }
+        
         input[type="text"], input[type="date"], input[type="time"], select, textarea {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
             font-size: 14px;
             width: 100%;
             box-sizing: border-box;
             background-color: #fff;
+            color: #334155;
             transition: all 0.3s ease;
         }
         input:focus, select:focus, textarea:focus {
-            border-color: #2980b9;
+            border-color: #2563eb;
             outline: none;
-            box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
+        
+        /* Parameters Rows */
         .parameter-row {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 5px solid #3498db;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            border-left: 5px solid #3b82f6;
+            border-top: 1px solid #f1f5f9;
+            border-right: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
         }
         .parameter-row.fatal-style {
-            border-left: 5px solid #e74c3c;
+            border-left: 5px solid #ef4444;
             background: #fff5f5;
         }
         .param-inputs {
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 15px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
+        
         .submit-btn {
-            background: #27ae60;
+            background: #10b981;
             color: white;
             padding: 15px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
-            transition: background 0.3s;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            transition: all 0.3s;
         }
         .submit-btn:hover {
-            background: #219653;
+            background: #059669;
+            transform: translateY(-1px);
         }
         #responseMessage {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             font-weight: bold;
             font-size: 16px;
         }
-        /* Live Score Sticky Badge */
-        .live-score-badge {
+        
+        /* Premium Dark Score Card (As seen in image_ffc51a.png) */
+        .live-score-card {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #2c3e50;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
             color: #fff;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 20px 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
             z-index: 1000;
-            border: 3px solid #fff;
+            border: 1px solid #334155;
+            text-align: center;
+            min-width: 180px;
             transition: all 0.3s ease;
         }
-        .live-score-badge.fatal-active {
-            background: #e74c3c;
-            animation: shake 0.5s ease-in-out;
+        .score-card-title {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        .score-card-number {
+            font-size: 42px;
+            font-weight: 800;
+            color: #10b981;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .score-card-status {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            letter-spacing: 0.5px;
+        }
+        /* Critical Alert Thame for Score Card */
+        .live-score-card.fatal-active {
+            border-color: #ef4444;
+        }
+        .live-score-card.fatal-active .score-card-number {
+            color: #ef4444;
+        }
+        .live-score-card.fatal-active .score-card-status {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
         }
     </style>
 </head>
 <body>
 
-<div class="live-score-badge" id="liveScoreBadge">Score: 0 / 100</div>
+<!-- Top Layout Container for Banner Image & Back Button -->
+<div class="header-container">
+    <div class="logo-area">
+        <!-- Replace 'bus db bb logo.jpg' with your actual Outbound Retention Logo Image URL -->
+        <img src="bus db bb logo.jpg" alt="Outbound Retention Logo">
+    </div>
+    <div class="top-nav">
+        <a href="index.html" class="home-btn">🏡 Back to Home</a>
+    </div>
+</div>
+
+<!-- Live Score Card Dashboard Widget -->
+<div class="live-score-card" id="liveScoreCard">
+    <div class="score-card-title">TOTAL SCORE / মোট নম্বর</div>
+    <div class="score-card-number" id="liveScoreNumber">0</div>
+    <div class="score-card-status" id="liveScoreStatus">STATUS: PASS</div>
+</div>
 
 <div class="form-container">
-    <h2>Business Development – Broadband</h2>
-    <div class="subtitle">TOTAL MARKS - 100</div>
+    
+    <h2 class="main-title">GTPL KCBPL – CALL QUALITY AUDIT FORM</h2>
+    <div class="subtitle">OUTBOUND (RETENTION) (TOTAL MARKS - 100) / আউটবাউন্ড (রিটেনশন) (মোট নম্বর - ১০০)</div>
 
     <form id="auditForm" action="YOUR_GOOGLE_WEB_APP_URL_HERE" method="POST">
         
-        <div class="section-title">Associate & Call Details / এসোসিয়েট এবং কলের বিবরণ</div>
+        <!-- SECTION 1: METADATA -->
+        <div class="section-title">SECTION 1: BASIC INFORMATION / সাধারণ তথ্য</div>
         <div class="grid-2">
             <div class="form-group">
-                <label><span class="label-en">Process *</span><span class="label-bn">প্রসেস *</span></label>
+                <label><span class="label-en">Process<span class="required-star">*</span></span><span class="label-bn">প্রসেস *</span></label>
                 <input type="text" name="Process" required value="Business Development – Broadband">
             </div>
             <div class="form-group">
-                <label><span class="label-en">Associate Emp ID *</span><span class="label-bn">এসোসিয়েট আইডি *</span></label>
+                <label><span class="label-en">Associate Emp ID<span class="required-star">*</span></span><span class="label-bn">প্রতিপ্রধির এমপ্লয়ী আইডি *</span></label>
                 <input type="text" name="Associate Emp ID" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Associate Name *</span><span class="label-bn">এসোসিয়েটের নাম *</span></label>
+                <label><span class="label-en">Associate Name<span class="required-star">*</span></span><span class="label-bn">প্রতিনিধির নাম *</span></label>
                 <input type="text" name="Associate Name" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Calling Number *</span><span class="label-bn">কলিং নম্বর *</span></label>
+                <label><span class="label-en">Calling Number<span class="required-star">*</span></span><span class="label-bn">কলিং নম্বর (গ্রাহকের নম্বর) *</span></label>
                 <input type="text" name="Calling Number" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Call Date *</span><span class="label-bn">কলের তারিখ *</span></label>
+                <label><span class="label-en">Call Date<span class="required-star">*</span></span><span class="label-bn">কলের তারিখ *</span></label>
                 <input type="date" name="Call Date" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Call time *</span><span class="label-bn">কলের সময় *</span></label>
+                <label><span class="label-en">Call Time<span class="required-star">*</span></span><span class="label-bn">কলের সময় *</span></label>
                 <input type="time" name="Call time" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Call ID *</span><span class="label-bn">কল আইডি *</span></label>
+                <label><span class="label-en">Call ID<span class="required-star">*</span></span><span class="label-bn">কল আইডি *</span></label>
                 <input type="text" name="Call ID" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">TL Name *</span><span class="label-bn">টিএল-এর নাম *</span></label>
+                <label><span class="label-en">TL Name<span class="required-star">*</span></span><span class="label-bn">টিএল-এর নাম *</span></label>
                 <input type="text" name="TL Name" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Language *</span><span class="label-bn">ভাষা *</span></label>
+                <label><span class="label-en">Language<span class="required-star">*</span></span><span class="label-bn">ভাষা *</span></label>
                 <select name="Language" required>
                     <option value="">Select Language</option>
                     <option value="Bengali">Bengali / বাংলা</option>
@@ -208,24 +322,26 @@
                 </select>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Call Duration *</span><span class="label-bn">কলের সময়সীমা *</span></label>
+                <label><span class="label-en">Call Duration<span class="required-star">*</span></span><span class="label-bn">কলের সময়সীমা *</span></label>
                 <input type="text" name="Call Duration" placeholder="e.g. 02:30" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Call Link *</span><span class="label-bn">কলের লিঙ্ক *</span></label>
+                <label><span class="label-en">Call Link<span class="required-star">*</span></span><span class="label-bn">কলের লিঙ্ক *</span></label>
                 <input type="text" name="Call Link" required>
             </div>
             <div class="form-group">
-                <label><span class="label-en">Disposition *</span><span class="label-bn">ডিসপজিশন *</span></label>
+                <label><span class="label-en">Disposition<span class="required-star">*</span></span><span class="label-bn">ডিসপজিশন *</span></label>
                 <input type="text" name="Disposition" required>
             </div>
         </div>
 
-        <div class="section-title">Quality & Performance Parameters / কোয়ালিটি প্যারামিটারসমূহ</div>
+        <!-- SECTION 2: AUDIT PARAMETERS -->
+        <div class="section-title">SECTION 2: QUALITY PARAMETERS / কোয়ালিটি প্যারামিটারসমূহ</div>
 
+        <!-- P1 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">1. Opening given within 3 seconds <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">1. Opening given within 3 seconds <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১. ৩ সেকেন্ডের মধ্যে ওপেনিং দেওয়া (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -236,9 +352,10 @@
             </div>
         </div>
 
+        <!-- P2 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">2. Appropriate greeting used. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">2. Appropriate greeting used. <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২. সঠিক অভিবাদন ব্যবহার করা (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -249,9 +366,10 @@
             </div>
         </div>
 
+        <!-- P3 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">3. Properly branded the call mentioning the company's name. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">3. Properly branded the call mentioning the company's name. <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৩. কোম্পানির নাম উল্লেখ করে ব্র্যান্ডিং করা (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -262,9 +380,10 @@
             </div>
         </div>
 
+        <!-- P4 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">4. Agent mentioned his/her name in the opening statement. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">4. Agent mentioned his/her name in the opening statement. <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৪. ওপেনিং স্টেটমেন্টে এজেন্ট নিজের নাম বলেছে কিনা (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -275,9 +394,10 @@
             </div>
         </div>
 
+        <!-- P5 (Max: 1) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">5. Asked all the necessary questions/information necessary for capturing the lead details. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-en">5. Asked all the necessary questions/information necessary for capturing the lead details. <span class="max-badge">(Max: 1)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৫. লিড ডিটেইলস নেওয়ার জন্য প্রয়োজনীয় সব প্রশ্ন করা (সর্বোচ্চ: ১) *</span>
             </label>
             <div class="param-inputs">
@@ -288,9 +408,10 @@
             </div>
         </div>
 
+        <!-- P6 (Max: 1) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">6. Callback time/number confirmed by the agent. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-en">6. Callback time/number confirmed by the agent. <span class="max-badge">(Max: 1)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৬. কলব্যাক সময়/নম্বর কনফার্ম করা (সর্বোচ্চ: ১) *</span>
             </label>
             <div class="param-inputs">
@@ -301,9 +422,10 @@
             </div>
         </div>
 
+        <!-- P7 (Max: 1) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">7. Did the agent follow the script/guidelines as per the process. <span class="max-badge">(Max: 1)</span> *</span>
+                <span class="label-en">7. Did the agent follow the script/guidelines as per the process. <span class="max-badge">(Max: 1)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৭. স্ক্রিপ্ট/গাইডলাইন মেনে চলা (সর্বোচ্চ: ১) *</span>
             </label>
             <div class="param-inputs">
@@ -314,9 +436,10 @@
             </div>
         </div>
 
+        <!-- P8 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">8. Displayed active listening skills. <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">8. Displayed active listening skills. <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৮. মনোযোগ দিয়ে শোনার দক্ষতা (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -327,9 +450,10 @@
             </div>
         </div>
 
+        <!-- P9 (Max: 5) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">9. Did the agent speak clearly while providing information. <span class="max-badge">(Max: 5)</span> *</span>
+                <span class="label-en">9. Did the agent speak clearly while providing information. <span class="max-badge">(Max: 5)</span><span class="required-star">*</span></span>
                 <span class="label-bn">৯. তথ্য দেওয়ার সময় স্পষ্ট করে কথা বলা (সর্বোচ্চ: ৫) *</span>
             </label>
             <div class="param-inputs">
@@ -340,9 +464,10 @@
             </div>
         </div>
 
+        <!-- P10 (Max: 4) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">10. Was the agent successful in building rapport with the caller. <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-en">10. Was the agent successful in building rapport with the caller. <span class="max-badge">(Max: 4)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১০. কাস্টমারের সাথে সুসম্পর্ক তৈরি করা (সর্বোচ্চ: ৪) *</span>
             </label>
             <div class="param-inputs">
@@ -353,9 +478,10 @@
             </div>
         </div>
 
+        <!-- P11 (Max: 5) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">11. Did the agent speak with confidence. <span class="max-badge">(Max: 5)</span> *</span>
+                <span class="label-en">11. Did the agent speak with confidence. <span class="max-badge">(Max: 5)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১১. আত্মবিশ্বাসের সাথে কথা বলা (সর্বোচ্চ: ৫) *</span>
             </label>
             <div class="param-inputs">
@@ -366,9 +492,10 @@
             </div>
         </div>
 
+        <!-- P12 (Max: 7) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">12. Did the agent speak politely to the caller. <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-en">12. Did the agent speak politely to the caller. <span class="max-badge">(Max: 7)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১২. নম্রভাবে কথা বলা (সর্বোচ্চ: ৭) *</span>
             </label>
             <div class="param-inputs">
@@ -379,9 +506,10 @@
             </div>
         </div>
 
+        <!-- P13 (Max: 7) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">13. Was the agent's tone appropriate. <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-en">13. Was the agent's tone appropriate. <span class="max-badge">(Max: 7)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৩. কণ্ঠস্বর বা টোন সঠিক ছিল কিনা (সর্বোচ্চ: ৭) *</span>
             </label>
             <div class="param-inputs">
@@ -392,9 +520,10 @@
             </div>
         </div>
 
+        <!-- P14 (Max: 9) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">14. Did the agent avoid interrupting/talking over the caller. <span class="max-badge">(Max: 9)</span> *</span>
+                <span class="label-en">14. Did the agent avoid interrupting/talking over the caller. <span class="max-badge">(Max: 9)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৪. কাস্টমারের কথার মাঝে বাধা না দেওয়া (সর্বোচ্চ: ৯) *</span>
             </label>
             <div class="param-inputs">
@@ -405,9 +534,10 @@
             </div>
         </div>
 
+        <!-- P15 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">15. Did the agent minimize long silences/Dead Air.(10 sec max) <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">15. Did the agent minimize long silences/Dead Air.(10 sec max) <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৫. দীর্ঘ নীরবতা বা ডেড এয়ার এড়িয়ে চলা (সর্বোচ্চ ১০ সেকেন্ড) (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -418,9 +548,10 @@
             </div>
         </div>
 
+        <!-- P16 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">16. Did the agent respond promptly to the caller's questions. <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">16. Did the agent respond promptly to the caller's questions. <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৬. কাস্টমারের প্রশ্নের দ্রুত উত্তর দেওয়া (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -431,9 +562,10 @@
             </div>
         </div>
 
+        <!-- P17 (Max: 4) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">17. Did the agent match the caller's Rate of Speech./Clarity of speech <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-en">17. Did the agent match the caller's Rate of Speech./Clarity of speech <span class="max-badge">(Max: 4)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৭. কাস্টমারের কথা বলার গতির সাথে মেলানো/স্পষ্টতা (সর্বোচ্চ: ৪) *</span>
             </label>
             <div class="param-inputs">
@@ -444,9 +576,10 @@
             </div>
         </div>
 
+        <!-- P18 (Max: 4) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">18. Did the agent follow proper hold procedure. (2 min max) <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-en">18. Did the agent follow proper hold procedure. (2 min max) <span class="max-badge">(Max: 4)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৮. সঠিক হোল্ড প্রসিডিউর মেনে চলা (সর্বোচ্চ ২ মিনিট) (সর্বোচ্চ: ৪) *</span>
             </label>
             <div class="param-inputs">
@@ -457,9 +590,10 @@
             </div>
         </div>
 
+        <!-- P19 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">19. Background Noise (Shouting / Screaming) <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">19. Background Noise (Shouting / Screaming) <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">১৯. ব্যাকগ্রাউন্ড নয়েজ বা চিৎকার (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -470,9 +604,10 @@
             </div>
         </div>
 
+        <!-- P20 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">20. Usage of customers languages. (English/Hindi/Bengali) <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">20. Usage of customers languages. (English/Hindi/Bengali) <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২০. কাস্টমারের ভাষা ব্যবহার করা (ইংরেজি/হিন্দি/বাংলা) (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -483,9 +618,10 @@
             </div>
         </div>
 
+        <!-- P21 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">21. Grammatical error/Choice of words/Sentence formation <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">21. Grammatical error/Choice of words/Sentence formation <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২১. ব্যাকরণগত ভুল/শব্দ চয়ন/বাক্য গঠন (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -496,9 +632,10 @@
             </div>
         </div>
 
+        <!-- P22 (Max: 7) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">22. Objection Handling and Convincing Skills <span class="max-badge">(Max: 7)</span> *</span>
+                <span class="label-en">22. Objection Handling and Convincing Skills <span class="max-badge">(Max: 7)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২২. অবজেকশন হ্যান্ডলিং ও কাস্টমারকে কনভিন্স করার দক্ষতা (সর্বোচ্চ: ৭) *</span>
             </label>
             <div class="param-inputs">
@@ -509,9 +646,10 @@
             </div>
         </div>
 
+        <!-- P23 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">23. Thanking the Customer <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">23. Thanking the Customer <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৩. কাস্টমারকে ধন্যবাদ জানানো (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -522,9 +660,10 @@
             </div>
         </div>
 
+        <!-- P24 (Max: 3) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">24. Listening skills + Alertness on call <span class="max-badge">(Max: 3)</span> *</span>
+                <span class="label-en">24. Listening skills + Alertness on call <span class="max-badge">(Max: 3)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৪. শোনার দক্ষতা + কলে সতর্কতা ও সক্রিয়তা (সর্বোচ্চ: ৩) *</span>
             </label>
             <div class="param-inputs">
@@ -535,9 +674,10 @@
             </div>
         </div>
 
+        <!-- P25 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">25. Enthusiasm and Energy <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">25. Enthusiasm and Energy <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৫. উৎসাহ এবং এনার্জি লেভেল (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -548,9 +688,10 @@
             </div>
         </div>
 
+        <!-- P26 (Max: 4) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">26. Confidence, Avoidance of fillers, fumbling <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-en">26. Confidence, Avoidance of fillers, fumbling <span class="max-badge">(Max: 4)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৬. আত্মবিশ্বাস এবং ফাম্বলিং/ফিলার শব্দ এড়িয়ে চলা (সর্বোচ্চ: ৪) *</span>
             </label>
             <div class="param-inputs">
@@ -561,9 +702,10 @@
             </div>
         </div>
 
+        <!-- P27 (Max: 4) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">27. Probing <span class="max-badge">(Max: 4)</span> *</span>
+                <span class="label-en">27. Probing <span class="max-badge">(Max: 4)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৭. প্রোবিং বা সঠিক অনুসন্ধান করা (সর্বোচ্চ: ৪) *</span>
             </label>
             <div class="param-inputs">
@@ -574,9 +716,10 @@
             </div>
         </div>
 
+        <!-- P28 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">28. Did the agent follow the correct closing script. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">28. Did the agent follow the correct closing script. <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৮. সঠিক ক্লোজিং স্ক্রিপ্ট মেনে চলা (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -587,9 +730,10 @@
             </div>
         </div>
 
+        <!-- P29 (Max: 2) -->
         <div class="parameter-row">
             <label>
-                <span class="label-en">29. Did the agent thank the caller before ending the call. <span class="max-badge">(Max: 2)</span> *</span>
+                <span class="label-en">29. Did the agent thank the caller before ending the call. <span class="max-badge">(Max: 2)</span><span class="required-star">*</span></span>
                 <span class="label-bn">২৯. কল শেষ করার আগে কাস্টমারকে ধন্যবাদ দেওয়া (সর্বোচ্চ: ২) *</span>
             </label>
             <div class="param-inputs">
@@ -600,9 +744,11 @@
             </div>
         </div>
 
+        <!-- CRITICAL FATAL PARAMETERS (30-35) -->
+        <!-- P30 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">30. Usage of Profanity/Usage of sarcastic remarks./dishonest statements./rude behaviour/shouting [FATAL] *</span>
+                <span class="label-en">30. Usage of Profanity/Usage of sarcastic remarks./dishonest statements./rude behaviour/shouting [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩০. গালিগালাজ/ব্যঙ্গাত্মক মন্তব্য/অসৎ আচরণ/রূঢ় ব্যবহার/চিৎকার করা [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -613,9 +759,10 @@
             </div>
         </div>
 
+        <!-- P31 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">31. Call Back capturing when required [FATAL] *</span>
+                <span class="label-en">31. Call Back capturing when required [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩১. প্রয়োজন অনুযায়ী কলব্যাক ইনফরমেশন ক্যাপচার করা [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -626,9 +773,10 @@
             </div>
         </div>
 
+        <!-- P32 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">32. CRM/Google sheet correct updation [FATAL] *</span>
+                <span class="label-en">32. CRM/Google sheet correct updation [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩২. সিআরএম (CRM) বা গুগল শিটে সঠিক আপডেট করা [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -639,9 +787,10 @@
             </div>
         </div>
 
+        <!-- P33 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">33. Cross Talk/laughing [FATAL] *</span>
+                <span class="label-en">33. Cross Talk/laughing [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩৩. ক্রস টক বা হাসাহাসি করা [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -652,9 +801,10 @@
             </div>
         </div>
 
+        <!-- P34 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">34. Wrong Information Capturing [FATAL] *</span>
+                <span class="label-en">34. Wrong Information Capturing [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩৪. ভুল তথ্য ক্যাপচার করা [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -665,9 +815,10 @@
             </div>
         </div>
 
+        <!-- P35 (Max: 0) -->
         <div class="parameter-row fatal-style">
             <label>
-                <span class="label-en">35. Others (Wrong dispo/Incorrect/Incomplete Information) [FATAL] *</span>
+                <span class="label-en">35. Others (Wrong dispo/Incorrect/Incomplete Information) [FATAL]<span class="required-star">*</span></span>
                 <span class="label-bn">৩৫. অন্যান্য ভুল (ভুল ডিসপো/ভুল বা অসম্পূর্ণ তথ্য) [FATAL] *</span>
             </label>
             <div class="param-inputs">
@@ -678,9 +829,10 @@
             </div>
         </div>
 
-        <div class="section-title">Audit Summary / অডিট সামারি</div>
+        <!-- SECTION 3: SUMMARY -->
+        <div class="section-title">SECTION 3: AUDIT SUMMARY / অডিট সামারি</div>
         <div class="form-group">
-            <label><span class="label-en">Call Summary *</span><span class="label-bn">কল সামারি (সংক্ষিপ্ত বিবরণ) *</span></label>
+            <label><span class="label-en">Call Summary<span class="required-star">*</span></span><span class="label-bn">কল সামারি (সংক্ষিপ্ত বিবরণ) *</span></label>
             <textarea name="Call Summary" rows="4" required placeholder="The advisor called regarding a new connection..."></textarea>
         </div>
 
@@ -712,13 +864,18 @@
             }
         }
 
-        const scoreBadge = document.getElementById('liveScoreBadge');
+        const scoreCard = document.getElementById('liveScoreCard');
+        const scoreNumber = document.getElementById('liveScoreNumber');
+        const scoreStatus = document.getElementById('liveScoreStatus');
+
         if (isFatalActive) {
-            scoreBadge.innerText = "Score: 0 / 100 (FATAL)";
-            scoreBadge.classList.add('fatal-active');
+            scoreNumber.innerText = "0";
+            scoreStatus.innerText = "STATUS: FATAL";
+            scoreCard.classList.add('fatal-active');
         } else {
-            scoreBadge.innerText = `Score: ${totalScore} / 100`;
-            scoreBadge.classList.remove('fatal-active');
+            scoreNumber.innerText = totalScore;
+            scoreStatus.innerText = "STATUS: PASS";
+            scoreCard.classList.remove('fatal-active');
         }
     }
 
@@ -736,22 +893,20 @@
                     let isMandatory = false;
 
                     if (paramNumber >= 1 && paramNumber <= 29) {
-                        // 1-29 er moddhe '0' select korle mandatory
                         if (value === '0') isMandatory = true;
                     } else if (paramNumber >= 30 && paramNumber <= 35) {
-                        // 30-35 er moddhe 'FATAL' select korle mandatory
                         if (value === 'FATAL') isMandatory = true;
                     }
 
                     if (isMandatory) {
                         remarksInput.required = true;
                         remarksInput.placeholder = "Remarks (Mandatory) * / মন্তব্য (বাধ্যতামূলক) *";
-                        remarksInput.style.borderColor = "#e74c3c";
-                        remarksInput.style.backgroundColor = "#fff6f6";
+                        remarksInput.style.borderColor = "#ef4444";
+                        remarksInput.style.backgroundColor = "#fff5f5";
                     } else {
                         remarksInput.required = false;
                         remarksInput.placeholder = "Remarks / মন্তব্য";
-                        remarksInput.style.borderColor = "#ccc";
+                        remarksInput.style.borderColor = "#cbd5e1";
                         remarksInput.style.backgroundColor = "#fff";
                     }
                 }
@@ -790,13 +945,13 @@
         .then(response => response.json())
         .then(data => {
             if(data.result === 'success') {
-                responseMessage.style.color = 'green';
+                responseMessage.style.color = '#10b981';
                 responseMessage.innerText = "✓ Audit data successfully saved to Google Sheet! / অডিট ডেটা সফলভাবে সেভ হয়েছে!";
                 form.reset();
                 
                 // Reset all custom styling after form reset
                 document.querySelectorAll('input[type="text"]').forEach(input => {
-                    input.style.borderColor = "#ccc";
+                    input.style.borderColor = "#cbd5e1";
                     input.style.backgroundColor = "#fff";
                     if(input.name.startsWith('r')) input.placeholder = "Remarks / মন্তব্য";
                 });
@@ -804,12 +959,12 @@
                 // Reset live score display
                 calculateLiveScore();
             } else {
-                responseMessage.style.color = 'red';
+                responseMessage.style.color = '#ef4444';
                 responseMessage.innerText = "Error / এরর: " + data.error;
             }
         })
         .catch(error => {
-            responseMessage.style.color = 'red';
+            responseMessage.style.color = '#ef4444';
             responseMessage.innerText = "Connection failed. Please check your Web App URL. / সার্ভার কানেকশন ব্যর্থ হয়েছে।";
             console.error('Error:', error);
         })

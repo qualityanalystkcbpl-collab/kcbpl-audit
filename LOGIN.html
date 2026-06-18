@@ -3,278 +3,405 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>GTPL KCBPL Audit Dashboard</title>
-
+<title>GTPL KCBPL Audit (Only for QA team use)</title>
 <style>
+    :root {
+        --primary-color: #0f766e;
+        --secondary-color: #1e293b;
+        --bg-gradient: linear-gradient(135deg, #f0fdfa, #e0f2fe, #f8fafc, #ccfbf1);
+    }
 
-body{
-    margin:0;
-    padding:0;
-    min-height:100vh;
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#dbeafe,#e0f2fe,#f8fafc,#bfdbfe);
-}
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+        background: var(--bg-gradient);
+        color: #334155;
+        overflow-x: hidden;
+    }
 
-/* Login Box */
+    /* 📢 টপ স্ক্রোলিং অ্যানাউন্সমেন্ট বার */
+    .top-ticker {
+        background: linear-gradient(90deg, #115e59, #0f766e);
+        color: #ccfbf1;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .ticker-wrap {
+        display: inline-block;
+        animation: marquee 25s linear infinite;
+    }
+    @keyframes marquee {
+        0% { transform: translate3d(100vw, 0, 0); }
+        100% { transform: translate3d(-100%, 0, 0); }
+    }
+    .ticker-wrap:hover {
+        animation-play-state: paused;
+        cursor: pointer;
+    }
 
-#loginBox{
-    max-width:400px;
-    margin:120px auto;
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.15);
-    text-align:center;
-}
+    /* 🔐 প্রিমিয়াম লগইন বক্স */
+    #loginBox {
+        max-width: 400px;
+        margin: 80px auto;
+        background: white;
+        padding: 40px 30px;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(15, 118, 110, 0.12);
+        text-align: center;
+        border: 1px solid rgba(13, 148, 136, 0.1);
+    }
+    #loginBox h2 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+    #loginBox input {
+        width: 100%;
+        padding: 14px;
+        margin: 12px 0;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: 0.3s;
+    }
+    #loginBox input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    }
+    .login-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #0d9488, #0f766e);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+    }
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(13, 148, 136, 0.35);
+    }
 
-#loginBox h2{
-    color:#1a365d;
-}
+    /* 📊 ড্যাশবোর্ড লেআউট */
+    #dashboard {
+        display: none;
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .logout-box {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+    .logout-btn {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        transition: 0.3s;
+    }
+    .logout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(239, 68, 68, 0.35);
+    }
 
-#loginBox input{
-    width:90%;
-    padding:12px;
-    margin:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:15px;
-}
+    .dashboard-title {
+        text-align: center;
+        color: var(--secondary-color);
+        font-size: 34px;
+        font-weight: 800;
+        margin-bottom: 40px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-.login-btn{
-    width:95%;
-    padding:12px;
-    background:#2563eb;
-    color:white;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-}
+    /* 🧱 সাইড ট্যাব এবং মেইন বাটন গ্রিড লেআউট */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
 
-/* Dashboard */
+    @media (max-width: 900px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
-#dashboard{
-    display:none;
-}
+    /* 🗂️ সাইড ট্যাব স্টাইল */
+    .side-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+    }
+    .tab-menu {
+        display: flex;
+        gap: 8px;
+        border-bottom: 2px solid #f1f5f9;
+        margin-bottom: 20px;
+    }
+    .tab-btn {
+        flex: 1;
+        padding: 10px;
+        background: none;
+        border: none;
+        font-size: 14px;
+        font-weight: 700;
+        color: #64748b;
+        cursor: pointer;
+        transition: 0.3s;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+    }
+    .tab-btn.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+    }
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .info-list {
+        padding-left: 18px;
+        margin: 0;
+    }
+    .info-list li {
+        margin-bottom: 12px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: #475569;
+    }
 
-.logout-box{
-    text-align:right;
-    padding:20px;
-}
-
-.logout-btn{
-    background:red;
-    color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.dashboard-container{
-    text-align:center;
-    margin-top:20px;
-}
-
-.dashboard-title{
-    color:#1a365d;
-    margin-bottom:40px;
-    font-size:38px;
-}
-
-.audit-btn{
-    width:450px;
-    padding:25px;
-    margin:15px;
-    font-size:24px;
-    font-weight:bold;
-    color:white;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.inbound{
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    box-shadow:0 8px 20px rgba(37,99,235,0.3);
-}
-
-.outbound{
-    background:linear-gradient(135deg,#16a34a,#166534);
-    box-shadow:0 8px 20px rgba(22,163,74,0.3);
-}
-
-.business{
-    background:linear-gradient(135deg,#f97316,#c2410c);
-    box-shadow:0 8px 20px rgba(249,115,22,0.3);
-}
-
-.audit-btn:hover{
-    transform:translateY(-3px);
-}
-
+    /* 🎯 অডিট বাটন স্টাইল */
+    .buttons-area {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+    .audit-btn {
+        width: 100%;
+        max-width: 550px;
+        padding: 24px;
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: left;
+        padding-left: 40px;
+        position: relative;
+    }
+    .audit-btn::after {
+        content: '➔';
+        position: absolute;
+        right: 40px;
+        transition: 0.3s;
+    }
+    .audit-btn:hover::after {
+        transform: translateX(8px);
+    }
+    .inbound {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+    }
+    .outbound {
+        background: linear-gradient(135deg, #0d9488, #115e59);
+        box-shadow: 0 8px 20px rgba(13,148,136,0.25);
+    }
+    .business {
+        background: linear-gradient(135deg, #ea580c, #c2410c);
+        box-shadow: 0 8px 20px rgba(234,88,12,0.25);
+    }
+    .audit-btn:hover {
+        transform: translateY(-4px);
+    }
 </style>
 </head>
 
 <body>
 
-<!-- Login -->
-<div style="text-align:center; padding-top:40px;">
-
-    <img src="gtpl_logo.png"
-         alt="GTPL Logo"
-         style="
-         width:350px;
-         max-width:90%;
-         height:auto;
-         filter:drop-shadow(0 6px 12px rgba(0,0,0,0.2));
-         ">
-
+<!-- 📢 টপ স্ক্রোলিং অ্যানাউন্সমেন্ট বার -->
+<div class="top-ticker">
+    <div class="ticker-wrap">
+        🚀 Welcome to GTPL KCBPL Quality Assurance Dashboard v1.0 • 🎯 Target Audit Score ≥ 95% • 📞 Maintain 100% Compliance • ⚠️ Fatal Error = Auto Fail • 🔒 Internal QA Portal
+    </div>
 </div>
+
+<!-- Logo Header -->
+<div style="text-align:center; padding-top:30px;">
+    <img src="gtpl_logo.png" alt="GTPL Logo" style="width:320px; max-width:90%; height:auto; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.1));">
+</div>
+
+<!-- Login Box -->
 <div id="loginBox">
-
-    <h2>GTPL KCBPL Audit Login</h2>
-
+    <h2>QA Portal Login</h2>
     <input type="text" id="username" placeholder="Username">
-
     <input type="password" id="password" placeholder="Password">
-
-    <button class="login-btn" onclick="checkLogin()">
-        Login
-    </button>
-
-    <p id="loginError" style="color:red;"></p>
-
+    <button class="login-btn" onclick="checkLogin()">Login</button>
+    <p id="loginError" style="color:red; font-weight:600; margin-top:15px;"></p>
 </div>
 
-<!-- Dashboard -->
-
+<!-- Dashboard Section -->
 <div id="dashboard">
-
     <div class="logout-box">
-
-        <button class="logout-btn" onclick="logout()">
-            Logout
-        </button>
-
+        <button class="logout-btn" onclick="logout()">🔒 Logout</button>
     </div>
 
-    <div class="dashboard-container">
+    <h1 class="dashboard-title">Quality Assurance Dashboard</h1>
 
-        <h1 class="dashboard-title">
-            GTPL KCBPL Audit (Only for QA team use)
-        </h1>
+    <div class="dashboard-grid">
+        <!-- 🗂️ সাইড প্যানেল (ট্যাব সিস্টেম) -->
+        <div class="side-panel">
+            <div class="tab-menu">
+                <button class="tab-btn active" onclick="switchTab(event, 'rules')">📋 Guidelines</button>
+                <button class="tab-btn" onclick="switchTab(event, 'targets')">🎯 Target KPI</button>
+                <button class="tab-btn" onclick="switchTab(event, 'system')">⚙️ Updates</button>
+            </div>
+            
+            <!-- Tab 1 -->
+            <div id="rules" class="tab-content active">
+                <h4 style="margin-top:0; color:var(--primary-color);">Audit Guidelines</h4>
+                <ul class="info-list">
+                    <li>Fatal Error চিহ্নিত হওয়া মাত্রই কল স্কোর সরাসরি <b>০ (Zero)</b> হয়ে যাবে।</li>
+                    <li>প্রতিটি ইভ্যালুয়েশনে কাস্টমারের অবজেকশন হ্যান্ডলিং পুঙ্খানুপুঙ্খভাবে চেক করুন।</li>
+                    <li>সঠিক Disposition ম্যাপ করা বাধ্যতামূলক।</li>
+		<li>Customer Authentication সম্পূর্ণ না হলে
+  Fatal Error হিসেবে গণ্য হবে।</li>
+<li>Hold, Transfer ও Dead Air Guidelines
+  কঠোরভাবে অনুসরণ করতে হবে।</li>
+<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                </ul>
+            </div>
+            
+            <!-- Tab 2 -->
+            <div id="targets" class="tab-content">
+                <h4 style="margin-top:0; color:var(--primary-color);">QA Target KPIs</h4>
+                <ul class="info-list">
+                    <li><b>Conduct daily/weekly/monthly call audits of randomly selected agent calls.Conduct feedback  call sessions with call centre teams 4 calls /week / agent</li>
+                    <li><b>Planning,organising and time management skills- Has the ability to plan and priortize tasks to perform within timelines</li>
+<li><b>Monitoring and Maintaining the login hours/break timings/and extra pause timings for the team as per the specified target</li>
+<li><b>Effective communciation skills-Listens and understand the work delegated by supervisor and provides regular update pro actively</li>
+<li><b>Team work- Co-ordinates, co-operates, accomodates and adapts with team members effectively.</li>
+<li><b>Identify the need of training (TNI) for the different agents from all teams and conduct the same in coordination with HR for improvement in call quality</li>
+<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                </ul>
+            </div>
+            
+            <!-- Tab 3 -->
+            <div id="system" class="tab-content">
+                <h4 style="margin-top:0; color:var(--primary-color);">System Version Info</h4>
+                <ul class="info-list">
+                    <li><b>Version:</b> • Latest QA Audit Form v1.0 Released</li>
+                    <li><b>Database Link:</b> Google App Script Integration Active.</li>
+                    <li>Audit Submission Success Animation Added</li>
+<li></b>Any Issue : Call 9733588266 or kalyan.sarkar@gtplkcbpl.com</li>
+                </ul>
+            </div>
+        </div>
 
-        <button class="audit-btn inbound"
-        onclick="location.href='inbound.html'">
-            📞 INBOUND (ALL PROCESS)
-        </button>
+        <!-- 🎯 মেইন অডিট বাটন এরিয়া -->
+        <div class="buttons-area">
+            <button class="audit-btn inbound" onclick="location.href='inbound.html'">
+                📞 INBOUND (ALL PROCESS)
+            </button>
 
-        <br>
+            <button class="audit-btn outbound" onclick="location.href='index.html'">
+                🎯 OUTBOUND RETENTION
+            </button>
 
-        <button class="audit-btn outbound"
-        onclick="location.href='index.html'">
-            🎯 OUTBOUND RETENTION
-        </button>
-
-        <br>
-
-        <button class="audit-btn business"
-        onclick="location.href='businessdevbb.html'">
-            🚀 BusinessDevBB
-        </button>
-
+            <button class="audit-btn business" onclick="location.href='businessdevbb.html'">
+                🚀 BusinessDevBB
+            </button>
+        </div>
     </div>
+</div>
 
+<!-- 🛠️ ফিক্সড প্রিমিয়াম ফুটার -->
+<div style="position:fixed; bottom:15px; right:15px; background:rgba(15,23,42,0.96); padding:12px 18px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); z-index:999; text-align:right;">
+    <div style="color:#e2e8f0; font-size:12px; font-weight:700; margin-bottom:4px;">
+        GTPL KCBPL Call Quality Audit System
+    </div>
+    <div style="color:#94a3b8; font-size:11px; line-height:1.5;">
+        © 2026 Developed & Maintained by
+        <span style="color:#2dd4bf; font-weight:bold;">Kalyan Sarkar</span>
+        <br>
+        Quality Analyst | Version 1.0
+    </div>
 </div>
 
 <script>
-
 window.onload = function(){
-
     if(localStorage.getItem("gtpl_login") === "yes"){
-
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
-
     }
-
 }
 
 function checkLogin(){
-
     var user = document.getElementById("username").value;
     var pass = document.getElementById("password").value;
 
     if(user === "ADMIN" && pass === "GTPL@2026"){
-
         localStorage.setItem("gtpl_login","yes");
-
         document.getElementById("loginBox").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
-
     }
-
     else{
-
-        document.getElementById("loginError").innerHTML =
-        "Invalid Username or Password";
-
+        document.getElementById("loginError").innerHTML = "Invalid Username or Password";
     }
-
 }
 
 function logout(){
-
     localStorage.removeItem("gtpl_login");
-
     location.reload();
-
 }
 
+// 🗂️ সাইড ট্যাব কন্ট্রোল ফাংশন
+function switchTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByClassName("tab-btn");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
 </script>
-
-<div style="
-position:fixed;
-bottom:15px;
-right:15px;
-background:rgba(15,23,42,0.95);
-padding:12px 18px;
-border-radius:12px;
-box-shadow:0 4px 15px rgba(0,0,0,0.3);
-border:1px solid rgba(255,255,255,0.1);
-z-index:999;
-text-align:right;">
-
-    <div style="
-    color:#e2e8f0;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:4px;">
-
-        GTPL KCBPL Call Quality Audit System
-
-    </div>
-
-    <div style="
-    color:#94a3b8;
-    font-size:11px;
-    line-height:1.5;">
-
-        © 2026 Developed & Maintained by
-        <span style="color:#60a5fa;font-weight:bold;">
-            Kalyan Sarkar
-        </span>
-        <br>
-        Quality Analyst | Version 1.0
-
-    </div>
-
-</div>
-    
 </body>
 </html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Development – Broadband Audit Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .section-title {
+            background: #2980b9;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="date"], input[type="time"], select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #2980b9;
+            outline: none;
+            box-shadow: 0 0 5px rgba(41, 128, 185, 0.3);
+        }
+        .parameter-row {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid #3498db;
+        }
+        .parameter-row.fatal-style {
+            border-left: 5px solid #e74c3c;
+        }
+        .param-inputs {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #219653;
+        }
+        #responseMessage {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Business Development – Broadband</h2>
+    <div class="subtitle">TOTAL MARKS - 100</div>
+
+    <!-- এখানে ACTION এর ভেতর আপনার Google Apps Web App URL টি বসাবেন -->
+    <form id="auditForm" action="YOUR_GOOGLE_WEB_APP_URL_HERE" method="POST">
+        
+        <!-- SECTION 1: METADATA -->
+        <div class="section-title">Associate & Call Details</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Process *</label>
+                <input type="text" name="Process" required value="Business Development – Broadband">
+            </div>
+            <div class="form-group">
+                <label>Associate Emp ID *</label>
+                <input type="text" name="Associate Emp ID" required>
+            </div>
+            <div class="form-group">
+                <label>Associate Name *</label>
+                <input type="text" name="Associate Name" required>
+            </div>
+            <div class="form-group">
+                <label>Calling Number *</label>
+                <input type="text" name="Calling Number" required>
+            </div>
+            <div class="form-group">
+                <label>Call Date *</label>
+                <input type="date" name="Call Date" required>
+            </div>
+            <div class="form-group">
+                <label>Call time *</label>
+                <input type="time" name="Call time" required>
+            </div>
+            <div class="form-group">
+                <label>Call ID *</label>
+                <input type="text" name="Call ID" required>
+            </div>
+            <div class="form-group">
+                <label>TL Name *</label>
+                <input type="text" name="TL Name" required>
+            </div>
+            <div class="form-group">
+                <label>Language *</label>
+                <select name="Language" required>
+                    <option value="">Select Language</option>
+                    <option value="Bengali">Bengali</option>
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Call Duration *</label>
+                <input type="text" name="Call Duration" placeholder="e.g. 02:30" required>
+            </div>
+            <div class="form-group">
+                <label>Call Link *</label>
+                <input type="text" name="Call Link" required>
+            </div>
+            <div class="form-group">
+                <label>Disposition *</label>
+                <input type="text" name="Disposition" required>
+            </div>
+        </div>
+
+        <!-- SECTION 2: AUDIT PARAMETERS -->
+        <div class="section-title">Quality & Performance Parameters</div>
+
+        <!-- P1 -->
+        <div class="parameter-row">
+            <label>1. Opening given within 3 seconds *</label>
+            <div class="param-inputs">
+                <input type="text" name="p1" placeholder="Score / FATAL" required>
+                <input type="text" name="r1" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P2 -->
+        <div class="parameter-row">
+            <label>2. Appropriate greeting used. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p2" placeholder="Score / FATAL" required>
+                <input type="text" name="r2" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P3 -->
+        <div class="parameter-row">
+            <label>3. Properly branded the call mentioning the company's name. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p3" placeholder="Score / FATAL" required>
+                <input type="text" name="r3" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="parameter-row">
+            <label>4. Agent mentioned his/her name in the opening statement. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p4" placeholder="Score / FATAL" required>
+                <input type="text" name="r4" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P5 -->
+        <div class="parameter-row">
+            <label>5. Asked all the necessary questions/information necessary for capturing the lead details. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p5" placeholder="Score / FATAL" required>
+                <input type="text" name="r5" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P6 -->
+        <div class="parameter-row">
+            <label>6. Callback time/number confirmed by the agent. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p6" placeholder="Score / FATAL" required>
+                <input type="text" name="r6" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P7 -->
+        <div class="parameter-row">
+            <label>7. Did the agent follow the script/guidelines as per the process. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p7" placeholder="Score / FATAL" required>
+                <input type="text" name="r7" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P8 -->
+        <div class="parameter-row">
+            <label>8. Displayed active listening skills. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p8" placeholder="Score / FATAL" required>
+                <input type="text" name="r8" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P9 -->
+        <div class="parameter-row">
+            <label>9. Did the agent speak clearly while providing information. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p9" placeholder="Score / FATAL" required>
+                <input type="text" name="r9" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P10 -->
+        <div class="parameter-row">
+            <label>10. Was the agent successful in building rapport with the caller. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p10" placeholder="Score / FATAL" required>
+                <input type="text" name="r10" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P11 -->
+        <div class="parameter-row">
+            <label>11. Did the agent speak with confidence. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p11" placeholder="Score / FATAL" required>
+                <input type="text" name="r11" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P12 -->
+        <div class="parameter-row">
+            <label>12. Did the agent speak politely to the caller. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p12" placeholder="Score / FATAL" required>
+                <input type="text" name="r12" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P13 -->
+        <div class="parameter-row">
+            <label>13. Was the agent's tone appropriate. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p13" placeholder="Score / FATAL" required>
+                <input type="text" name="r13" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P14 -->
+        <div class="parameter-row">
+            <label>14. Did the agent avoid interrupting/talking over the caller. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p14" placeholder="Score / FATAL" required>
+                <input type="text" name="r14" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P15 -->
+        <div class="parameter-row">
+            <label>15. Did the agent minimize long silences/Dead Air.(10 sec max) *</label>
+            <div class="param-inputs">
+                <input type="text" name="p15" placeholder="Score / FATAL" required>
+                <input type="text" name="r15" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P16 -->
+        <div class="parameter-row">
+            <label>16. Did the agent respond promptly to the caller's questions. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p16" placeholder="Score / FATAL" required>
+                <input type="text" name="r16" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P17 -->
+        <div class="parameter-row">
+            <label>17. Did the agent match the caller's Rate of Speech./Clarity of speech *</label>
+            <div class="param-inputs">
+                <input type="text" name="p17" placeholder="Score / FATAL" required>
+                <input type="text" name="r17" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P18 -->
+        <div class="parameter-row">
+            <label>18. Did the agent follow proper hold procedure. (2 min max) *</label>
+            <div class="param-inputs">
+                <input type="text" name="p18" placeholder="Score / FATAL" required>
+                <input type="text" name="r18" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P19 -->
+        <div class="parameter-row">
+            <label>19. Background Noice (Shouting / Screeming) *</label>
+            <div class="param-inputs">
+                <input type="text" name="p19" placeholder="Score / FATAL" required>
+                <input type="text" name="r19" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P20 -->
+        <div class="parameter-row">
+            <label>20. Usage of customers languages. (English/Hindi/Bengali) *</label>
+            <div class="param-inputs">
+                <input type="text" name="p20" placeholder="Score / FATAL" required>
+                <input type="text" name="r20" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P21 -->
+        <div class="parameter-row">
+            <label>21. Grammatical error/Choice of words/Sentence formation *</label>
+            <div class="param-inputs">
+                <input type="text" name="p21" placeholder="Score / FATAL" required>
+                <input type="text" name="r21" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P22 -->
+        <div class="parameter-row">
+            <label>22. Objection Handling and Convincing Skills *</label>
+            <div class="param-inputs">
+                <input type="text" name="p22" placeholder="Score / FATAL" required>
+                <input type="text" name="r22" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P23 -->
+        <div class="parameter-row">
+            <label>23. Thanking the Customer *</label>
+            <div class="param-inputs">
+                <input type="text" name="p23" placeholder="Score / FATAL" required>
+                <input type="text" name="r23" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P24 -->
+        <div class="parameter-row">
+            <label>24. Listening skills + Alertness on call *</label>
+            <div class="param-inputs">
+                <input type="text" name="p24" placeholder="Score / FATAL" required>
+                <input type="text" name="r24" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P25 -->
+        <div class="parameter-row">
+            <label>25. Enthusiasm and Energy *</label>
+            <div class="param-inputs">
+                <input type="text" name="p25" placeholder="Score / FATAL" required>
+                <input type="text" name="r25" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P26 -->
+        <div class="parameter-row">
+            <label>26. Confidence, Avoidance of fillers, fumbling *</label>
+            <div class="param-inputs">
+                <input type="text" name="p26" placeholder="Score / FATAL" required>
+                <input type="text" name="r26" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P27 -->
+        <div class="parameter-row">
+            <label>27. Probing *</label>
+            <div class="param-inputs">
+                <input type="text" name="p27" placeholder="Score / FATAL" required>
+                <input type="text" name="r27" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P28 -->
+        <div class="parameter-row">
+            <label>28. Did the agent follow the correct closing script. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p28" placeholder="Score / FATAL" required>
+                <input type="text" name="r28" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P29 -->
+        <div class="parameter-row">
+            <label>29. Did the agent thank the caller before ending the call. *</label>
+            <div class="param-inputs">
+                <input type="text" name="p29" placeholder="Score / FATAL" required>
+                <input type="text" name="r29" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P30 (Critical Fatal Example) -->
+        <div class="parameter-row fatal-style">
+            <label>30. Usage of Profanity/Usage of sarcastic remarks./dishonest statements./rude behaviour/shouting *</label>
+            <div class="param-inputs">
+                <input type="text" name="p30" placeholder="Score / FATAL" required>
+                <input type="text" name="r30" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P31 -->
+        <div class="parameter-row">
+            <label>31. Call Back capturing when required *</label>
+            <div class="param-inputs">
+                <input type="text" name="p31" placeholder="Score / FATAL" required>
+                <input type="text" name="r31" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P32 -->
+        <div class="parameter-row">
+            <label>32. CRM/Google sheet correct updation *</label>
+            <div class="param-inputs">
+                <input type="text" name="p32" placeholder="Score / FATAL" required>
+                <input type="text" name="r32" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P33 -->
+        <div class="parameter-row fatal-style">
+            <label>33. Cross Talk/laughing *</label>
+            <div class="param-inputs">
+                <input type="text" name="p33" placeholder="Score / FATAL" required>
+                <input type="text" name="r33" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P34 -->
+        <div class="parameter-row fatal-style">
+            <label>34. Wrong Information Capturing *</label>
+            <div class="param-inputs">
+                <input type="text" name="p34" placeholder="Score / FATAL" required>
+                <input type="text" name="r34" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- P35 -->
+        <div class="parameter-row fatal-style">
+            <label>35. Others (Wrong dispo/Incorrect/Incomplete Information) *</label>
+            <div class="param-inputs">
+                <input type="text" name="p35" placeholder="Score / FATAL" required>
+                <input type="text" name="r35" placeholder="Remarks">
+            </div>
+        </div>
+
+        <!-- SECTION 3: SUMMARY -->
+        <div class="section-title">Audit Summary</div>
+        <div class="form-group">
+            <label>Call Summary *</label>
+            <textarea name="Call Summary" rows="4" required placeholder="কলের সংক্ষিপ্ত বিবরণ এখানে লিখুন..."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Submit Audit</button>
+    </form>
+
+    <div id="responseMessage"></div>
+</div>
+
+<script>
+    // ফর্ম সাবমিশন ব্যাকএন্ডে স্মুথলি পাঠানোর জন্য জাভাস্ক্রিপ্ট লজিক
+    document.getElementById('auditForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // পেজ রিফ্রেশ বন্ধ করা হলো
+        
+        const form = e.target;
+        const submitBtn = document.getElementById('submitBtn');
+        const responseMessage = document.getElementById('responseMessage');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+        responseMessage.innerText = "";
+
+        // ফর্মের ডেটা FormData অবজেক্টে নেওয়া হচ্ছে
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams();
+
+        for (const pair of formData) {
+            searchParams.append(pair[0], pair[1]);
+        }
+
+        // গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপে ডেটা পাঠানো হচ্ছে
+        fetch(form.action, {
+            method: 'POST',
+            body: searchParams,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result === 'success') {
+                responseMessage.style.color = 'green';
+                responseMessage.innerText = "✓ অডিট ডেটা সফলভাবে গুগল শিটে সেভ হয়েছে!";
+                form.reset(); // ফর্ম খালি করা হলো
+            } else {
+                responseMessage.style.color = 'red';
+                responseMessage.innerText = "এরর: " + data.error;
+            }
+        })
+        .catch(error => {
+            responseMessage.style.color = 'red';
+            responseMessage.innerText = "সার্ভারের সাথে কানেক্ট করা যায়নি। দয়া করে আপনার Web App URL চেক করুন।";
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Audit";
+        });
+    });
+</script>
+
+</body>
+</html>

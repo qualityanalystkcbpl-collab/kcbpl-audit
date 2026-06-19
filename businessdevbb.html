@@ -9,17 +9,16 @@
 .audit-tracker-container {
     position: fixed;
     right: 20px;
-    /* আপনার স্কোর বক্সের ঠিক ওপরে সেট করার জন্য এই bottom ভ্যালু দেওয়া হয়েছে */
     bottom: 190px; 
     display: flex;
     flex-direction: column;
     gap: 10px;
     z-index: 9999;
-    width: 215px; /* আপনার স্কোর বক্সের প্রস্থের সাথে সামঞ্জস্যপূর্ণ */
+    width: 215px; 
     box-sizing: border-box;
 }
 .tracker-box {
-    background: #111827; /* স্কোর বক্সের মতো প্রিমিয়াম ডার্ক থিম */
+    background: #111827; 
     color: #f8fafc;
     padding: 12px;
     border-radius: 12px;
@@ -41,13 +40,12 @@
     font-variant-numeric: tabular-nums;
 }
 /* Specific Highlights */
-#liveClock { color: #38bdf8; } /* মডার্ন স্কাই ব্লু */
-#auditTimer { color: #4ade80; } /* সচল টাইমারের জন্য নিয়ন গ্রিন */
+#liveClock { color: #38bdf8; } 
+#auditTimer { color: #4ade80; } 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f4f8;
             margin: 0;
-            /* 🛠️ লোগোটিকে অডিও বার থেকে নিচে নামানোর জন্য টপ প্যাডিং ৮৫px থেকে বাড়িয়ে ১৩০px করা হলো */
             padding: 130px 20px 20px 20px; 
             color: #333;
         }
@@ -914,7 +912,7 @@
 <script>
 let timerInterval;
 let totalSeconds = 0;
-// ১. অটো টাইমার স্টার্ট করার ফাংশন
+
 function startAuditTimer() {
     if (timerInterval) clearInterval(timerInterval);
     totalSeconds = 0;
@@ -932,13 +930,13 @@ function startAuditTimer() {
         timerElement.textContent = `${minutes}:${seconds}`;
     }, 1000);
 }
-// ২. সাবমিট করার পর টাইমার রিসেট করার ফাংশন
+
 function resetAuditTimer() {
     totalSeconds = 0;
     document.getElementById('auditTimer').textContent = "00:00";
     startAuditTimer();
 }
-// ৩. লাইভ ঘড়ির ফাংশন
+
 function updateLiveClock() {
     const now = new Date();
     let hours = now.getHours();
@@ -1082,13 +1080,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Audio Loader Function
+    // 🛠️ Audio Loader Function with Autoplay Feature
     function loadAudio() {
         const url = document.getElementById('audioLink').value.trim();
         const audioEl = document.getElementById('callAudio');
         if(url) {
             audioEl.src = url;
             audioEl.load();
+            // লোড হওয়ার সাথে সাথে অডিওটি স্বয়ংক্রিয়ভাবে চালু করার জন্য .play() ব্যবহার করা হলো
+            audioEl.play().catch(error => {
+                console.log("Autoplay was prevented by browser or link issue:", error);
+            });
         } else {
             alert("Please paste a valid URL first.");
         }

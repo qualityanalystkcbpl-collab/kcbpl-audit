@@ -20,13 +20,11 @@
         --card-bg: rgba(255, 255, 255, 0.85);
         --sidebar-width: 380px;
     }
-
     * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
-
     body {
         font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         background: #f8fafc;
@@ -34,8 +32,8 @@
         min-height: 100vh;
         overflow-x: hidden;
         position: relative;
+        padding-top: 175px; /* ফিক্সড হেডারের জন্য এই স্পেসটি দেওয়া হলো */
     }
-
     /* 🌊 মডার্ন ব্যাকগ্রাউন্ড বাবলস */
     body::before, body::after {
         content: '';
@@ -59,12 +57,10 @@
         right: -100px;
         animation-delay: 6s;
     }
-
     @keyframes floatBg {
         0% { transform: translate(0, 0) scale(1); }
         100% { transform: translate(50px, 50px) scale(1.15); }
     }
-
     /* 📢 প্রিমিয়াম টপ স্ক্রোলিং বার */
     .top-ticker {
         background: linear-gradient(90deg, #115e59, #0f766e, #0d9488);
@@ -74,9 +70,11 @@
         font-weight: 600;
         letter-spacing: 0.5px;
         box-shadow: 0 4px 15px rgba(15, 118, 110, 0.15);
-        position: sticky;
+        position: fixed; /* Fixed করা হলো স্ক্রিনে আটকে রাখার জন্য */
         top: 0;
-        z-index: 1000;
+        left: 0;
+        width: 100%;
+        z-index: 1002;
         overflow: hidden;
         white-space: nowrap;
         border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -93,14 +91,21 @@
         0% { transform: translate3d(100vw, 0, 0); }
         100% { transform: translate3d(-100%, 0, 0); }
     }
-
     /* 🌟 লোগোর পাশের অ্যানিমেটেড আইকন */
     .logo-container {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 25px;
-        padding: 40px 0 20px 0;
+        padding: 12px 0; /* লোগো এরিয়া কিছুটা কমপ্যাক্ট করা হলো */
+        position: fixed; /* স্ক্রিনে ফ্রিজ করার জন্য */
+        top: 41px; /* ঠিক টপ টিকারের নিচে বসবে */
+        left: 0;
+        width: 100%;
+        background: #ffffff; /* স্ক্রোল করার সময় পেছনের লেখা ঢেকে রাখার জন্য */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        border-bottom: 1px solid #e2e8f0;
+        z-index: 1001;
     }
     
     .animated-badge {
@@ -127,10 +132,8 @@
         box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.4);
         animation: pulseEffect 2s infinite;
     }
-
     .badge-left { animation: floatBadge 3s ease-in-out infinite; }
     .badge-right { animation: floatBadge 3s ease-in-out infinite 1.5s; }
-
     @keyframes floatBadge {
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-12px); }
@@ -141,11 +144,10 @@
         70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(15, 118, 110, 0); }
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 118, 110, 0); }
     }
-
     /* 🔐 লগইন বক্স */
     #loginBox {
         max-width: 450px;
-        margin: 100px auto;
+        margin: 40px auto 100px auto; /* ওপরের মার্জিন কিছুটা অ্যাডজাস্ট করা হলো */
         background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -165,7 +167,6 @@
     #loginBox input:focus + i { color: var(--primary); }
     .login-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #0d9488, #0f766e); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25); }
     .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4); }
-
     /* 📊 ড্যাশবোর্ড মেইন লেআউট */
     #dashboard { display: none; max-width: 1400px; margin: 0 auto; padding: 30px 20px 100px 20px; }
     
@@ -175,7 +176,6 @@
     .live-clock { font-size: 14px; color: var(--text-muted); font-weight: 600; background: #f1f5f9; padding: 6px 14px; border-radius: 30px; }
     .logout-btn { background: #fee2e2; color: #ef4444; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; }
     .logout-btn:hover { background: #ef4444; color: white; transform: translateY(-1px); }
-
     /* 📈 অ্যানালিটিক্স কুইক কার্ডস */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 35px; }
     .stat-card { background: var(--card-bg); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.7); display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.01); }
@@ -183,11 +183,9 @@
     .stat-card.blue .stat-icon { background: #dbeafe; color: #2563eb; }
     .stat-card.green .stat-icon { background: #d1fae5; color: #10b981; }
     .stat-card.orange .stat-icon { background: #ffedd5; color: #f97316; }
-
     /* 🧱 গ্রিড লেআউট */
     .dashboard-grid { display: grid; grid-template-columns: var(--sidebar-width) 1fr; gap: 30px; align-items: start; }
     @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
     /* 🗂️ সাইড প্যানেল */
     .side-panel { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid rgba(255, 255, 255, 0.8); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
     .side-panel:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(15, 118, 110, 0.08); }
@@ -196,7 +194,6 @@
     .tab-btn { flex: 1; padding: 10px 4px; background: none; border: none; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; border-radius: 10px; transition: all 0.25s ease; white-space: nowrap; }
     .tab-btn:hover { color: var(--primary); }
     .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
@@ -206,14 +203,11 @@
     .tab-content.active li:nth-child(3) { animation-delay: 0.12s; }
     .tab-content.active li:nth-child(4) { animation-delay: 0.16s; }
     .tab-content.active li:nth-child(5) { animation-delay: 0.20s; }
-
     @keyframes slideInRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-
     .info-list { list-style: none; }
     .info-list li { position: relative; padding: 12px 14px 12px 28px; margin-bottom: 10px; font-size: 13.5px; line-height: 1.5; background: rgba(255,255,255,0.5); border-radius: 10px; border-left: 3px solid var(--primary-light); transition: all 0.2s ease; }
     .info-list li::before { content: '•'; position: absolute; left: 12px; color: var(--primary); font-weight: bold; }
     .info-list li:hover { transform: translateX(5px); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-
     /* 🎯 একশন বাটনস */
     .buttons-area { display: flex; flex-direction: column; gap: 18px; }
     .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-top: 10px; margin-bottom: 15px; }
@@ -230,16 +224,13 @@
     .audit-btn:hover { transform: translateY(-4px) scale(1.01); }
 </style>
 </head>
-
 <body>
-
 <!-- 📢 অ্যানিমেটেড ইনফো বার -->
 <div class="top-ticker">
     <div class="ticker-wrap">
         <i class="fa-solid fa-circle-info"></i> Welcome to GTPL KCBPL Quality Assurance Portal v1.0 • Internal QA Use Only • For Form Submission issues, reach out immediately. 📞 Any Issue : Call or WhatsApp : 9733588266 or email: kalyan.sarkar@gtplkcbpl.com
     </div>
 </div>
-
 <!-- Logo Header -->
 <div class="logo-container">
     <div class="animated-badge badge-left" title="Secure QA Portal">
@@ -250,7 +241,6 @@
         <i class="fa-solid fa-satellite-dish"></i>
     </div>
 </div>
-
 <!-- 🔐 লগইন ইন্টারফেস -->
 <div id="loginBox">
     <div style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i></div>
@@ -267,7 +257,6 @@
     <button class="login-btn" onclick="checkLogin()">Access Dashboard <i class="fa-solid fa-arrow-right-to-bracket" style="margin-left:8px;"></i></button>
     <p id="loginError" style="color:var(--danger); font-weight:600; margin-top:15px; font-size:14px;"></p>
 </div>
-
 <!-- 📊 ড্যাশবোর্ড কন্টেন্ট -->
 <div id="dashboard">
     <div class="dashboard-header">
@@ -277,7 +266,6 @@
         </div>
         <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-lock"></i> Logout</button>
     </div>
-
     <div class="stats-grid">
         <div class="stat-card blue">
             <div class="stat-icon"><i class="fa-solid fa-headset"></i></div>
@@ -301,7 +289,6 @@
             </div>
         </div>
     </div>
-
     <div class="dashboard-grid">
         <!-- 🗂️ সাইড প্যানেল -->
         <div class="side-panel">
@@ -344,7 +331,6 @@
                     <li>Security Patch updated for local session mapping.</li>
                 </ul>
             </div>
-
             <!-- 🎯 Tab 4: Training PPT -->
             <div id="training" class="tab-content">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-person-chalkboard"></i> Training Manuals</h4>
@@ -367,10 +353,9 @@
                 </ul>
             </div>
         </div>
-
         <!-- 🎯 মেইন অডিট একশন বাটন গ্রিড -->
         <div>
-            <!-- 🔗 কুইক অ্যাক্সেস লিংক কার্ড (এখন সবার উপরে) -->
+            <!-- 🔗 কুইক অ্যাক্সেস লিংক কার্ড -->
             <div style="background:rgba(255,255,255,0.85); padding:20px; border-radius:20px; margin-bottom:25px; box-shadow:0 8px 25px rgba(0,0,0,0.05);">
                 <h3 style="margin-bottom:15px; color:#0f766e; font-size:18px; font-weight:700;">🔗 Quick Access Links</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
@@ -381,8 +366,7 @@
                     <a href="https://docs.google.com/spreadsheets/d/1mOVRQdz1U-PZizT5iYI0EQllv3xlsKLV/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#7c3aed; color:white; border-radius:12px; font-weight:bold; text-align:center;">📈 Audit sheet Retention & BB_Dev(AGENT)</a>
                 </div>
             </div>
-
-            <!-- 🎯 আপনার রিকোয়েস্ট অনুযায়ী টাইটেলটি নিচে প্রসেস বাটনগুলোর ঠিক উপরে আনা হলো -->
+            
             <div class="section-title">Select Audit Form Process</div>
             
             <div class="buttons-area">
@@ -394,7 +378,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
-
                 <button class="audit-btn outbound" onclick="location.href='index.html'">
                     <i class="fa-solid fa-phone-outgoing btn-icon"></i>
                     <div class="btn-text-container">
@@ -403,7 +386,6 @@
                     </div>
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
-
                 <button class="audit-btn business" onclick="location.href='businessdevbb.html'">
                     <i class="fa-solid fa-laptop-code btn-icon"></i>
                     <div class="btn-text-container">
@@ -416,7 +398,6 @@
         </div>
     </div>
 </div>
-
 <!-- 🛠️ ফিক্সড ফুটার -->
 <div style="position:fixed; bottom:15px; right:15px; background:rgba(15,23,42,0.96); padding:12px 18px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); z-index:999; text-align:right;">
     <div style="color:#e2e8f0; font-size:12px; font-weight:700; margin-bottom:4px;">GTPL KCBPL Call Quality Audit System</div>
@@ -424,7 +405,6 @@
         © 2026 Developed & Maintained by <span style="color:#2dd4bf; font-weight:bold;">Kalyan Sarkar</span><br>Quality Analyst | Version 1.0
     </div>
 </div>
-
 <script>
 function updateClock() {
     const now = new Date();
@@ -434,7 +414,6 @@ function updateClock() {
     document.getElementById('liveClock').innerHTML = `<i class="fa-regular fa-calendar"></i> ${dateStr} | <i class="fa-regular fa-clock"></i> ${timeStr}`;
 }
 setInterval(updateClock, 1000);
-
 window.onload = function(){
     updateClock();
     if(localStorage.getItem("gtpl_login") === "yes"){
@@ -442,11 +421,9 @@ window.onload = function(){
         document.getElementById("dashboard").style.display = "block";
     }
 }
-
 function checkLogin(){
     var user = document.getElementById("username").value;
     var pass = document.getElementById("password").value;
-
     if(user === "ADMIN" && pass === "GTPL@2026"){
         localStorage.setItem("gtpl_login","yes");
         document.getElementById("loginBox").style.display = "none";
@@ -456,12 +433,10 @@ function checkLogin(){
         document.getElementById("loginError").innerHTML = "<i class='fa-solid fa-circle-exclamation'></i> Invalid Username or Password";
     }
 }
-
 function logout(){
     localStorage.removeItem("gtpl_login");
     location.reload();
 }
-
 function switchTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");

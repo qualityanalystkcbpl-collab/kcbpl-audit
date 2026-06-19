@@ -325,7 +325,85 @@
     <div class="score-card-number" id="liveScoreNumber">0</div>
     <div class="score-card-status" id="liveScoreStatus">STATUS: PASS</div>
 </div>
+<!-- AUDIO PLAYER FIXED BAR -->
 
+<div id="audioBar">
+    <div class="audio-title">
+        🎧 Call Recording Player
+    </div>
+
+    <input
+        type="text"
+        id="audioLink"
+        placeholder="Paste Recording URL Here..."
+        value="http://192.168.51.30/RECORDINGS/MP3/20260618-102408_9933416700_IN_BB_shreyad-all.mp3">
+
+    <button onclick="loadAudio()">Load</button>
+
+    <audio id="callAudio" controls preload="metadata"></audio>
+</div>
+
+<style>
+#audioBar{
+    position:sticky;
+    top:48px;
+    z-index:9999;
+
+    background:#061421;
+    border-bottom:2px solid #06b6d4;
+
+    padding:12px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.35);
+}
+
+.audio-title{
+    color:#06b6d4;
+    font-weight:bold;
+    min-width:170px;
+}
+
+#audioLink{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+}
+
+#audioBar button{
+    background:#06b6d4;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#callAudio{
+    width:420px;
+}
+</style>
+
+<script>
+function loadAudio(){
+
+    const url =
+    document.getElementById("audioLink").value;
+
+    const player =
+    document.getElementById("callAudio");
+
+    player.src = url;
+
+    player.load();
+
+    player.play();
+}
+</script>
 <div class="form-container">
     
     <h2 class="main-title">GTPL KCBPL – CALL QUALITY AUDIT FORM</h2>

@@ -142,7 +142,7 @@
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 118, 110, 0); }
     }
 
-    /* 🔐 মডার্ন গ্লাস-মরফিজম লগইন বক্স */
+    /* 🔐 লগইন বক্স */
     #loginBox {
         max-width: 450px;
         margin: 100px auto;
@@ -169,7 +169,7 @@
     /* 📊 ড্যাশবোর্ড মেইন লেআউট */
     #dashboard { display: none; max-width: 1400px; margin: 0 auto; padding: 30px 20px 100px 20px; }
     
-    /* 🔝 টপ বার (প্রোফাইল, ডেট, লগআউট) */
+    /* 🔝 টপ বার */
     .dashboard-header { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); backdrop-filter: blur(10px); padding: 16px 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 30px; }
     .header-left { display: flex; align-items: center; gap: 15px; }
     .live-clock { font-size: 14px; color: var(--text-muted); font-weight: 600; background: #f1f5f9; padding: 6px 14px; border-radius: 30px; }
@@ -188,8 +188,8 @@
     .dashboard-grid { display: grid; grid-template-columns: var(--sidebar-width) 1fr; gap: 30px; align-items: start; }
     @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-    /* 🗂️ অ্যাডভান্সড সাইড প্যানেল */
-    .side-panel { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid rgba(255,255,255,0.8); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+    /* 🗂️ সাইড প্যানেল */
+    .side-panel { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid rgba(255, 255, 255, 0.8); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
     .side-panel:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(15, 118, 110, 0.08); }
     
     .tab-menu { display: flex; gap: 6px; background: #f1f5f9; padding: 6px; border-radius: 14px; margin-bottom: 25px; overflow-x: auto; }
@@ -200,7 +200,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
-    /* 🌀 উন্নত স্মুথ স্লাইড এবং ক্যাসকেডিং অ্যানিমেশন */
     .tab-content.active li { animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; opacity: 0; }
     .tab-content.active li:nth-child(1) { animation-delay: 0.04s; }
     .tab-content.active li:nth-child(2) { animation-delay: 0.08s; }
@@ -215,7 +214,7 @@
     .info-list li::before { content: '•'; position: absolute; left: 12px; color: var(--primary); font-weight: bold; }
     .info-list li:hover { transform: translateX(5px); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
 
-    /* 🎯 সুসজ্জিত মেইন একশন বাটনস */
+    /* 🎯 একশন বাটনস */
     .buttons-area { display: flex; flex-direction: column; gap: 18px; }
     .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; }
     .audit-btn { width: 100%; padding: 24px 30px; font-size: 18px; font-weight: 700; color: white; border: none; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
@@ -229,10 +228,6 @@
     .outbound { background: linear-gradient(135deg, #0d9488, #0f766e); box-shadow: 0 8px 25px rgba(13,148,136,0.2); }
     .business { background: linear-gradient(135deg, #ea580c, #c2410c); box-shadow: 0 8px 25px rgba(234,88,12,0.2); }
     .audit-btn:hover { transform: translateY(-4px) scale(1.01); }
-
-    /* 🛠️ প্রিমিয়াম স্টিকি ফুটনোট */
-    .fixed-footer { position: fixed; bottom: 20px; right: 20px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); padding: 14px 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); z-index: 999; display: flex; align-items: center; gap: 14px; color: #e2e8f0; }
-    .footer-avatar { width: 38px; height: 38px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--secondary); }
 </style>
 </head>
 
@@ -245,14 +240,12 @@
     </div>
 </div>
 
-<!-- Logo Header with Animated Icons -->
+<!-- Logo Header -->
 <div class="logo-container">
     <div class="animated-badge badge-left" title="Secure QA Portal">
         <i class="fa-solid fa-shield-halved"></i>
     </div>
-    
     <img src="gtpl_logo.png" alt="GTPL Logo" style="width:350px; max-width:70%; height:auto; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.06)); z-index: 10;">
-    
     <div class="animated-badge badge-right" title="Live Monitoring">
         <i class="fa-solid fa-satellite-dish"></i>
     </div>
@@ -275,9 +268,8 @@
     <p id="loginError" style="color:var(--danger); font-weight:600; margin-top:15px; font-size:14px;"></p>
 </div>
 
-<!-- 📊 মেইন ড্যাশবোর্ড কন্টেন্ট -->
+<!-- 📊 ড্যাশবোর্ড কন্টেন্ট -->
 <div id="dashboard">
-    <!-- ড্যাশবোর্ড হেডার -->
     <div class="dashboard-header">
         <div class="header-left">
             <span style="font-weight: 800; font-size: 18px; color: var(--primary);"><i class="fa-solid fa-chart-pie"></i> QA WORKSPACE</span>
@@ -286,7 +278,6 @@
         <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-lock"></i> Logout</button>
     </div>
 
-    <!-- 📊 স্ট্যাটাস উইজেটস -->
     <div class="stats-grid">
         <div class="stat-card blue">
             <div class="stat-icon"><i class="fa-solid fa-headset"></i></div>
@@ -312,17 +303,15 @@
     </div>
 
     <div class="dashboard-grid">
-        <!-- 🗂️ ইন্টারেক্টিভ সাইড প্যানেল -->
+        <!-- 🗂️ সাইড প্যানেল -->
         <div class="side-panel">
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="switchTab(event, 'rules')"><i class="fa-solid fa-list-check"></i> Rules</button>
                 <button class="tab-btn" onclick="switchTab(event, 'targets')"><i class="fa-solid fa-bullseye"></i> KPIs</button>
                 <button class="tab-btn" onclick="switchTab(event, 'system')"><i class="fa-solid fa-gears"></i> Info</button>
-                <!-- 🆕 নতুন ট্রেনিং PPT ট্যাব -->
                 <button class="tab-btn" onclick="switchTab(event, 'training')"><i class="fa-solid fa-file-powerpoint"></i> PPT</button>
             </div>
             
-            <!-- Tab 1: Guidelines -->
             <div id="rules" class="tab-content active">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-shield-catv"></i> Audit Guidelines</h4>
                 <ul class="info-list">
@@ -334,7 +323,6 @@
                 </ul>
             </div>
             
-            <!-- Tab 2: KPIs -->
             <div id="targets" class="tab-content">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-chart-line"></i> QA Target KPIs</h4>
                 <ul class="info-list">
@@ -347,7 +335,6 @@
                 </ul>
             </div>
             
-            <!-- Tab 3: System Updates -->
             <div id="system" class="tab-content">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-code-branch"></i> Portal Technical Info</h4>
                 <ul class="info-list">
@@ -358,24 +345,24 @@
                 </ul>
             </div>
 
-            <!-- 🆕 Tab 4: Training PPT (গিটহাবের ডিরেক্ট র-ডাউনলোড লিংক যুক্ত করা হয়েছে) -->
+            <!-- 🎯 Tab 4: Training PPT (নতুন ফাইলের নাম অনুযায়ী ১০০% ফিক্সড লিংক) -->
             <div id="training" class="tab-content">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-person-chalkboard"></i> Training Manuals</h4>
                 <ul class="info-list">
                     <li>
                         <b>CATV Training:</b> 
-                        <a href="https://github.com/qualityanalystkcbpl-collab/kcbpl-audit/blob/main/catv_training.pptx?raw=true" style="color:#0f766e; text-decoration:none; font-weight:bold; float:right;">
+                        <a href="(CATV%20)Call%20Quality%20Training%20PPT.pptx" download="(CATV )Call Quality Training PPT.pptx" style="color:#0f766e; text-decoration:none; font-weight:bold; float:right;">
                             Download PPT <i class="fa-solid fa-download"></i>
                         </a>
                     </li>
                     <li>
                         <b>Tech Renewal Training:</b> 
-                        <a href="https://github.com/qualityanalystkcbpl-collab/kcbpl-audit/blob/main/tech_renewal_training.pptx?raw=true" style="color:#0f766e; text-decoration:none; font-weight:bold; float:right;">
+                        <a href="(TECH%20&%20RENEWAL%20)Call%20Quality%20Training%20PPT.pptx" download="(TECH & RENEWAL )Call Quality Training PPT.pptx" style="color:#0f766e; text-decoration:none; font-weight:bold; float:right;">
                             Download PPT <i class="fa-solid fa-download"></i>
                         </a>
                     </li>
-                    <li style="font-size: 12px; color: #64748b; font-style: italic;">
-                        * ফাইলগুলো সরাসরি ডাউনলোড হবে
+                    <li style="font-size: 11px; color: #16a34a; font-style: italic; background: #f0fdf4; border-left: 3px solid #22c55e;">
+                        ✅ ফাইল লিংক আপডেট সম্পন্ন। এখন ক্লিক করলে সরাসরি ডাউনলোড হবে।
                     </li>
                 </ul>
             </div>
@@ -385,27 +372,14 @@
         <div>
             <div class="section-title">Select Audit Form Process</div>
             
-            <!-- QUICK LINKS SECTION -->
             <div style="background:rgba(255,255,255,0.85); padding:20px; border-radius:20px; margin-bottom:25px; box-shadow:0 8px 25px rgba(0,0,0,0.05);">
-                <h3 style="margin-bottom:15px; color:#0f766e; font-size:18px; font-weight:700;">
-                    🔗 Quick Access Links
-                </h3>
+                <h3 style="margin-bottom:15px; color:#0f766e; font-size:18px; font-weight:700;">🔗 Quick Access Links</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
-                    <a href="https://www.gtplkcbpl.com/" target="_blank" style="text-decoration:none; padding:14px; background:#0f766e; color:white; border-radius:12px; font-weight:bold; text-align:center;">
-                        🌐 GTPL-KCBPL Website
-                    </a>
-                    <a href="https://docs.google.com/spreadsheets/d/12r7fRYLj36h3CzOUmAGhS-9dvnQxTahaoaTMP05ljig/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#2563eb; color:white; border-radius:12px; font-weight:bold; text-align:center;">
-                        📊 Inbound Scores Sheet (AGENT)
-                    </a>
-                    <a href="https://docs.google.com/spreadsheets/d/1n_MBPJCiSYrgPUaEMhXCH1Z6UwJG1Po8NFUuWvX8Cus/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#16a34a; color:white; border-radius:12px; font-weight:bold; text-align:center;">
-                        📝 Inbound Response Sheet (QA)
-                    </a>
-                    <a href="https://docs.google.com/spreadsheets/d/1T4L6Ja1p_Xsq0SgvPVAwAX8qoA4bWk87Dw4ZTUjmMiE/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#ea580c; color:white; border-radius:12px; font-weight:bold; text-align:center;">
-                        📞 Outbound Response Sheet (QA)
-                    </a>
-                    <a href="https://docs.google.com/spreadsheets/d/1mOVRQdz1U-PZizT5iYI0EQllv3xlsKLV/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#7c3aed; color:white; border-radius:12px; font-weight:bold; text-align:center;">
-                        📈 Audit sheet Retention & BB_Dev(AGENT)
-                    </a>
+                    <a href="https://www.gtplkcbpl.com/" target="_blank" style="text-decoration:none; padding:14px; background:#0f766e; color:white; border-radius:12px; font-weight:bold; text-align:center;">🌐 GTPL-KCBPL Website</a>
+                    <a href="https://docs.google.com/spreadsheets/d/12r7fRYLj36h3CzOUmAGhS-9dvnQxTahaoaTMP05ljig/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#2563eb; color:white; border-radius:12px; font-weight:bold; text-align:center;">📊 Inbound Scores Sheet (AGENT)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1n_MBPJCiSYrgPUaEMhXCH1Z6UwJG1Po8NFUuWvX8Cus/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#16a34a; color:white; border-radius:12px; font-weight:bold; text-align:center;">📝 Inbound Response Sheet (QA)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1T4L6Ja1p_Xsq0SgvPVAwAX8qoA4bWk87Dw4ZTUjmMiE/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#ea580c; color:white; border-radius:12px; font-weight:bold; text-align:center;">📞 Outbound Response Sheet (QA)</a>
+                    <a href="https://docs.google.com/spreadsheets/d/1mOVRQdz1U-PZizT5iYI0EQllv3xlsKLV/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#7c3aed; color:white; border-radius:12px; font-weight:bold; text-align:center;">📈 Audit sheet Retention & BB_Dev(AGENT)</a>
                 </div>
             </div>
             
@@ -441,21 +415,15 @@
     </div>
 </div>
 
-<!-- 🛠️ ফিক্সড প্রিমিয়াম ফুটার -->
+<!-- 🛠️ ফিক্সড ফুটার -->
 <div style="position:fixed; bottom:15px; right:15px; background:rgba(15,23,42,0.96); padding:12px 18px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); z-index:999; text-align:right;">
-    <div style="color:#e2e8f0; font-size:12px; font-weight:700; margin-bottom:4px;">
-        GTPL KCBPL Call Quality Audit System
-    </div>
+    <div style="color:#e2e8f0; font-size:12px; font-weight:700; margin-bottom:4px;">GTPL KCBPL Call Quality Audit System</div>
     <div style="color:#94a3b8; font-size:11px; line-height:1.5;">
-        © 2026 Developed & Maintained by
-        <span style="color:#2dd4bf; font-weight:bold;">Kalyan Sarkar</span>
-        <br>
-        Quality Analyst | Version 1.0
+        © 2026 Developed & Maintained by <span style="color:#2dd4bf; font-weight:bold;">Kalyan Sarkar</span><br>Quality Analyst | Version 1.0
     </div>
 </div>
 
 <script>
-// 🕒 রিয়েল-টাইম ক্লক এবং ক্যালেন্ডার আপডেট ফাংশন
 function updateClock() {
     const now = new Date();
     const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
@@ -492,7 +460,6 @@ function logout(){
     location.reload();
 }
 
-// 🗂️ অ্যাডভান্সড সাইড ট্যাব কন্ট্রোল ও রিসেট অ্যানিমেশন
 function switchTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tab-content");
@@ -508,11 +475,10 @@ function switchTab(evt, tabName) {
     targetTab.classList.add("active");
     evt.currentTarget.classList.add("active");
     
-    // প্রতিবার ট্যাব পরিবর্তনের সময় ক্যাসকেডিং অ্যানিমেশন রি-ট্রিগার করা
     const listItems = targetTab.querySelectorAll("li");
     listItems.forEach((li) => {
         li.style.animation = 'none';
-        li.offsetHeight; /* Trigger Reflow */
+        li.offsetHeight; 
         li.style.animation = null; 
     });
 }

@@ -216,7 +216,7 @@
 
     /* 🎯 একশন বাটনস */
     .buttons-area { display: flex; flex-direction: column; gap: 18px; }
-    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; }
+    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700; margin-top: 10px; margin-bottom: 15px; }
     .audit-btn { width: 100%; padding: 24px 30px; font-size: 18px; font-weight: 700; color: white; border: none; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; }
     .audit-btn i.btn-icon { font-size: 24px; opacity: 0.9; }
     .audit-btn .btn-text-container { text-align: left; flex-grow: 1; margin-left: 20px; }
@@ -345,7 +345,7 @@
                 </ul>
             </div>
 
-            <!-- 🎯 Tab 4: Training PPT (নতুন ফাইলের নাম অনুযায়ী ১০০% ফিক্সড লিংক) -->
+            <!-- 🎯 Tab 4: Training PPT -->
             <div id="training" class="tab-content">
                 <h4 style="margin-bottom:12px; color:var(--primary); font-size:15px;"><i class="fa-solid fa-person-chalkboard"></i> Training Manuals</h4>
                 <ul class="info-list">
@@ -362,7 +362,7 @@
                         </a>
                     </li>
                     <li style="font-size: 11px; color: #16a34a; font-style: italic; background: #f0fdf4; border-left: 3px solid #22c55e;">
-                        ✅ ফাইল ক্লিক করলে সরাসরি ডাউনলোড হবে।
+                        ✅ ফাইল লিংক আপডেট সম্পন্ন। এখন ক্লিক করলে সরাসরি ডাউনলোড হবে।
                     </li>
                 </ul>
             </div>
@@ -370,8 +370,7 @@
 
         <!-- 🎯 মেইন অডিট একশন বাটন গ্রিড -->
         <div>
-            <div class="section-title">Select Audit Form Process</div>
-            
+            <!-- 🔗 কুইক অ্যাক্সেস লিংক কার্ড (এখন সবার উপরে) -->
             <div style="background:rgba(255,255,255,0.85); padding:20px; border-radius:20px; margin-bottom:25px; box-shadow:0 8px 25px rgba(0,0,0,0.05);">
                 <h3 style="margin-bottom:15px; color:#0f766e; font-size:18px; font-weight:700;">🔗 Quick Access Links</h3>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
@@ -382,6 +381,9 @@
                     <a href="https://docs.google.com/spreadsheets/d/1mOVRQdz1U-PZizT5iYI0EQllv3xlsKLV/edit?usp=sharing" target="_blank" style="text-decoration:none; padding:14px; background:#7c3aed; color:white; border-radius:12px; font-weight:bold; text-align:center;">📈 Audit sheet Retention & BB_Dev(AGENT)</a>
                 </div>
             </div>
+
+            <!-- 🎯 আপনার রিকোয়েস্ট অনুযায়ী টাইটেলটি নিচে প্রসেস বাটনগুলোর ঠিক উপরে আনা হলো -->
+            <div class="section-title">Select Audit Form Process</div>
             
             <div class="buttons-area">
                 <button class="audit-btn inbound" onclick="location.href='inbound.html'">

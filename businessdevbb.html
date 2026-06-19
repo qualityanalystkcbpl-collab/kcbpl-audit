@@ -292,7 +292,42 @@
     </style>
 </head>
 <body>
+</style>
 
+<!-- Score Box er Upore Fixed Watch & Auto Timer -->
+<div class="audit-tracker-container">
+    <!-- Live Clock -->
+    <div class="tracker-box">
+        <div class="tracker-label">🕒 Current Time</div>
+        <div class="tracker-value" id="liveClock">00:00:00 AM</div>
+        <div id="liveDate" style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Loading...</div>
+    </div>
+
+    <!-- Auto Audit Timer -->
+    <div class="tracker-box">
+        <div class="tracker-label">⏳ Audit Duration</div>
+        <div class="tracker-value" id="auditTimer">00:00</div>
+    </div>
+</div>
+
+<!-- Top Layout Container for Banner Image & Back Button -->
+<div class="header-container">
+    <div class="logo-area">
+        <!-- Replace 'bus db bb logo.jpg' with your actual Outbound Retention Logo Image URL -->
+        <img src="bus db bb logo.jpg" alt="Outbound Retention Logo">
+    </div>
+    <div class="top-nav">
+        <a href="LOGIN.html" class="home-btn">🏡 Back to Home</a>
+    </div>
+</div>
+
+<!-- Live Score Card Dashboard Widget -->
+<div class="live-score-card" id="liveScoreCard">
+    <div class="score-card-title">TOTAL SCORE / মোট নম্বর</div>
+    <div class="score-card-number" id="liveScoreNumber">0</div>
+    <div class="score-card-status" id="liveScoreStatus">STATUS: PASS</div>
+</div>
+<script>
 <!-- AUDIO PLAYER FIXED BAR -->
 
 <div id="audioBar">
@@ -304,7 +339,7 @@
         type="text"
         id="audioLink"
         placeholder="Paste Recording URL Here..."
-        value="Paste Recording URL Here...">
+        value="">
 
     <button onclick="loadAudio()">Load</button>
 
@@ -371,114 +406,6 @@ function loadAudio(){
 
     player.play();
 }
-</script>
-</style>
-
-<!-- Score Box er Upore Fixed Watch & Auto Timer -->
-<div class="audit-tracker-container">
-    <!-- Live Clock -->
-    <div class="tracker-box">
-        <div class="tracker-label">🕒 Current Time</div>
-        <div class="tracker-value" id="liveClock">00:00:00 AM</div>
-        <div id="liveDate" style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Loading...</div>
-    </div>
-
-    <!-- Auto Audit Timer -->
-    <div class="tracker-box">
-        <div class="tracker-label">⏳ Audit Duration</div>
-        <div class="tracker-value" id="auditTimer">00:00</div>
-    </div>
-</div>
-
-<!-- Top Layout Container for Banner Image & Back Button -->
-<div class="header-container">
-    <div class="logo-area">
-        <!-- Replace 'bus db bb logo.jpg' with your actual Outbound Retention Logo Image URL -->
-        <img src="bus db bb logo.jpg" alt="Outbound Retention Logo">
-    </div>
-    <div class="top-nav">
-        <a href="LOGIN.html" class="home-btn">🏡 Back to Home</a>
-    </div>
-</div>
-
-<!-- Live Score Card Dashboard Widget -->
-<div class="live-score-card" id="liveScoreCard">
-    <div class="score-card-title">TOTAL SCORE / মোট নম্বর</div>
-    <div class="score-card-number" id="liveScoreNumber">0</div>
-    <div class="score-card-status" id="liveScoreStatus">STATUS: PASS</div>
-</div>
-<script>
-// =========================
-// AUDIO PLAYER AUTO LOAD
-// =========================
-
-function loadAudio(){
-
-    const url =
-    document.getElementById("audioLink").value.trim();
-
-    if(url===""){
-        alert("Please enter recording URL");
-        return;
-    }
-
-    const player =
-    document.getElementById("callAudio");
-
-    player.src = url;
-
-    player.load();
-
-    player.play();
-}
-
-function loadAudioFromCallLink(){
-
-    const callLinkField =
-    document.querySelector('input[name="Call Link"]');
-
-    if(!callLinkField) return;
-
-    const url = callLinkField.value.trim();
-
-    if(url==="") return;
-
-    document.getElementById("audioLink").value = url;
-
-    const player =
-    document.getElementById("callAudio");
-
-    player.src = url;
-
-    player.load();
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    const callLinkField =
-    document.querySelector('input[name="Call Link"]');
-
-    if(callLinkField){
-
-        callLinkField.addEventListener(
-            "change",
-            loadAudioFromCallLink
-        );
-
-        callLinkField.addEventListener(
-            "blur",
-            loadAudioFromCallLink
-        );
-
-        callLinkField.addEventListener(
-            "paste",
-            function(){
-                setTimeout(loadAudioFromCallLink,200);
-            }
-        );
-    }
-
-});
 </script>
 <div class="form-container">
     

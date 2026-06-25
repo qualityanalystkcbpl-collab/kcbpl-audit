@@ -285,76 +285,51 @@
         box-shadow: 0 8px 25px rgba(20, 184, 166, 0.5);
     }
 /* =========================================
-   🌈 7-Color Filled Background Ring Animation
+   🌊 Right-to-Left Wave Animation
 ========================================= */
 .bg-ring-wrapper {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    right: 0;
     width: 100vw;
     height: 100vh;
     z-index: -2; 
     pointer-events: none; 
     overflow: hidden;
+    background: transparent;
 }
 
 .bg-ring-circle {
     position: absolute;
+    /* ডান দিকে পজিশন করা */
+    right: -100px; 
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     border-radius: 50%;
-    /* হালকা শ্যাডো দেওয়া হয়েছে যাতে ফিল করা কালার আরও ফুটে ওঠে */
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.05);
-    animation: rainbowFilledRipple 12s linear infinite;
+    /* নতুন অ্যানিমেশন নাম */
+    animation: waveEffect 10s linear infinite;
 }
 
-/* ৪টি রিং-এর জন্য আলাদা আলাদা সময় (Delay) */
+/* ৪টি রিং-এর জন্য Delay */
 .bg-ring-circle:nth-child(1) { animation-delay: 0s; }
-.bg-ring-circle:nth-child(2) { animation-delay: 3s; }
-.bg-ring-circle:nth-child(3) { animation-delay: 6s; }
-.bg-ring-circle:nth-child(4) { animation-delay: 9s; }
+.bg-ring-circle:nth-child(2) { animation-delay: 2.5s; }
+.bg-ring-circle:nth-child(3) { animation-delay: 5s; }
+.bg-ring-circle:nth-child(4) { animation-delay: 7.5s; }
 
-/* ৭টি রঙের অ্যানিমেশন (বর্ডার এবং ব্যাকগ্রাউন্ড ফিল সহ) */
-@keyframes rainbowFilledRipple {
+@keyframes waveEffect {
     0% { 
-        width: 50px; 
-        height: 50px; 
-        opacity: 0.9; 
-        border: 4px solid rgba(239, 68, 68, 0.9); /* Red Border */
-        background-color: rgba(239, 68, 68, 0.35); /* Red Fill */
-    }
-    14% {
-        border-color: rgba(249, 115, 22, 0.8); /* Orange */
-        background-color: rgba(249, 115, 22, 0.25);
-    }
-    28% {
-        border-color: rgba(234, 179, 8, 0.7); /* Yellow */
-        background-color: rgba(234, 179, 8, 0.2);
-    }
-    42% {
-        border-color: rgba(34, 197, 94, 0.6); /* Green */
-        background-color: rgba(34, 197, 94, 0.15);
-    }
-    57% {
-        border-color: rgba(59, 130, 246, 0.5); /* Blue */
-        background-color: rgba(59, 130, 246, 0.12);
-    }
-    71% {
-        border-color: rgba(99, 102, 241, 0.4); /* Indigo */
-        background-color: rgba(99, 102, 241, 0.09);
-    }
-    85% {
-        border-color: rgba(168, 85, 247, 0.3); /* Violet */
-        background-color: rgba(168, 85, 247, 0.05);
+        width: 100px; 
+        height: 100px; 
+        opacity: 0.6; 
+        transform: translate(0, -50%);
+        border: 4px solid rgba(15, 118, 110, 0.3);
     }
     100% { 
-        width: 2500px; 
-        height: 2500px; 
+        width: 1200px; 
+        height: 1200px; 
         opacity: 0; 
-        border: 1px solid rgba(255, 255, 255, 0); 
-        background-color: rgba(255, 255, 255, 0);
+        /* ডান থেকে বাঁ দিকে সরে আসা */
+        transform: translate(-100vw, -50%);
+        border: 1px solid rgba(15, 118, 110, 0.1);
     }
 }
 </style>
@@ -837,7 +812,6 @@
     <div style="width: 10px; height: 10px; background-color: #10b981; border-radius: 50%; margin-right: 10px; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse-green 2s infinite;"></div>
     <span>Portal Is Live</span>
 </div>
-
 <style>
 @keyframes pulse-green {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }

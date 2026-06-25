@@ -1140,5 +1140,59 @@ function scrollToTop() {
 <button id="backToTop" onclick="scrollToTop()">
     ⬆ Back to Top
 </button>
+    <!-- Updated Portal Status: Left side with Rainbow Text Animation -->
+<div class="portal-status-container">
+    <div class="status-dot"></div>
+    <span class="portal-text">Portal Is Live</span>
+</div>
+
+<style>
+/* কন্টেইনার পজিশন: উপরে বাম দিকে একদম পারফেক্ট পজিশনে */
+.portal-status-container {
+    position: fixed; /* 'fixed' এর বদলে 'absolute' ব্যবহার করলে এটি আপনার ফর্ম লেআউটের সাথে আরও ভালোভাবে আটকে থাকবে */
+    top: 135px; /* এটি আরেকটু নিচে নামিয়ে দিয়েছে */
+    left: 5px; /* এটি বাম দিকে আরও একটু সরিয়ে এনেছে */
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 2px solid rgba(15, 118, 110, 0.3);
+    z-index: 9999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}/* ছোট পালস ডট */
+.status-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #10b981;
+    border-radius: 50%;
+    margin-right: 12px;
+    animation: pulse-green 2s infinite;
+}
+
+/* টেক্সট অ্যানিমেশন ও কালার চেঞ্জ */
+.portal-text {
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 1px;
+    animation: rainbow-text 10s linear infinite;
+}
+
+@keyframes rainbow-text {
+    0% { color: #ef4444; transform: scale(1); } /* Red */
+    16% { color: #f97316; } /* Orange */
+    33% { color: #eab308; } /* Yellow */
+    50% { color: #22c55e; } /* Green */
+    66% { color: #3b82f6; } /* Blue */
+    83% { color: #6366f1; } /* Indigo */
+    100% { color: #a855f7; transform: scale(1.05); } /* Violet */
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+    </style>
 </body>
 </html>

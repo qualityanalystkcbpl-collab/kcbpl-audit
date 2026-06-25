@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Audit from July 2026 (HTML)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        .grid-input { @apply border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+
+    <!-- Top Action Panel & Title (Logo Included Here) -->
+    <div class="max-w-[98%] mx-auto bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            
+            <!-- Logo and Title Section -->
+            <div class="flex items-center gap-4">
+                <!-- LOGO PLACEHOLDER: আপনার লোগো ইমেজটি src="" এর ভেতর বসিয়ে দেবেন -->
+                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300 text-gray-400 text-[10px] font-bold shrink-0 overflow-hidden shadow-inner">
+                    <img src="https://via.placeholder.com/64" alt="Logo" class="w-full h-full object-contain hidden onerror='this.style.display=\"none\"'">
+                    <span class="text-center p-1 text-gray-500"><i class="fa-solid fa-image text-lg block mb-0.5 text-gray-400"></i>LOGO</span>
+                </div>
+                
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-solid fa-table text-emerald-600"></i> Live Audit Sheet Tracker
+                    </h1>
+                    <p class="text-xs text-gray-500 mt-0.5">CATV_BB_TECH_BB_RENW</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2 self-end md:self-center">
+                <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-excel"></i> Export to Excel/CSV
+                </button>
+                <button onclick="clearAllData()" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm font-semibold border border-red-200 transition-all">
+                    <i class="fa-solid fa-trash-can"></i> Clear Sheet
+                </button>
+            </div>
+        </div>
+
+        <hr class="my-4 border-gray-200">
+
+        <!-- Interactive Quick Entry Form -->
+        <form id="auditForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Date</label>
+                <input type="date" id="inputDate" required class="grid-input">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Time</label>
+                <input type="text" id="inputTime" placeholder="e.g. 10:00 AM" required class="grid-input">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Agent Name</label>
+                <input type="text" id="inputAgent" placeholder="Name" required class="grid-input">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Process</label>
+                <select id="inputProcess" class="grid-input">
+                    <option value="CATV">CATV</option>
+                    <option value="BB TECH">BB TECH</option>
+                    <option value="BB RENEWAL">BB RENEWAL</option>
+                </select>
+            </div>
+            
+            <!-- Parameters Group -->
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Opening</label>
+                <select id="inputOpening" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Assurance</label>
+                <select id="inputAssurance" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Paraphrasing</label>
+                <select id="inputParaphrase" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Dead Air</label>
+                <select id="inputDeadAir" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Interruption</label>
+                <select id="inputInterruption" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Speech Clarity</label>
+                <select id="inputClarity" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-gray-600 mb-1">Correct Info Provided</label>
+                <select id="inputCorrectInfo" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+            </div>
+
+            <!-- NEW FIELD: Any Remarks -->
+            <div class="flex flex-col col-span-2 sm:col-span-2 lg:col-span-2">
+                <label class="text-xs font-bold text-gray-600 mb-1">Any Remarks</label>
+                <input type="text" id="inputRemarks" placeholder="Type call observations/remarks here..." class="grid-input border-blue-200">
+            </div>
+
+            <!-- Fatal Control -->
+            <div class="flex flex-col col-span-2 sm:col-span-1">
+                <label class="text-xs font-bold text-red-600 mb-1">Fatal Issue Identified</label>
+                <select id="inputFatal" class="grid-input border-red-400 font-bold text-red-600">
+                    <option value="NO">NO</option>
+                    <option value="YES">YES</option>
+                </select>
+            </div>
+
+            <!-- Submit Button Row -->
+            <div class="flex items-end col-span-2 sm:col-span-1">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded text-sm transition-all shadow-sm">
+                    <i class="fa-solid fa-plus mr-1"></i> Add Record
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Live Spreadsheet View Grid -->
+    <div class="max-w-[98%] mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-xs text-center">
+                <thead>
+                    <tr class="font-bold border-b-2 border-gray-300">
+                        <!-- Blue Headers -->
+                        <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[90px]">Date</th>
+                        <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[80px]">Time</th>
+                        <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[120px]">Agent Name</th>
+                        <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[90px]">Process</th>
+                        
+                        <!-- Yellow Headers -->
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Opening</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Assurance</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Paraphrasing/ Acknowledgement</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Dead Air</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Interruption</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Clarity of speech/Rate of Speech</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Correct Information Provided</th>
+                        
+                        <!-- Red Header -->
+                        <th class="bg-red-600 text-white p-2.5 border-r border-gray-200 min-w-[130px]">Fatal Issue Identified:</th>
+                        
+                        <!-- Yellow Score/Rating Headers -->
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200 min-w-[60px]">Score</th>
+                        <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200 min-w-[90px]">Rating</th>
+                        
+                        <!-- NEW COLUMN: Remarks Header -->
+                        <th class="bg-slate-700 text-white p-2.5 border-r border-gray-200 min-w-[150px]">Remarks</th>
+                        
+                        <th class="bg-gray-800 text-white p-2.5 min-w-[50px]">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="sheetDataBody" class="divide-y divide-gray-200 font-medium text-gray-700">
+                    <!-- Dynamic Rows insert here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let auditRecords = JSON.parse(localStorage.getItem('liveAuditRecords')) || [];
+
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputDate').value = today;
+            
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('inputTime').value = timeNow;
+            
+            renderTable();
+        };
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const date = document.getElementById('inputDate').value;
+            const time = document.getElementById('inputTime').value;
+            const agent = document.getElementById('inputAgent').value.trim();
+            const process = document.getElementById('inputProcess').value;
+            const opening = document.getElementById('inputOpening').value;
+            const assurance = document.getElementById('inputAssurance').value;
+            const paraphrase = document.getElementById('inputParaphrase').value;
+            const deadAir = document.getElementById('inputDeadAir').value;
+            const interruption = document.getElementById('inputInterruption').value;
+            const clarity = document.getElementById('inputClarity').value;
+            const correctInfo = document.getElementById('inputCorrectInfo').value;
+            const remarks = document.getElementById('inputRemarks').value.trim(); // Capture Remarks
+            const fatal = document.getElementById('inputFatal').value;
+
+            let score = 100;
+            let rating = "Excellent";
+
+            if (fatal === "YES") {
+                score = 0;
+                rating = "FATAL";
+            }
+
+            const newRecord = {
+                date, time, agent, process, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo, remarks, fatal, score, rating
+            };
+
+            auditRecords.push(newRecord);
+            localStorage.setItem('liveAuditRecords', JSON.stringify(auditRecords));
+            
+            renderTable();
+            
+            // Fields Resetting
+            document.getElementById('inputAgent').value = '';
+            document.getElementById('inputRemarks').value = ''; // Clear remarks field
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('sheetDataBody');
+            tbody.innerHTML = '';
+
+            if (auditRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="16" class="p-6 text-gray-400 font-normal italic bg-gray-50">No audits recorded yet. Add a row above to populate the spreadsheet view.</td></tr>`;
+                return;
+            }
+
+            auditRecords.forEach((rec, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50 bg-white border-b";
+
+                const cellBgClass = "bg-emerald-800 text-white font-bold";
+                const isFatalRow = rec.fatal === "YES";
+
+                tr.innerHTML = `
+                    <td class="p-2 border-r border-gray-200">${rec.date}</td>
+                    <td class="p-2 border-r border-gray-200">${rec.time}</td>
+                    <td class="p-2 border-r border-gray-200 font-semibold text-left px-3">${rec.agent}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.process}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.opening}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.assurance}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.paraphrase}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.deadAir}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.interruption}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.clarity}</td>
+                    <td class="p-2 border-r border-gray-200 ${cellBgClass}">${rec.correctInfo}</td>
+                    <td class="p-2 border-r border-gray-200 ${isFatalRow ? 'bg-red-100 text-red-700 font-bold' : cellBgClass}">${rec.fatal}</td>
+                    <td class="p-2 border-r border-gray-200 font-bold ${isFatalRow ? 'text-red-600' : 'text-gray-900'}">${rec.score}</td>
+                    <td class="p-2 border-r border-gray-200 font-bold ${isFatalRow ? 'text-red-600 uppercase' : 'text-emerald-700'}">${rec.rating}</td>
+                    <!-- Remarks Cell View -->
+                    <td class="p-2 border-r border-gray-200 text-left px-3 text-gray-600 italic bg-gray-50 max-w-[180px] break-words" title="${rec.remarks || ''}">${rec.remarks || '-'}</td>
+                    <td class="p-2"><button onclick="deleteRow(${index})" class="text-red-500 hover:text-red-700 transition-all"><i class="fa-solid fa-square-xmark text-base"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteRow(index) {
+            if(confirm("Are you sure you want to delete this row record?")) {
+                auditRecords.splice(index, 1);
+                localStorage.setItem('liveAuditRecords', JSON.stringify(auditRecords));
+                renderTable();
+            }
+        }
+
+        function clearAllData() {
+            if (confirm("Warning: This will clear the entire local web sheet. Proceed?")) {
+                auditRecords = [];
+                localStorage.removeItem('liveAuditRecords');
+                renderTable();
+            }
+        }
+
+        function exportToCSV() {
+            if (auditRecords.length === 0) {
+                alert("No data available to export!");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Date,Time,Agent Name,Process,Opening,Assurance,Paraphrasing/ Acknowledgement,Dead Air,Interruption,Clarity of speech/Rate of Speech,Correct Information Provided,Fatal Issue Identified:,Score,Rating,Remarks\n";
+
+            auditRecords.forEach(rec => {
+                let cleanRemarks = rec.remarks ? rec.remarks.replace(/"/g, '""') : '';
+                let row = [
+                    rec.date, rec.time, `"${rec.agent}"`, rec.process, rec.opening, rec.assurance, 
+                    rec.paraphrase, rec.deadAir, rec.interruption, rec.clarity, rec.correctInfo, rec.fatal, rec.score, rec.rating, `"${cleanRemarks}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Live_Audit_Export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

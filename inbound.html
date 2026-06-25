@@ -84,6 +84,29 @@
             min-width: unset !important;
             box-sizing: border-box !important;
         }
+/* Back to Top Button */
+#backToTop {
+    position: fixed;
+    left: 25px;
+    bottom: 30px;
+    z-index: 9999;
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(220,38,38,.35);
+    transition: all .3s ease;
+    display: none;
+}
+
+#backToTop:hover {
+    background: #b91c1c;
+    transform: translateY(-3px);
+}
     </style>
 </head>
 <body>
@@ -927,7 +950,28 @@ function loadAudio(){
             submitBtn.disabled = false;
         });
     });
+// Show / Hide Back To Top Button
+window.addEventListener("scroll", function () {
+    const btn = document.getElementById("backToTop");
+
+    if (window.scrollY > 300) {
+        btn.style.display = "block";
+    } else {
+        btn.style.display = "none";
+    }
+});
+
+// Smooth Scroll to Top
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
 </script>
 </div>
+<button id="backToTop" onclick="scrollToTop()">
+    ⬆ Back to Top
+</button>
 </body>
 </html>

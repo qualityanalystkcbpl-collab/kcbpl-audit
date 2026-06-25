@@ -83,6 +83,36 @@
             min-width: unset !important;
             box-sizing: border-box !important;
         }
+/* Floating Back to Top Button */
+#backToTop {
+    position: fixed;
+    left: 25px;
+    bottom: 30px;
+    width: 58px;
+    height: 58px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    box-shadow: 0 8px 20px rgba(239,68,68,.45);
+    transition: all .3s ease;
+}
+
+#backToTop:hover {
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 12px 28px rgba(239,68,68,.6);
+}
+
+#backToTop:active {
+    transform: scale(0.95);
+}
     </style>
 </head>
 <body>
@@ -188,6 +218,24 @@ function loadAudio(){
     player.load();
 
     player.play();
+}
+// Show / Hide Floating Button
+window.addEventListener("scroll", function () {
+    const btn = document.getElementById("backToTop");
+
+    if (window.pageYOffset > 300) {
+        btn.style.display = "flex";
+    } else {
+        btn.style.display = "none";
+    }
+});
+
+// Smooth Scroll
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 </script>
 <div class="form-container">
@@ -803,5 +851,8 @@ function loadAudio(){
         });
     });
 </script>
+<button id="backToTop" onclick="scrollToTop()" title="Back to Top">
+    ⬆
+</button>
 </body>
 </html>

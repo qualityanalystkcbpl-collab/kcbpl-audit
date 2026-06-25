@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Audit Sheet Tracker</title>
+    <title>Live Audit Sheet</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,7 +33,7 @@
                 
                 <div>
                     <h1 class="text-2xl font-black text-slate-800 flex items-center gap-2.5">
-                        <i class="fa-solid fa-square-poll-horizontal text-blue-600"></i> Live Audit Sheet Tracker
+                        <i class="fa-solid fa-square-poll-horizontal text-blue-600"></i> Live Audit Sheet
                     </h1>
                     <div class="flex items-center gap-3 mt-1">
                         <span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px] font-bold tracking-wider">CATV_BB_TECH_BB_RENW</span>
@@ -42,7 +42,7 @@
                             <span id="liveClock">00:00:00 AM</span>
                         </span>
                         <span id="syncBadge" class="hidden inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[11px] font-bold">
-                            <i class="fa-solid fa-cloud-arrow-up animate-bounce"></i> Syncing to Google Sheets...
+                            <i class="fa-solid fa-cloud-arrow-up animate-bounce"></i>গুগল শিটসে স্বয়ংক্রিয়ভাবে তথ্য সংরক্ষণ হচ্ছে...
                         </span>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
         
         <div class="xl:col-span-3 bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 animate-fade-in" style="animation-delay: 0.1s;">
             <h2 class="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-blue-500"></i> New Audit Entry Form
+                <i class="fa-solid fa-pen-to-square text-blue-500"></i> Live Call Audit Entry Form
             </h2>
             <form id="auditForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div class="flex flex-col">
@@ -89,36 +89,36 @@
                 
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Opening</label>
-                    <select id="inputOpening" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputOpening" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Assurance</label>
-                    <select id="inputAssurance" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputAssurance" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Paraphrasing</label>
-                    <select id="inputParaphrase" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputParaphrase" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Dead Air</label>
-                    <select id="inputDeadAir" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputDeadAir" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Interruption</label>
-                    <select id="inputInterruption" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputInterruption" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Speech Clarity</label>
-                    <select id="inputClarity" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputClarity" onchange="styleParameterSelect(this); updateCurrentPreviewScore();" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Correct Info</label>
-                    <select id="inputCorrectInfo" onchange="styleParameterSelect(this)" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
+                    <select id="inputCorrectInfo" onchange="handleCorrectInfoChange(this);" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
 
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-red-600 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-red-500"></i> Fatal Issue</label>
-                    <select id="inputFatal" class="border border-red-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 bg-red-50 text-red-700 font-bold transition-all cursor-pointer">
+                    <select id="inputFatal" onchange="handleFatalChange(this);" class="border border-red-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 bg-red-50 text-red-700 font-bold transition-all cursor-pointer">
                         <option value="NO" class="text-emerald-700 font-semibold">NO</option>
                         <option value="YES" class="text-red-700 font-bold">YES</option>
                     </select>
@@ -139,14 +139,20 @@
 
         <div class="xl:col-span-1 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white p-5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between animate-fade-in" style="animation-delay: 0.2s;">
             <div>
-                <h2 class="text-xs font-bold text-indigo-300 mb-4 uppercase tracking-wider flex items-center gap-2">
+                <h2 class="text-xs font-bold text-indigo-300 mb-3 uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-cyan-400"></i> Live Scoreboard
                 </h2>
                 
-                <div class="text-center bg-white/5 border border-white/10 rounded-xl p-4 mb-4 backdrop-blur-sm">
-                    <span class="text-xs text-slate-400 block font-medium">Average Quality Score</span>
-                    <div id="sideAvgScore" class="text-4xl font-black text-cyan-400 my-1">100%</div>
-                    <span id="sidePerformanceRating" class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider">Excellent</span>
+                <div class="text-center bg-white/5 border border-white/10 rounded-xl p-3 mb-3 backdrop-blur-sm">
+                    <span class="text-[10px] text-amber-300 block font-bold uppercase tracking-wider mb-0.5">Current Call Preview</span>
+                    <div id="previewScore" class="text-3xl font-black text-amber-400">100%</div>
+                    <span id="previewRating" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider">Excellent</span>
+                </div>
+
+                <div class="text-center bg-white/5 border border-white/10 rounded-xl p-3 mb-3 backdrop-blur-sm">
+                    <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider mb-0.5">Average Quality Score (Total)</span>
+                    <div id="sideAvgScore" class="text-3xl font-black text-cyan-400">100%</div>
+                    <span id="sidePerformanceRating" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider">Excellent</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -201,7 +207,6 @@
     </div>
 
     <script>
-        // 🔗 📝 [এখানে আপনার গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপের URL টি বসান]
         const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXocA1ROGCNDaHFup_J4AvFOKmAwDJ3Yk4W_yeIgLw6CZEU9B2PRfE-CPZpFQ-WVBL/exec";
 
         let auditRecords = JSON.parse(localStorage.getItem('liveAuditRecords')) || [];
@@ -212,6 +217,7 @@
             
             startLiveClock();
             renderTable();
+            updateCurrentPreviewScore(); // ফর্ম ইনিশিয়াল স্কোর সেট করার জন্য
         };
 
         function startLiveClock() {
@@ -240,6 +246,85 @@
             else if (element.value === 'NA') element.classList.add('select-na');
         }
 
+        // 🧮 মূল প্যারামিটার ভিত্তিক স্কোর ক্যালকুলেটর ফাংশন
+        function calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo) {
+            // Correct Info 'NO' হলে অথবা Fatal 'YES' হলে সরাসরি স্কোর ০ এবং রেটিং FATAL
+            if (fatal === "YES" || correctInfo === "NO") {
+                return { score: 0, rating: "FATAL" };
+            }
+
+            const parameters = [opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo];
+            let yesCount = 0;
+            let noCount = 0;
+
+            parameters.forEach(val => {
+                if (val === 'YES') yesCount++;
+                if (val === 'NO') noCount++;
+            });
+
+            const totalApplicable = yesCount + noCount;
+            if (totalApplicable === 0) return { score: 100, rating: "Excellent" };
+
+            const finalScore = Math.round((yesCount / totalApplicable) * 100);
+            
+            let finalRating = "Excellent";
+            if (finalScore < 70) finalRating = "Poor";
+            else if (finalScore < 85) finalRating = "Good";
+            else if (finalScore < 95) finalRating = "Very Good";
+
+            return { score: finalScore, rating: finalRating };
+        }
+
+        // 🔄 ড্রপডাউন পরিবর্তনের সাথে সাথে ডানদিকের প্রিভিউ স্কোর আপডেট করার ফাংশন
+        function updateCurrentPreviewScore() {
+            const opening = document.getElementById('inputOpening').value;
+            const assurance = document.getElementById('inputAssurance').value;
+            const paraphrase = document.getElementById('inputParaphrase').value;
+            const deadAir = document.getElementById('inputDeadAir').value;
+            const interruption = document.getElementById('inputInterruption').value;
+            const clarity = document.getElementById('inputClarity').value;
+            const correctInfo = document.getElementById('inputCorrectInfo').value;
+            const fatal = document.getElementById('inputFatal').value;
+
+            const calculation = calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo);
+
+            const scoreEl = document.getElementById('previewScore');
+            const ratingEl = document.getElementById('previewRating');
+
+            scoreEl.innerText = calculation.score + "%";
+            ratingEl.innerText = calculation.rating;
+
+            if (calculation.rating === "FATAL") {
+                scoreEl.className = "text-3xl font-black text-rose-500 animate-pulse";
+                ratingEl.className = "px-2 py-0.5 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
+            } else {
+                scoreEl.className = "text-3xl font-black text-amber-400";
+                ratingEl.className = "px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
+            }
+        }
+
+        // ⚠️ Correct Info বদলানো হলে Fatal এর সাথে অটো-লিঙ্ক করার লজিক
+        function handleCorrectInfoChange(element) {
+            styleParameterSelect(element);
+            const fatalSelect = document.getElementById('inputFatal');
+            
+            if (element.value === 'NO') {
+                fatalSelect.value = 'YES';
+            } else if (element.value === 'YES' && fatalSelect.value === 'YES') {
+                fatalSelect.value = 'NO';
+            }
+            updateCurrentPreviewScore();
+        }
+
+        function handleFatalChange(element) {
+            const correctInfoVal = document.getElementById('inputCorrectInfo').value;
+            if (element.value === 'NO' && correctInfoVal === 'NO') {
+                alert("Correct Info 'NO' থাকা অবস্থায় 'Fatal Issue' পরিবর্তন করে 'NO' করা সম্ভব নয়।");
+                element.value = 'YES';
+            }
+            updateCurrentPreviewScore();
+        }
+
         function handleFormSubmit(e) {
             e.preventDefault();
 
@@ -257,16 +342,14 @@
             const remarks = document.getElementById('inputRemarks').value.trim(); 
             const fatal = document.getElementById('inputFatal').value;
 
-            let score = 100;
-            let rating = "Excellent";
-
-            if (fatal === "YES") {
-                score = 0;
-                rating = "FATAL";
-            }
+            // ডাইনামিক স্কোর ক্যালকুলেশন রান করা হচ্ছে
+            const finalCalculated = calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo);
 
             const newRecord = {
-                date, time, agent, process, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo, remarks, fatal, score, rating
+                date, time, agent, process, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo, remarks, 
+                fatal: finalCalculated.rating === "FATAL" ? "YES" : fatal, 
+                score: finalCalculated.score, 
+                rating: finalCalculated.rating
             };
 
             // 1. Local Storage-এ সেভ করা
@@ -281,34 +364,36 @@
                 sendToGoogleSheet(newRecord);
             }
             
-            // ফর্ম ক্লিয়ার করা
+            // ফর্ম রিসেট করা
             document.getElementById('inputAgent').value = '';
             document.getElementById('inputRemarks').value = ''; 
+            
+            // ড্রপডাউনগুলো ডিফল্ট YES অবস্থায় ফিরিয়ে নেওয়া
+            const resets = ['inputOpening', 'inputAssurance', 'inputParaphrase', 'inputDeadAir', 'inputInterruption', 'inputClarity', 'inputCorrectInfo'];
+            resets.forEach(id => {
+                const el = document.getElementById(id);
+                el.value = 'YES';
+                styleParameterSelect(el);
+            });
+            document.getElementById('inputFatal').value = 'NO';
+            
             delete document.getElementById('inputTime').dataset.userEdited;
+            updateCurrentPreviewScore();
         }
 
-        // গুগল শিটে ডেটা পাঠানোর ফাংশন
         function sendToGoogleSheet(record) {
             const badge = document.getElementById('syncBadge');
-            badge.classList.remove('hidden'); // সিঙ্ক এলার্ট অন করা
+            badge.classList.remove('hidden');
 
             fetch(GOOGLE_WEB_APP_URL, {
                 method: "POST",
-                mode: "no-cors", // CORS প্রি-ফ্লাইট এড়ানোর জন্য
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(record)
             })
-            .then(() => {
-                console.log("Success: Added to Google Sheet successfully.");
-            })
-            .catch(error => {
-                console.error("Error sending data to Google Sheet:", error);
-            })
-            .finally(() => {
-                setTimeout(() => badge.classList.add('hidden'), 1500); // সিঙ্ক এলার্ট অফ করা
-            });
+            .then(() => { console.log("Success: Synchronized with Google Sheet."); })
+            .catch(error => { console.error("Error sending data to Google Sheet:", error); })
+            .finally(() => { setTimeout(() => badge.classList.add('hidden'), 1500); });
         }
 
         function updateSideDashboard() {
@@ -319,7 +404,7 @@
                 document.getElementById('sideAvgScore').innerText = "100%";
                 document.getElementById('sideFatalCount').innerText = "0";
                 document.getElementById('sideLastScore').innerText = "-";
-                document.getElementById('sidePerformanceRating').className = "px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider";
+                document.getElementById('sidePerformanceRating').className = "px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
                 document.getElementById('sidePerformanceRating').innerText = "Excellent";
                 return;
             }
@@ -329,27 +414,25 @@
 
             auditRecords.forEach(rec => {
                 totalScore += rec.score;
-                if (rec.fatal === "YES") fatalCount++;
+                if (rec.rating === "FATAL" || rec.fatal === "YES") fatalCount++;
             });
 
             const avgScore = Math.round(totalScore / total);
             document.getElementById('sideAvgScore').innerText = avgScore + "%";
             document.getElementById('sideFatalCount').innerText = fatalCount;
             
-            // লাস্ট স্কোর আপডেট
             const lastRecord = auditRecords[auditRecords.length - 1];
             document.getElementById('sideLastScore').innerText = `${lastRecord.score}% (${lastRecord.rating})`;
 
-            // রেটিং ব্যাজ কালার ও টেক্সট পরিবর্তন
             const ratingBadge = document.getElementById('sidePerformanceRating');
             if (fatalCount > 0 && avgScore < 70) {
-                ratingBadge.className = "px-2.5 py-0.5 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider";
-                ratingBadge.innerText = "Critical Needs Improvement";
+                ratingBadge.className = "px-2 py-0.5 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
+                ratingBadge.innerText = "Critical Action Required";
             } else if (avgScore >= 90) {
-                ratingBadge.className = "px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider";
-                ratingBadge.innerText = "Excellent Team Performance";
+                ratingBadge.className = "px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
+                ratingBadge.innerText = "Excellent Quality Standard";
             } else {
-                ratingBadge.className = "px-2.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider";
+                ratingBadge.className = "px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
                 ratingBadge.innerText = "Good / Stable";
             }
         }
@@ -375,7 +458,7 @@
                     return 'bg-slate-100 text-slate-600 border border-slate-200/60 rounded-md px-1.5 py-0.5';
                 };
 
-                const isFatalRow = rec.fatal === "YES";
+                const isFatalRow = rec.rating === "FATAL" || rec.fatal === "YES";
 
                 tr.innerHTML = `
                     <td class="p-3 border-r border-slate-100 font-semibold text-slate-600">${rec.date}</td>
@@ -392,7 +475,7 @@
                     <td class="p-3 border-r border-slate-100"><span class="${getParamBadgeClass(rec.correctInfo)}">${rec.correctInfo}</span></td>
                     
                     <td class="p-3 border-r border-slate-100 ${isFatalRow ? 'bg-rose-50 text-rose-700 font-black' : ''}">
-                        <span class="${isFatalRow ? 'px-2 py-0.5 bg-rose-600 text-white rounded shadow-sm text-[10px]' : 'text-slate-400 font-normal'}">${rec.fatal}</span>
+                        <span class="${isFatalRow ? 'px-2 py-0.5 bg-rose-600 text-white rounded shadow-sm text-[10px]' : 'text-slate-400 font-normal'}">${isFatalRow ? 'YES' : 'NO'}</span>
                     </td>
                     <td class="p-3 border-r border-slate-100 font-black text-sm ${isFatalRow ? 'text-rose-600' : 'text-slate-900'}">${rec.score}</td>
                     <td class="p-3 border-r border-slate-100 font-extrabold ${isFatalRow ? 'text-rose-600 tracking-wider' : 'text-emerald-600'}">${rec.rating}</td>
@@ -420,6 +503,7 @@
                 auditRecords = [];
                 localStorage.removeItem('liveAuditRecords');
                 renderTable();
+                updateCurrentPreviewScore();
             }
         }
 
@@ -434,9 +518,10 @@
 
             auditRecords.forEach(rec => {
                 let cleanRemarks = rec.remarks ? rec.remarks.replace(/"/g, '""') : '';
+                let isFatal = (rec.rating === "FATAL" || rec.fatal === "YES") ? "YES" : "NO";
                 let row = [
                     rec.date, rec.time, `"${rec.agent}"`, rec.process, rec.opening, rec.assurance, 
-                    rec.paraphrase, rec.deadAir, rec.interruption, rec.clarity, rec.correctInfo, rec.fatal, rec.score, rec.rating, `"${cleanRemarks}"`
+                    rec.paraphrase, rec.deadAir, rec.interruption, rec.clarity, rec.correctInfo, isFatal, rec.score, rec.rating, `"${cleanRemarks}"`
                 ].join(",");
                 csvContent += row + "\n";
             });

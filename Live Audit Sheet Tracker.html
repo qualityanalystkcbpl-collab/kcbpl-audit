@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Audit Sheet</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link class="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
@@ -21,7 +21,6 @@
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-6 text-gray-800 antialiased">
-
     <div class="max-w-[98%] mx-auto bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 mb-6 animate-fade-in">
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5">
             
@@ -47,8 +46,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex flex-wrap gap-3 w-full lg:w-auto justify-end">
+                <!-- Back to Home Button -->
+                <button onclick="window.location.href='LOGIN.html'" class="cursor-pointer bg-slate-600 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all duration-200 hover:scale-[1.02] flex items-center gap-2">
+                    <i class="fa-solid fa-house text-base"></i> Back to Home
+                </button>
                 <button onclick="exportToCSV()" class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all duration-200 hover:scale-[1.02] flex items-center gap-2">
                     <i class="fa-solid fa-file-excel text-base"></i> Export to Excel/CSV
                 </button>
@@ -58,7 +60,6 @@
             </div>
         </div>
     </div>
-
     <div class="max-w-[98%] mx-auto grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
         
         <div class="xl:col-span-3 bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 animate-fade-in" style="animation-delay: 0.1s;">
@@ -115,7 +116,6 @@
                     <label class="text-xs font-bold text-slate-600 mb-1.5 truncate">Correct Info</label>
                     <select id="inputCorrectInfo" onchange="handleCorrectInfoChange(this);" class="select-yes border border-slate-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
                 </div>
-
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-red-600 mb-1.5 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-red-500"></i> Fatal Issue</label>
                     <select id="inputFatal" onchange="handleFatalChange(this);" class="border border-red-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 bg-red-50 text-red-700 font-bold transition-all cursor-pointer">
@@ -123,12 +123,10 @@
                         <option value="YES" class="text-red-700 font-bold">YES</option>
                     </select>
                 </div>
-
                 <div class="flex flex-col col-span-2 sm:col-span-2 lg:col-span-3">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 flex items-center gap-1"><i class="fa-regular fa-comment-dots text-blue-500"></i> Any Remarks</label>
                     <input type="text" id="inputRemarks" placeholder="Type call observations or critical notes..." class="border border-blue-200 focus:border-blue-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-slate-50/50 shadow-inner transition-all">
                 </div>
-
                 <div class="flex items-end col-span-2 sm:col-span-1 lg:col-span-1">
                     <button type="submit" class="cursor-pointer w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-lg hover:scale-[1.02] duration-200">
                         <i class="fa-solid fa-plus mr-1"></i> Add Record
@@ -136,7 +134,6 @@
                 </div>
             </form>
         </div>
-
         <div class="xl:col-span-1 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white p-5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between animate-fade-in" style="animation-delay: 0.2s;">
             <div>
                 <h2 class="text-xs font-bold text-indigo-300 mb-3 uppercase tracking-wider flex items-center gap-2">
@@ -148,13 +145,11 @@
                     <div id="previewScore" class="text-3xl font-black text-amber-400">100%</div>
                     <span id="previewRating" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider">Excellent</span>
                 </div>
-
                 <div class="text-center bg-white/5 border border-white/10 rounded-xl p-3 mb-3 backdrop-blur-sm">
                     <span class="text-[10px] text-slate-400 block font-bold uppercase tracking-wider mb-0.5">Average Quality Score (Total)</span>
                     <div id="sideAvgScore" class="text-3xl font-black text-cyan-400">100%</div>
                     <span id="sidePerformanceRating" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider">Excellent</span>
                 </div>
-
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-white/5 border border-white/5 p-3 rounded-xl text-center">
                         <span class="text-[10px] text-slate-400 block">Total Audits</span>
@@ -166,15 +161,12 @@
                     </div>
                 </div>
             </div>
-
             <div class="mt-4 pt-3 border-t border-white/10 text-[11px] text-slate-400 flex justify-between items-center">
                 <span>Last Added Score:</span>
                 <span id="sideLastScore" class="font-bold text-white">-</span>
             </div>
         </div>
-
     </div>
-
     <div class="max-w-[98%] mx-auto bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden animate-fade-in" style="animation-delay: 0.25s;">
         <div class="overflow-x-auto">
             <table class="w-full border-collapse text-xs text-center">
@@ -205,12 +197,9 @@
             </table>
         </div>
     </div>
-
     <script>
         const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXocA1ROGCNDaHFup_J4AvFOKmAwDJ3Yk4W_yeIgLw6CZEU9B2PRfE-CPZpFQ-WVBL/exec";
-
         let auditRecords = JSON.parse(localStorage.getItem('liveAuditRecords')) || [];
-
         window.onload = function() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inputDate').value = today;
@@ -219,7 +208,6 @@
             renderTable();
             updateCurrentPreviewScore(); // ফর্ম ইনিশিয়াল স্কোর সেট করার জন্য
         };
-
         function startLiveClock() {
             function updateClock() {
                 const now = new Date();
@@ -233,48 +221,39 @@
             }
             updateClock();
             setInterval(updateClock, 1000);
-
             document.getElementById('inputTime').addEventListener('input', function() {
                 this.dataset.userEdited = true;
             });
         }
-
         function styleParameterSelect(element) {
             element.classList.remove('select-yes', 'select-no', 'select-na');
             if (element.value === 'YES') element.classList.add('select-yes');
             else if (element.value === 'NO') element.classList.add('select-no');
             else if (element.value === 'NA') element.classList.add('select-na');
         }
-
         // 🧮 মূল প্যারামিটার ভিত্তিক স্কোর ক্যালকুলেটর ফাংশন
         function calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo) {
             // Correct Info 'NO' হলে অথবা Fatal 'YES' হলে সরাসরি স্কোর ০ এবং রেটিং FATAL
             if (fatal === "YES" || correctInfo === "NO") {
                 return { score: 0, rating: "FATAL" };
             }
-
             const parameters = [opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo];
             let yesCount = 0;
             let noCount = 0;
-
             parameters.forEach(val => {
                 if (val === 'YES') yesCount++;
                 if (val === 'NO') noCount++;
             });
-
             const totalApplicable = yesCount + noCount;
             if (totalApplicable === 0) return { score: 100, rating: "Excellent" };
-
             const finalScore = Math.round((yesCount / totalApplicable) * 100);
             
             let finalRating = "Excellent";
             if (finalScore < 70) finalRating = "Poor";
             else if (finalScore < 85) finalRating = "Good";
             else if (finalScore < 95) finalRating = "Very Good";
-
             return { score: finalScore, rating: finalRating };
         }
-
         // 🔄 ড্রপডাউন পরিবর্তনের সাথে সাথে ডানদিকের প্রিভিউ স্কোর আপডেট করার ফাংশন
         function updateCurrentPreviewScore() {
             const opening = document.getElementById('inputOpening').value;
@@ -285,15 +264,11 @@
             const clarity = document.getElementById('inputClarity').value;
             const correctInfo = document.getElementById('inputCorrectInfo').value;
             const fatal = document.getElementById('inputFatal').value;
-
             const calculation = calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo);
-
             const scoreEl = document.getElementById('previewScore');
             const ratingEl = document.getElementById('previewRating');
-
             scoreEl.innerText = calculation.score + "%";
             ratingEl.innerText = calculation.rating;
-
             if (calculation.rating === "FATAL") {
                 scoreEl.className = "text-3xl font-black text-rose-500 animate-pulse";
                 ratingEl.className = "px-2 py-0.5 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
@@ -302,7 +277,6 @@
                 ratingEl.className = "px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
             }
         }
-
         // ⚠️ Correct Info বদলানো হলে Fatal এর সাথে অটো-লিঙ্ক করার লজিক
         function handleCorrectInfoChange(element) {
             styleParameterSelect(element);
@@ -315,7 +289,6 @@
             }
             updateCurrentPreviewScore();
         }
-
         function handleFatalChange(element) {
             const correctInfoVal = document.getElementById('inputCorrectInfo').value;
             if (element.value === 'NO' && correctInfoVal === 'NO') {
@@ -324,10 +297,8 @@
             }
             updateCurrentPreviewScore();
         }
-
         function handleFormSubmit(e) {
             e.preventDefault();
-
             const date = document.getElementById('inputDate').value;
             const time = document.getElementById('inputTime').value;
             const agent = document.getElementById('inputAgent').value.trim();
@@ -341,17 +312,14 @@
             const correctInfo = document.getElementById('inputCorrectInfo').value;
             const remarks = document.getElementById('inputRemarks').value.trim(); 
             const fatal = document.getElementById('inputFatal').value;
-
             // ডাইনামিক স্কোর ক্যালকুলেশন রান করা হচ্ছে
             const finalCalculated = calculateCalculatedScore(fatal, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo);
-
             const newRecord = {
                 date, time, agent, process, opening, assurance, paraphrase, deadAir, interruption, clarity, correctInfo, remarks, 
                 fatal: finalCalculated.rating === "FATAL" ? "YES" : fatal, 
                 score: finalCalculated.score, 
                 rating: finalCalculated.rating
             };
-
             // 1. Local Storage-এ সেভ করা
             auditRecords.push(newRecord);
             localStorage.setItem('liveAuditRecords', JSON.stringify(auditRecords));
@@ -380,11 +348,9 @@
             delete document.getElementById('inputTime').dataset.userEdited;
             updateCurrentPreviewScore();
         }
-
         function sendToGoogleSheet(record) {
             const badge = document.getElementById('syncBadge');
             badge.classList.remove('hidden');
-
             fetch(GOOGLE_WEB_APP_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -395,11 +361,9 @@
             .catch(error => { console.error("Error sending data to Google Sheet:", error); })
             .finally(() => { setTimeout(() => badge.classList.add('hidden'), 1500); });
         }
-
         function updateSideDashboard() {
             const total = auditRecords.length;
             document.getElementById('sideTotalAudits').innerText = total;
-
             if (total === 0) {
                 document.getElementById('sideAvgScore').innerText = "100%";
                 document.getElementById('sideFatalCount').innerText = "0";
@@ -408,22 +372,18 @@
                 document.getElementById('sidePerformanceRating').innerText = "Excellent";
                 return;
             }
-
             let fatalCount = 0;
             let totalScore = 0;
-
             auditRecords.forEach(rec => {
                 totalScore += rec.score;
                 if (rec.rating === "FATAL" || rec.fatal === "YES") fatalCount++;
             });
-
             const avgScore = Math.round(totalScore / total);
             document.getElementById('sideAvgScore').innerText = avgScore + "%";
             document.getElementById('sideFatalCount').innerText = fatalCount;
             
             const lastRecord = auditRecords[auditRecords.length - 1];
             document.getElementById('sideLastScore').innerText = `${lastRecord.score}% (${lastRecord.rating})`;
-
             const ratingBadge = document.getElementById('sidePerformanceRating');
             if (fatalCount > 0 && avgScore < 70) {
                 ratingBadge.className = "px-2 py-0.5 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded text-[9px] font-bold uppercase tracking-wider";
@@ -436,30 +396,23 @@
                 ratingBadge.innerText = "Good / Stable";
             }
         }
-
         function renderTable() {
             const tbody = document.getElementById('sheetDataBody');
             tbody.innerHTML = '';
-
             updateSideDashboard();
-
             if (auditRecords.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="16" class="p-8 text-slate-400 font-normal italic bg-slate-50/50">No audits recorded yet. Fill out the input sheet form above to insert database entries.</td></tr>`;
                 return;
             }
-
             auditRecords.forEach((rec, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 bg-white border-b border-slate-100 transition-all duration-150 transform hover:scale-[1.001]";
-
                 const getParamBadgeClass = (val) => {
                     if (val === 'YES') return 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-200/60 rounded-md px-1.5 py-0.5';
                     if (val === 'NO') return 'bg-rose-100 text-rose-800 font-bold border border-rose-200/60 rounded-md px-1.5 py-0.5';
                     return 'bg-slate-100 text-slate-600 border border-slate-200/60 rounded-md px-1.5 py-0.5';
                 };
-
                 const isFatalRow = rec.rating === "FATAL" || rec.fatal === "YES";
-
                 tr.innerHTML = `
                     <td class="p-3 border-r border-slate-100 font-semibold text-slate-600">${rec.date}</td>
                     <td class="p-3 border-r border-slate-100 text-slate-500">${rec.time}</td>
@@ -489,7 +442,6 @@
                 tbody.appendChild(tr);
             });
         }
-
         function deleteRow(index) {
             if(confirm("Are you sure you want to delete this specific record row from local storage? (Note: This won't delete rows from Google Sheets)")) {
                 auditRecords.splice(index, 1);
@@ -497,7 +449,6 @@
                 renderTable();
             }
         }
-
         function clearAllData() {
             if (confirm("Critical Warning: This will completely erase all recorded sheets locally. Proceed?")) {
                 auditRecords = [];
@@ -506,16 +457,13 @@
                 updateCurrentPreviewScore();
             }
         }
-
         function exportToCSV() {
             if (auditRecords.length === 0) {
                 alert("Database spreadsheet is empty! Add records to export.");
                 return;
             }
-
             let csvContent = "data:text/csv;charset=utf-8,";
             csvContent += "Date,Time,Agent Name,Process,Opening,Assurance,Paraphrasing/ Acknowledgement,Dead Air,Interruption,Clarity of speech,Correct Information Provided,Fatal Issue Identified,Score,Rating,Remarks\n";
-
             auditRecords.forEach(rec => {
                 let cleanRemarks = rec.remarks ? rec.remarks.replace(/"/g, '""') : '';
                 let isFatal = (rec.rating === "FATAL" || rec.fatal === "YES") ? "YES" : "NO";
@@ -525,7 +473,6 @@
                 ].join(",");
                 csvContent += row + "\n";
             });
-
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);

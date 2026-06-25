@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Audit from July 2026 (HTML)</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Live Audit Sheet Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Arial', sans-serif; }
@@ -15,16 +13,13 @@
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
 
-    <!-- Top Action Panel & Title (Logo Included Here) -->
     <div class="max-w-[98%] mx-auto bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             
-            <!-- Logo and Title Section -->
             <div class="flex items-center gap-4">
-                <!-- LOGO PLACEHOLDER: আপনার লোগো ইমেজটি src="" এর ভেতর বসিয়ে দেবেন -->
-                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-300 text-gray-400 text-[10px] font-bold shrink-0 overflow-hidden shadow-inner">
-                    <img src="gtpl_logo.png" alt="Logo" class="w-full h-full object-contain hidden onerror='this.style.display=\"none\"'">
-                    <span class="text-center p-1 text-gray-500"><i class="fa-solid fa-image text-lg block mb-0.5 text-gray-400"></i>LOGO</span>
+                <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center border border-gray-300 text-gray-400 text-[10px] font-bold shrink-0 overflow-hidden shadow-sm relative">
+                    <img src="gtpl_logo.png" alt="GTPL Logo" class="w-full h-full object-contain absolute inset-0 p-1 bg-white z-10" onerror="this.style.display='none'">
+                    <span class="text-center p-1 text-gray-500 absolute z-0"><i class="fa-solid fa-image text-lg block mb-0.5 text-gray-400"></i>GTPL</span>
                 </div>
                 
                 <div>
@@ -35,7 +30,6 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="flex gap-2 self-end md:self-center">
                 <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all flex items-center gap-2">
                     <i class="fa-solid fa-file-excel"></i> Export to Excel/CSV
@@ -48,7 +42,6 @@
 
         <hr class="my-4 border-gray-200">
 
-        <!-- Interactive Quick Entry Form -->
         <form id="auditForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
             <div class="flex flex-col">
                 <label class="text-xs font-bold text-gray-600 mb-1">Date</label>
@@ -71,7 +64,6 @@
                 </select>
             </div>
             
-            <!-- Parameters Group -->
             <div class="flex flex-col">
                 <label class="text-xs font-bold text-gray-600 mb-1">Opening</label>
                 <select id="inputOpening" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
@@ -101,13 +93,11 @@
                 <select id="inputCorrectInfo" class="grid-input"><option value="YES">YES</option><option value="NO">NO</option><option value="NA">NA</option></select>
             </div>
 
-            <!-- NEW FIELD: Any Remarks -->
             <div class="flex flex-col col-span-2 sm:col-span-2 lg:col-span-2">
                 <label class="text-xs font-bold text-gray-600 mb-1">Any Remarks</label>
                 <input type="text" id="inputRemarks" placeholder="Type call observations/remarks here..." class="grid-input border-blue-200">
             </div>
 
-            <!-- Fatal Control -->
             <div class="flex flex-col col-span-2 sm:col-span-1">
                 <label class="text-xs font-bold text-red-600 mb-1">Fatal Issue Identified</label>
                 <select id="inputFatal" class="grid-input border-red-400 font-bold text-red-600">
@@ -116,7 +106,6 @@
                 </select>
             </div>
 
-            <!-- Submit Button Row -->
             <div class="flex items-end col-span-2 sm:col-span-1">
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded text-sm transition-all shadow-sm">
                     <i class="fa-solid fa-plus mr-1"></i> Add Record
@@ -125,19 +114,16 @@
         </form>
     </div>
 
-    <!-- Live Spreadsheet View Grid -->
     <div class="max-w-[98%] mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full border-collapse text-xs text-center">
                 <thead>
                     <tr class="font-bold border-b-2 border-gray-300">
-                        <!-- Blue Headers -->
                         <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[90px]">Date</th>
                         <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[80px]">Time</th>
                         <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[120px]">Agent Name</th>
                         <th class="bg-blue-700 text-white p-2.5 border-r border-gray-200 min-w-[90px]">Process</th>
                         
-                        <!-- Yellow Headers -->
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Opening</th>
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Assurance</th>
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Paraphrasing/ Acknowledgement</th>
@@ -146,27 +132,22 @@
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Clarity of speech/Rate of Speech</th>
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200">Correct Information Provided</th>
                         
-                        <!-- Red Header -->
                         <th class="bg-red-600 text-white p-2.5 border-r border-gray-200 min-w-[130px]">Fatal Issue Identified:</th>
                         
-                        <!-- Yellow Score/Rating Headers -->
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200 min-w-[60px]">Score</th>
                         <th class="bg-yellow-400 text-black p-2.5 border-r border-gray-200 min-w-[90px]">Rating</th>
                         
-                        <!-- NEW COLUMN: Remarks Header -->
                         <th class="bg-slate-700 text-white p-2.5 border-r border-gray-200 min-w-[150px]">Remarks</th>
                         
                         <th class="bg-gray-800 text-white p-2.5 min-w-[50px]">Action</th>
                     </tr>
                 </thead>
                 <tbody id="sheetDataBody" class="divide-y divide-gray-200 font-medium text-gray-700">
-                    <!-- Dynamic Rows insert here -->
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>
 
-    <!-- JavaScript Engine -->
     <script>
         let auditRecords = JSON.parse(localStorage.getItem('liveAuditRecords')) || [];
 
@@ -194,7 +175,7 @@
             const interruption = document.getElementById('inputInterruption').value;
             const clarity = document.getElementById('inputClarity').value;
             const correctInfo = document.getElementById('inputCorrectInfo').value;
-            const remarks = document.getElementById('inputRemarks').value.trim(); // Capture Remarks
+            const remarks = document.getElementById('inputRemarks').value.trim(); 
             const fatal = document.getElementById('inputFatal').value;
 
             let score = 100;
@@ -216,7 +197,7 @@
             
             // Fields Resetting
             document.getElementById('inputAgent').value = '';
-            document.getElementById('inputRemarks').value = ''; // Clear remarks field
+            document.getElementById('inputRemarks').value = ''; 
         }
 
         function renderTable() {
@@ -250,7 +231,6 @@
                     <td class="p-2 border-r border-gray-200 ${isFatalRow ? 'bg-red-100 text-red-700 font-bold' : cellBgClass}">${rec.fatal}</td>
                     <td class="p-2 border-r border-gray-200 font-bold ${isFatalRow ? 'text-red-600' : 'text-gray-900'}">${rec.score}</td>
                     <td class="p-2 border-r border-gray-200 font-bold ${isFatalRow ? 'text-red-600 uppercase' : 'text-emerald-700'}">${rec.rating}</td>
-                    <!-- Remarks Cell View -->
                     <td class="p-2 border-r border-gray-200 text-left px-3 text-gray-600 italic bg-gray-50 max-w-[180px] break-words" title="${rec.remarks || ''}">${rec.remarks || '-'}</td>
                     <td class="p-2"><button onclick="deleteRow(${index})" class="text-red-500 hover:text-red-700 transition-all"><i class="fa-solid fa-square-xmark text-base"></i></button></td>
                 `;
@@ -266,6 +246,7 @@
             }
         }
 
+        // Keep local records clean
         function clearAllData() {
             if (confirm("Warning: This will clear the entire local web sheet. Proceed?")) {
                 auditRecords = [];

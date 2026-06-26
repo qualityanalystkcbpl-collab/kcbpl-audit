@@ -450,9 +450,47 @@
     <p id="loginError" style="color:var(--danger); font-weight:600; margin-top:15px; font-size:14px;"></p>
 </div>
 <div id="dashboard">
-    <div class="dashboard-header">
+   <div class="dashboard-header">
         <div class="header-left">
-            <span style="font-weight: 800; font-size: 18px; color: var(--primary);"><i class="fa-solid fa-chart-pie"></i> GTPL-KCBPL QA WORKSPACE</span>
+            <style>
+                @keyframes cosmicShine {
+                    0% { background-position: 0% center; }
+                    100% { background-position: 400% center; }
+                }
+                
+                /* Ekdom smooth ebong non-stop gol ghorar animation */
+                @keyframes continuousRound {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                
+                .premium-workspace-title {
+                    font-weight: 800;
+                    font-size: 20px;
+                    background: linear-gradient(90deg, #0f766e, #14b8a6, #3b82f6, #8b5cf6, #0f766e);
+                    background-size: 400% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 12px;
+                    animation: cosmicShine 6s linear infinite;
+                }
+                
+                .premium-workspace-title i {
+                    background: linear-gradient(135deg, #14b8a6, #3b82f6);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    /* linear infinite dewar jonno eti kokhono thambe na, non-stop ghurbe */
+                    animation: continuousRound 3s linear infinite;
+                    display: inline-block;
+                    transform-origin: center;
+                }
+            </style>
+            
+            <span class="premium-workspace-title">
+                <i class="fa-solid fa-chart-pie"></i> GTPL-KCBPL QA WORKSPACE
+            </span>
             <div class="live-clock" id="liveClock"><i class="fa-regular fa-clock"></i> Loading...</div>
         </div>
         <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-lock"></i> Logout</button>

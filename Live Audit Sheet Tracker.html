@@ -18,6 +18,356 @@
         .select-yes { border-color: #10b981 !important; color: #047857 !important; font-weight: bold; background-color: #f0fdf4; }
         .select-no { border-color: #f43f5e !important; color: #b91c1c !important; font-weight: bold; background-color: #fff1f2; }
         .select-na { border-color: #94a3b8 !important; color: #475569 !important; background-color: #f8fafc; }
+#syncBadge{
+    position:relative;
+    overflow:hidden;
+
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    color:#fff;
+    font-size:12px;
+    font-weight:bold;
+
+    background:linear-gradient(
+    270deg,
+    #0ea5e9,
+    #2563eb,
+    #06b6d4,
+    #0ea5e9);
+
+    background-size:400% 400%;
+
+    animation:
+    gradientMove 6s linear infinite,
+    badgeFloat 2s ease-in-out infinite;
+
+    box-shadow:0 0 18px rgba(14,165,233,.4);
+}
+
+#syncBadge::before{
+
+content:"";
+
+position:absolute;
+
+left:-150%;
+top:0;
+
+width:120%;
+height:100%;
+
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.7),
+transparent);
+
+animation:shine 2s linear infinite;
+
+}
+
+#syncBadge::after{
+
+content:"";
+
+position:absolute;
+
+left:-50%;
+top:-250%;
+
+width:200%;
+height:500%;
+
+background:radial-gradient(
+rgba(255,255,255,.18),
+transparent 70%);
+
+animation:waveMove 5s linear infinite;
+
+}
+
+#syncBadge i{
+
+font-size:15px;
+
+animation:iconRotate 1.3s linear infinite;
+
+}
+
+@keyframes gradientMove{
+
+0%{
+background-position:0% 50%;
+}
+
+50%{
+background-position:100% 50%;
+}
+
+100%{
+background-position:0% 50%;
+}
+
+}
+
+@keyframes shine{
+
+100%{
+left:180%;
+}
+
+}
+
+@keyframes iconRotate{
+
+100%{
+transform:rotate(360deg);
+}
+
+}
+
+@keyframes badgeFloat{
+
+0%,100%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-3px);
+}
+
+}
+
+@keyframes waveMove{
+
+100%{
+transform:rotate(360deg);
+}
+
+}
+/* ===== LIVE SCOREBOARD ANIMATION ===== */
+
+.live-scoreboard{
+
+position:relative;
+overflow:hidden;
+
+background:linear-gradient(
+135deg,
+#0f172a,
+#1e1b4b,
+#111827,
+#1e293b);
+
+background-size:400% 400%;
+
+animation:
+scoreGradient 8s linear infinite,
+scoreFloat 4s ease-in-out infinite;
+
+box-shadow:
+0 0 25px rgba(59,130,246,.25);
+
+}
+
+/* Moving Light */
+
+.live-scoreboard::before{
+
+content:"";
+
+position:absolute;
+
+top:-40%;
+left:-120%;
+
+width:70%;
+height:180%;
+
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.18),
+transparent);
+
+transform:rotate(25deg);
+
+animation:shineMove 4s linear infinite;
+
+}
+
+/* Glow Border */
+
+.live-scoreboard::after{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+border-radius:18px;
+
+padding:2px;
+
+background:linear-gradient(
+90deg,
+#3b82f6,
+#06b6d4,
+#22c55e,
+#facc15,
+#3b82f6);
+
+background-size:400% 400%;
+
+animation:borderMove 6s linear infinite;
+
+-webkit-mask:
+linear-gradient(#fff 0 0) content-box,
+linear-gradient(#fff 0 0);
+
+-webkit-mask-composite:xor;
+
+mask-composite:exclude;
+
+pointer-events:none;
+
+}
+
+@keyframes scoreGradient{
+
+0%{background-position:0% 50%;}
+
+50%{background-position:100% 50%;}
+
+100%{background-position:0% 50%;}
+
+}
+
+@keyframes borderMove{
+
+0%{background-position:0% 50%;}
+
+100%{background-position:100% 50%;}
+
+}
+
+@keyframes shineMove{
+
+100%{
+
+left:150%;
+
+}
+
+}
+
+@keyframes scoreFloat{
+
+0%,100%{
+
+transform:translateY(0px);
+
+}
+
+50%{
+
+transform:translateY(-8px);
+
+}
+
+}
+.live-title{
+
+position:relative;
+display:inline-flex;
+align-items:center;
+gap:8px;
+
+font-size:14px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:1px;
+
+background:linear-gradient(
+90deg,
+#2563eb,
+#06b6d4,
+#10b981,
+#2563eb);
+
+background-size:300%;
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:
+titleGradient 5s linear infinite,
+titleFloat 2.5s ease-in-out infinite;
+
+}
+
+.live-title::after{
+
+content:"";
+
+position:absolute;
+
+left:-120%;
+bottom:-3px;
+
+width:100%;
+height:2px;
+
+background:linear-gradient(
+90deg,
+transparent,
+#38bdf8,
+transparent);
+
+animation:lineMove 2.5s linear infinite;
+
+}
+
+@keyframes titleGradient{
+
+0%{background-position:0%;}
+
+100%{background-position:300%;}
+
+}
+
+@keyframes titleFloat{
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+50%{
+
+transform:translateY(-3px);
+
+}
+
+}
+
+@keyframes lineMove{
+
+100%{
+
+left:120%;
+
+}
+
+}
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-6 text-gray-800 antialiased">
@@ -40,9 +390,13 @@
                             <i class="fa-solid fa-clock text-blue-500 animate-pulse"></i>
                             <span id="liveClock">00:00:00 AM</span>
                         </span>
-                        <span id="syncBadge" class="hidden inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded text-[11px] font-bold">
-                            <i class="fa-solid fa-cloud-arrow-up animate-bounce"></i>গুগল শিটসে স্বয়ংক্রিয়ভাবে তথ্য সংরক্ষণ হচ্ছে...
-                        </span>
+                        <div id="syncBadge" class="hidden">
+    <i class="fa-solid fa-cloud-arrow-up"></i>
+
+    <span>
+        গুগল শিটসে স্বয়ংক্রিয়ভাবে তথ্য সংরক্ষণ হচ্ছে...
+    </span>
+</div>
                     </div>
                 </div>
             </div>
@@ -63,9 +417,10 @@
     <div class="max-w-[98%] mx-auto grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
         
         <div class="xl:col-span-3 bg-white p-5 rounded-2xl shadow-md border border-slate-200/80 animate-fade-in" style="animation-delay: 0.1s;">
-            <h2 class="text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-blue-500"></i> Live Call Audit Entry Form
-            </h2>
+            <h2 class="live-title">
+    <i class="fa-solid fa-pen-to-square"></i>
+    Live Call Audit Entry Form
+</h2>
             <form id="auditForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 <div class="flex flex-col">
                     <label class="text-xs font-bold text-slate-600 mb-1.5 flex items-center gap-1"><i class="fa-regular fa-calendar text-blue-500"></i> Date</label>
@@ -134,7 +489,7 @@
                 </div>
             </form>
         </div>
-        <div class="xl:col-span-1 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white p-5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="xl:col-span-1 live-scoreboard text-white p-5 rounded-2xl shadow-md border border-slate-800 flex flex-col justify-between animate-fade-in">
             <div>
                 <h2 class="text-xs font-bold text-indigo-300 mb-3 uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-cyan-400"></i> Live Scoreboard

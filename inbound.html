@@ -135,6 +135,11 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     transition:0.3s;">
         🏠 Back to Home
     </button>
+<div class="scroll-title">
+    <div class="scroll-text">
+        📞 ইনবাউন্ড কল অডিট শিট • GTPL KCBPL কোয়ালিটি অ্যাস্যুরেন্স • রিয়েল-টাইম কল কোয়ালিটি মনিটরিং • প্রতিটি কল সঠিকভাবে মূল্যায়ন করুন • গুগল শিটসে স্বয়ংক্রিয়ভাবে তথ্য সংরক্ষণ হচ্ছে • শুধুমাত্র অভ্যন্তরীণ QA ব্যবহারের জন্য • গুণগত মান নিশ্চিত করতে প্রতিটি কল সতর্কতার সাথে মূল্যায়ন করুন •
+    </div>
+</div>
 </div>
 <!-- AUDIO PLAYER FIXED BAR -->
 
@@ -156,7 +161,7 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
 
 <style>
 #audioBar{
-    position:sticky;
+    position:static;
     top:48px;
     z-index:9999;
 
@@ -1025,6 +1030,97 @@ function scrollToTop() {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
     70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.scroll-title{
+    width:100%;
+    height:42px;
+    overflow:hidden;
+    background:linear-gradient(90deg,#2563eb,#0f766e,#2563eb);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    white-space:nowrap;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.scroll-text{
+    display:inline-block;
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    padding-left:100%;
+    animation:scrollTitle 18s linear infinite;
+}
+
+.scroll-title:hover .scroll-text{
+    animation-play-state:paused;
+}
+
+@keyframes scrollTitle{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-100%);
+    }
+}
+.scroll-title{
+    width:100%;
+    height:42px;
+    overflow:hidden;
+    background:linear-gradient(90deg,#2563eb,#0f766e,#2563eb);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    white-space:nowrap;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.scroll-text{
+    display:inline-block;
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    padding-left:100%;
+    animation:scrollTitle 18s linear infinite;
+}
+
+.scroll-title:hover .scroll-text{
+    animation-play-state:paused;
+}
+
+@keyframes scrollTitle{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-100%);
+    }
+}
+.scroll-title{
+    position:relative;
+}
+
+.scroll-title::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-40%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);
+    animation:shine 3s linear infinite;
+}
+
+@keyframes shine{
+    from{
+        left:-40%;
+    }
+    to{
+        left:120%;
+    }
 }
 </style>
 </body>

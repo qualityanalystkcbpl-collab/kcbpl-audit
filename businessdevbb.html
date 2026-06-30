@@ -285,8 +285,8 @@
             color: #ef4444;
         }
 
-        /* AUDIO PLAYER FIXED BAR STYLES */
-        #audioBar {
+        /* FIXED SCROLLING TEXT BAR STYLES */
+        #scrollingNoticeBar {
             position: fixed;
             top: 0;
             left: 0;
@@ -294,36 +294,20 @@
             z-index: 99999;
             background: #061421;
             border-bottom: 2px solid #06b6d4;
-            padding: 12px 24px;
+            padding: 10px 20px;
             display: flex;
-            gap: 10px;
             align-items: center;
             box-shadow: 0 5px 20px rgba(0,0,0,.35);
             box-sizing: border-box;
-        }
-        .audio-title {
             color: #06b6d4;
             font-weight: bold;
-            min-width: 170px;
+            font-size: 15px;
         }
-        #audioLink {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
+        #scrollingNoticeBar marquee {
+            margin: 0;
+            padding: 0;
         }
-        #audioBar button {
-            background: #06b6d4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        #callAudio {
-            width: 420px;
-        }
+
 /* Back to Top Button */
 #backToTop {
     position: fixed;
@@ -342,7 +326,6 @@
     transition: all .3s ease;
     display: none;
 }
-
 #backToTop:hover {
     background: #b91c1c;
     transform: translateY(-3px);
@@ -351,18 +334,11 @@
 </head>
 <body>
 
-<!-- AUDIO PLAYER FIXED BAR -->
-<div id="audioBar">
-    <div class="audio-title">
-        🎧 Call Recording Player
-    </div>
-    <input
-        type="text"
-        id="audioLink"
-        placeholder="Paste Recording URL Here..."
-        value="">
-    <button onclick="loadAudio()">Load</button>
-    <audio id="callAudio" controls preload="metadata"></audio>
+<!-- FIXED SCROLLING TEXT BAR -->
+<div id="scrollingNoticeBar">
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+        📢 GTPL KCBPL Quality Audit Portal-এ আপনাকে স্বাগতম! অডিট করার সময় সমস্ত গাইডলাইন ও প্যারামিটার মনোযোগ সহকারে যাচাই করুন এবং সঠিক তথ্য ইনপুট নিশ্চিত করুন।
+    </marquee>
 </div>
 
 <!-- Score Box er Upore Fixed Watch & Auto Timer -->
@@ -379,7 +355,6 @@
         <div class="tracker-value" id="auditTimer">00:00</div>
     </div>
 </div>
-
 <!-- Top Layout Container for Banner Image & Back Button -->
 <div class="header-container">
     <div class="logo-area">
@@ -389,14 +364,12 @@
         <a href="LOGIN.html" class="home-btn">🏡 Back to Home</a>
     </div>
 </div>
-
 <!-- Live Score Card Dashboard Widget -->
 <div class="live-score-card" id="liveScoreCard">
     <div class="score-card-title">TOTAL SCORE / মোট নম্বর</div>
     <div class="score-card-number" id="liveScoreNumber">0</div>
     <div class="score-card-status" id="liveScoreStatus">STATUS: PASS</div>
 </div>
-
 <div class="form-container">
     <h2 class="main-title">GTPL KCBPL – CALL QUALITY AUDIT FORM</h2>
     <div class="subtitle">OUTBOUND (RETENTION) (TOTAL MARKS - 100) / আউটবাউন্ড (রিটেনশন) (মোট নম্বর - ১০০)</div>
@@ -460,7 +433,6 @@
                 <input type="text" name="Disposition" required>
             </div>
         </div>
-
         <!-- SECTION 2: AUDIT PARAMETERS -->
         <div class="section-title">SECTION 2: QUALITY PARAMETERS / কোয়ালিটি প্যারামিটারসমূহ</div>
         <!-- P1 (Max: 2) -->
@@ -840,7 +812,6 @@
                 <input type="text" name="r29" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
-
         <!-- CRITICAL FATAL PARAMETERS (30-35) -->
         <!-- P30 (Max: 0) -->
         <div class="parameter-row fatal-style">
@@ -920,7 +891,6 @@
                 <input type="text" name="r35" placeholder="Remarks / মন্তব্য">
             </div>
         </div>
-
         <!-- SECTION 3: SUMMARY -->
         <div class="section-title">SECTION 3: AUDIT SUMMARY / অডিট সামারি</div>
         <div class="form-group">
@@ -931,11 +901,9 @@
     </form>
     <div id="responseMessage"></div>
 </div>
-
 <script>
 let timerInterval;
 let totalSeconds = 0;
-
 function startAuditTimer() {
     if (timerInterval) clearInterval(timerInterval);
     totalSeconds = 0;
@@ -953,13 +921,11 @@ function startAuditTimer() {
         timerElement.textContent = `${minutes}:${seconds}`;
     }, 1000);
 }
-
 function resetAuditTimer() {
     totalSeconds = 0;
     document.getElementById('auditTimer').textContent = "00:00";
     startAuditTimer();
 }
-
 function updateLiveClock() {
     const now = new Date();
     let hours = now.getHours();
@@ -978,13 +944,11 @@ function updateLiveClock() {
     const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
     document.getElementById('liveDate').textContent = now.toLocaleDateString('en-US', options);
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     updateLiveClock();
     setInterval(updateLiveClock, 1000);
     startAuditTimer();
 });
-
     // Live Score Calculation Engine
     function calculateLiveScore() {
         let totalScore = 0;
@@ -1014,7 +978,6 @@ document.addEventListener('DOMContentLoaded', () => {
             scoreCard.classList.remove('fatal-active');
         }
     }
-
     // Dynamic Remarks Validation Logic & Live Score trigger
     document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', function() {
@@ -1048,7 +1011,6 @@ document.addEventListener('DOMContentLoaded', () => {
             calculateLiveScore();
         });
     });
-
     // Form Submission Handler
     document.getElementById('auditForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -1102,33 +1064,15 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerText = "Submit Audit / অডিট সাবমিট করুন";
         });
     });
-
-    // 🛠️ Audio Loader Function with Autoplay Feature
-    function loadAudio() {
-        const url = document.getElementById('audioLink').value.trim();
-        const audioEl = document.getElementById('callAudio');
-        if(url) {
-            audioEl.src = url;
-            audioEl.load();
-            // লোড হওয়ার সাথে সাথে অডিওটি স্বয়ংক্রিয়ভাবে চালু করার জন্য .play() ব্যবহার করা হলো
-            audioEl.play().catch(error => {
-                console.log("Autoplay was prevented by browser or link issue:", error);
-            });
-        } else {
-            alert("Please paste a valid URL first.");
-        }
-    }
 // Show / Hide Back To Top Button
 window.addEventListener("scroll", function () {
     const btn = document.getElementById("backToTop");
-
     if (window.scrollY > 300) {
         btn.style.display = "block";
     } else {
         btn.style.display = "none";
     }
 });
-
 // Smooth Scroll to Top
 function scrollToTop() {
     window.scrollTo({
@@ -1145,7 +1089,6 @@ function scrollToTop() {
     <div class="status-dot"></div>
     <span class="portal-text">Portal Is Live</span>
 </div>
-
 <style>
 /* কন্টেইনার পজিশন: উপরে বাম দিকে একদম পারফেক্ট পজিশনে */
 .portal-status-container {
@@ -1169,7 +1112,6 @@ function scrollToTop() {
     margin-right: 12px;
     animation: pulse-green 2s infinite;
 }
-
 /* টেক্সট অ্যানিমেশন ও কালার চেঞ্জ */
 .portal-text {
     font-weight: 800;
@@ -1177,7 +1119,6 @@ function scrollToTop() {
     letter-spacing: 1px;
     animation: rainbow-text 10s linear infinite;
 }
-
 @keyframes rainbow-text {
     0% { color: #ef4444; transform: scale(1); } /* Red */
     16% { color: #f97316; } /* Orange */
@@ -1187,7 +1128,6 @@ function scrollToTop() {
     83% { color: #6366f1; } /* Indigo */
     100% { color: #a855f7; transform: scale(1.05); } /* Violet */
 }
-
 @keyframes pulse-green {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
     70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }

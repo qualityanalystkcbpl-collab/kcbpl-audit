@@ -958,15 +958,26 @@ function loadAudio(){
 // Show / Hide Back To Top Button
 window.addEventListener("scroll", function () {
     const btn = document.getElementById("backToTop");
-
+const bottomBtn = document.getElementById("goToBottom");
     if (window.scrollY > 300) {
         btn.style.display = "block";
     } else {
         btn.style.display = "none";
     }
+if ((window.innerHeight + window.scrollY) < (document.documentElement.scrollHeight - 300)) {
+    bottomBtn.style.display = "block";
+} else {
+    bottomBtn.style.display = "none";
+}
 });
 
 // Smooth Scroll to Top
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth"
+    });
+}
 function scrollToTop() {
     window.scrollTo({
         top: 0,
@@ -975,9 +986,14 @@ function scrollToTop() {
 }
 </script>
 </div>
+<button id="goToBottom" onclick="scrollToBottom()">
+    ⬇ Go to Bottom
+</button>
+
 <button id="backToTop" onclick="scrollToTop()">
     ⬆ Back to Top
 </button>
+
     <!-- Updated Portal Status: Left side with Rainbow Text Animation -->
 <div class="portal-status-container">
     <div class="status-dot"></div>
@@ -1121,6 +1137,29 @@ function scrollToTop() {
     to{
         left:120%;
     }
+}
+/* Go To Bottom Button */
+#goToBottom {
+    position: fixed;
+    left: 25px;
+    bottom: 150px;   /* Back to Top-এর উপরে থাকবে */
+    z-index: 9999;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(37,99,235,.35);
+    transition: all .3s ease;
+    display: none;
+}
+
+#goToBottom:hover {
+    background: #1d4ed8;
+    transform: translateY(-3px);
 }
 </style>
 </body>

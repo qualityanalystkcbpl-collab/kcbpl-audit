@@ -86,19 +86,20 @@
 /* Floating Back to Top Button */
 #backToTop {
     position: fixed;
-    left: 25px;
+    left: 5px;
     bottom: 30px;
-    width: 58px;
-    height: 58px;
     border: none;
-    border-radius: 50%;
+    border-radius: 50px;
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: #fff;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 12px 22px;
     cursor: pointer;
     display: none;
     align-items: center;
+    gap: 8px;
     justify-content: center;
     z-index: 99999;
     box-shadow: 0 8px 20px rgba(239,68,68,.45);
@@ -111,6 +112,37 @@
 }
 
 #backToTop:active {
+    transform: scale(0.95);
+}
+
+/* Go to Bottom Button (Pill Shape) */
+#goToBottom {
+    position: fixed;
+    left: 5px;
+    top: 440px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 12px 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+    box-shadow: 0 8px 20px rgba(37,99,235,.45);
+    transition: all .3s ease;
+}
+
+#goToBottom:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 28px rgba(37,99,235,.6);
+}
+
+#goToBottom:active {
     transform: scale(0.95);
 }
     </style>
@@ -296,6 +328,14 @@ window.addEventListener("scroll", function () {
 function scrollToTop() {
     window.scrollTo({
         top: 0,
+        behavior: "smooth"
+    });
+}
+
+// Smooth Scroll to Bottom
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
         behavior: "smooth"
     });
 }
@@ -913,8 +953,11 @@ function scrollToTop() {
         });
     });
 </script>
+<button id="goToBottom" onclick="scrollToBottom()" title="Go to Bottom">
+    ⬇ Go to Bottom
+</button>
 <button id="backToTop" onclick="scrollToTop()" title="Back to Top">
-    ⬆
+    ⬆ Back to Top
 </button>
     <!-- Updated Portal Status: Left side with Rainbow Text Animation -->
 <div class="portal-status-container">

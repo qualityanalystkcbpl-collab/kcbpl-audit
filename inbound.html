@@ -35,6 +35,18 @@
         .fatal-select { border-left: 4px solid #e53e3e; }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
 
+        /* Section 2 পাশাপাশি (side-by-side) গ্রিড লেআউট - স্ক্রলিং কমানোর জন্য */
+        .eval-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px 20px;
+            align-items: start;
+        }
+        .eval-grid .form-group { margin-bottom: 0; }
+        @media (max-width: 992px) {
+            .eval-grid { grid-template-columns: 1fr; }
+        }
+
         /* ─── প্রিমিয়াম ভাসমান ক্লক ও টাইমার স্ট্যাক (পিক্সেল পারফেক্ট অ্যালাইনমেন্ট) ─── */
         .audit-tracker-container {
             position: fixed;
@@ -231,7 +243,7 @@ function loadAudio(){
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Process</span><span class="bn-label">প্রসেসের ধরন</span></label>
-                    <select name="Process" required>
+                    <select name="Process" id="processSelect" required onchange="autoSelectTLName()">
                         <option value="">Select Process</option>
                         <option value="CATV">CATV</option>
                         <option value="BB RENEWAL">BB RENEWAL</option>
@@ -269,7 +281,7 @@ function loadAudio(){
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
-                    <select name="TL Name" required>
+                    <select name="TL Name" id="tlNameSelect" required>
                         <option value="">Select TL Name</option>
                         <option value="ANWESHA GANGULY">ANWESHA GANGULY</option>
                         <option value="SOMA SAMANTA">SOMA SAMANTA</option>
@@ -305,6 +317,7 @@ function loadAudio(){
         <!-- Section 2: Core Parameter Checklist -->
         <fieldset>
             <legend>Section 2: Call Quality Performance Evaluation</legend>
+            <div class="eval-grid">
             <!-- 1. Opening -->
             <div class="form-group">
                 <label class="required"><span class="en-label">Opening (5 Marks)</span><span class="bn-label">কল ওপেনিং স্ক্রিপ্ট ও ব্র্যান্ডিং</span></label>
@@ -779,6 +792,7 @@ function loadAudio(){
                     <textarea name="Remarks 29" placeholder="Or write custom remarks..."></textarea>
                 </div>
             </div>
+            </div>
         </fieldset>
         <!-- Section 3: Call Summary -->
         <fieldset>
@@ -811,7 +825,96 @@ function loadAudio(){
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
 </div>
 
+<!-- অডিট সাবমিট সাকসেস ফ্ল্যাশ মেসেজ (২ সেকেন্ড দেখাবে, তারপর অটো Back to Top) -->
+<div id="submitFlash">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>
+
+<style>
+#submitFlash {
+    display: none;
+    position: fixed;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    padding: 16px 34px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    z-index: 99999;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    opacity: 0;
+}
+#submitFlash.show {
+    display: block;
+    animation: submitFlashAnim 2s ease forwards;
+}
+@keyframes submitFlashAnim {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    12%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+</style>
+
 <script>
+    // Process অনুযায়ী TL Name স্বয়ংক্রিয়ভাবে সিলেক্ট (ম্যানুয়ালি পরে চেঞ্জ করা যাবে)
+    function autoSelectTLName() {
+        const process = document.getElementById('processSelect').value;
+        const tlSelect = document.getElementById('tlNameSelect');
+        const map = {
+            "CATV": "ANWESHA GANGULY",
+            "BB TECH SUPPORT": "BANIBRATA MAJUMDER",
+            "BB RENEWAL": "SOMA SAMANTA"
+        };
+        if (map[process]) {
+            tlSelect.value = map[process];
+        }
+    }
+
+    // ইন্টারনেট স্ট্যাটাস (Online = সবুজ / Offline = লাল) + লাইভ স্পিড টেস্ট
+    function updateNetStatus() {
+        const dot = document.getElementById('netStatusDot');
+        const text = document.getElementById('netStatusText');
+        if (!dot || !text) return;
+        if (navigator.onLine) {
+            dot.classList.remove('offline');
+            text.textContent = 'Portal Is Live';
+        } else {
+            dot.classList.add('offline');
+            text.textContent = 'Portal Is Offline';
+        }
+    }
+
+    function updateNetSpeed() {
+        const speedEl = document.getElementById('netSpeedText');
+        if (!speedEl) return;
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!navigator.onLine) {
+            speedEl.textContent = 'No Internet Connection';
+            return;
+        }
+        if (conn && (conn.downlink || conn.rtt)) {
+            const downlink = conn.downlink ? conn.downlink.toFixed(1) + ' Mbps' : 'N/A';
+            const rtt = (conn.rtt !== undefined && conn.rtt !== null) ? conn.rtt + ' ms' : 'N/A';
+            speedEl.textContent = 'Speed: ' + downlink + '  |  Ping: ' + rtt;
+        } else {
+            // ফলব্যাক: ব্রাউজার Network Information API সাপোর্ট না করলে
+            speedEl.textContent = 'Connected';
+        }
+    }
+
+    window.addEventListener('online', function () { updateNetStatus(); updateNetSpeed(); });
+    window.addEventListener('offline', function () { updateNetStatus(); updateNetSpeed(); });
+    if (navigator.connection) {
+        navigator.connection.addEventListener('change', updateNetSpeed);
+    }
+    updateNetStatus();
+    updateNetSpeed();
+    // প্রতি ১ মিনিটে (60000ms) স্পিড/পিং রিফ্রেশ হবে, অডিট ফর্মে কোনো প্রভাব পড়বে না
+    setInterval(function () { updateNetStatus(); updateNetSpeed(); }, 60000);
+
     // টাইমার কন্ট্রোল ভ্যারিয়েবলস
     let timerInterval;
     let totalSeconds = 0;
@@ -933,7 +1036,7 @@ function loadAudio(){
         .then(response => response.json())
         .then(data => {
             if(data.result === 'success') {
-                alert('Inbound Audit Report Saved Successfully!');
+                showSubmitFlash();
                 document.getElementById('auditForm').reset();
                 calculateLiveScore();
                 // ⏳ সফলভাবে সেভ হওয়ার পর টাইমার রিসেট করা হলো
@@ -944,7 +1047,7 @@ function loadAudio(){
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Form submitted successfully! (Please verify inside Google Sheet).');
+            showSubmitFlash();
             document.getElementById('auditForm').reset();
             calculateLiveScore();
             // ⏳ ক্যাচ ব্লকেও টাইমার রিসেট নিশ্চিত করা হলো
@@ -984,6 +1087,20 @@ function scrollToTop() {
         behavior: "smooth"
     });
 }
+
+// অডিট সাবমিট হলে ২ সেকেন্ডের ফ্ল্যাশ মেসেজ দেখাবে, তারপর অটো Back to Top
+function showSubmitFlash() {
+    const flash = document.getElementById('submitFlash');
+    if (!flash) return;
+    flash.classList.remove('show');
+    void flash.offsetWidth; // অ্যানিমেশন রিস্টার্ট করার জন্য রিফ্লো
+    flash.classList.add('show');
+    setTimeout(function () {
+        flash.classList.remove('show');
+        flash.style.display = 'none';
+        scrollToTop();
+    }, 2000);
+}
 </script>
 </div>
 <button id="goToBottom" onclick="scrollToBottom()">
@@ -994,10 +1111,13 @@ function scrollToTop() {
     ⬆ Back to Top
 </button>
 
-    <!-- Updated Portal Status: Left side with Rainbow Text Animation -->
+    <!-- Updated Portal Status: Left side with Rainbow Text Animation + Live Network Speed Test -->
 <div class="portal-status-container">
-    <div class="status-dot"></div>
-    <span class="portal-text">Portal Is Live</span>
+    <div class="status-dot" id="netStatusDot"></div>
+    <div class="portal-status-text-wrap">
+        <span class="portal-text" id="netStatusText">Portal Is Live</span>
+        <span class="net-speed-text" id="netSpeedText">Checking network...</span>
+    </div>
 </div>
 
 <style>
@@ -1022,6 +1142,26 @@ function scrollToTop() {
     border-radius: 50%;
     margin-right: 12px;
     animation: pulse-green 2s infinite;
+}
+.status-dot.offline {
+    background-color: #ef4444;
+    animation: pulse-red 2s infinite;
+}
+.portal-status-text-wrap {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+.net-speed-text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #475569;
+}
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
 /* টেক্সট অ্যানিমেশন ও কালার চেঞ্জ */

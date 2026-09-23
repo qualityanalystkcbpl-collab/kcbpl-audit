@@ -845,37 +845,75 @@ function loadAudio(){
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
 </div>
 
-<!-- অডিট সাবমিট সাকসেস ফ্ল্যাশ মেসেজ (২ সেকেন্ড দেখাবে, তারপর অটো Back to Top) -->
-<div id="submitFlash">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>
+<!-- অডিট সাবমিট সাকসেস ফ্ল্যাশ মেসেজ (১০ সেকেন্ড দেখাবে + OK বাটন, সাথে ২ সেকেন্ডের ফুল ঝরে পড়া অ্যানিমেশন) -->
+<div id="flowerRain"></div>
+<div id="submitFlash">
+    <div id="submitFlashText">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>
+    <button type="button" id="submitFlashOkBtn" onclick="closeSubmitFlash()">OK</button>
+</div>
 
 <style>
+#flowerRain {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 99998;
+}
+.flower-petal {
+    position: absolute;
+    top: -40px;
+    user-select: none;
+    animation-name: flowerFall;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+@keyframes flowerFall {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(115vh) rotate(360deg); opacity: 0.85; }
+}
+
 #submitFlash {
     display: none;
     position: fixed;
     top: 25px;
     left: 50%;
-    transform: translateX(-50%) translateY(-20px);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, #10b981, #059669);
     color: #fff;
-    padding: 16px 34px;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 16px;
-    letter-spacing: 0.3px;
+    padding: 20px 34px 18px;
+    border-radius: 14px;
+    text-align: center;
     z-index: 99999;
     box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
     opacity: 0;
+    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 #submitFlash.show {
     display: block;
-    animation: submitFlashAnim 2s ease forwards;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
-@keyframes submitFlashAnim {
-    0%   { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-    12%  { opacity: 1; transform: translateX(-50%) translateY(0); }
-    85%  { opacity: 1; transform: translateX(-50%) translateY(0); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+#submitFlashText {
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    margin-bottom: 14px;
 }
+#submitFlashOkBtn {
+    background: #fff;
+    color: #059669;
+    border: none;
+    padding: 8px 30px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.15s ease;
+}
+#submitFlashOkBtn:hover { transform: scale(1.06); }
 </style>
 
 <script>
@@ -1123,18 +1161,54 @@ function scrollToTop() {
     });
 }
 
-// অডিট সাবমিট হলে ২ সেকেন্ডের ফ্ল্যাশ মেসেজ দেখাবে, তারপর অটো Back to Top
+// অডিট সাবমিট হলে ফুল ঝরে পড়া অ্যানিমেশন (২ সেকেন্ড) + সাকসেস মেসেজ (১০ সেকেন্ড অথবা OK চাপলেই বন্ধ হবে)
+var submitFlashTimer = null;
+
 function showSubmitFlash() {
     const flash = document.getElementById('submitFlash');
     if (!flash) return;
+    clearTimeout(submitFlashTimer);
     flash.classList.remove('show');
     void flash.offsetWidth; // অ্যানিমেশন রিস্টার্ট করার জন্য রিফ্লো
+    flash.style.display = 'block';
     flash.classList.add('show');
+    spawnFlowerRain();
+    // ১০ সেকেন্ড পর অটো বন্ধ হবে (মাঝে OK চাপলে আগেই বন্ধ হয়ে যাবে)
+    submitFlashTimer = setTimeout(closeSubmitFlash, 10000);
+}
+
+function closeSubmitFlash() {
+    const flash = document.getElementById('submitFlash');
+    if (!flash) return;
+    clearTimeout(submitFlashTimer);
+    flash.classList.remove('show');
     setTimeout(function () {
-        flash.classList.remove('show');
         flash.style.display = 'none';
         scrollToTop();
-    }, 2000);
+    }, 350);
+}
+
+// ২ সেকেন্ডের জন্য ফুল ঝরে পড়ার অ্যানিমেশন (হালকা, শুধু ইমোজি + CSS, পেজ ভারী হবে না)
+function spawnFlowerRain() {
+    const container = document.getElementById('flowerRain');
+    if (!container) return;
+    container.innerHTML = '';
+    const flowers = ['🌸', '🌺', '🌼', '🌷', '💐'];
+    const count = 26;
+    for (let i = 0; i < count; i++) {
+        const petal = document.createElement('span');
+        petal.className = 'flower-petal';
+        petal.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+        petal.style.left = (Math.random() * 100) + '%';
+        petal.style.fontSize = (16 + Math.random() * 14) + 'px';
+        petal.style.animationDuration = (1.6 + Math.random() * 0.6) + 's';
+        petal.style.animationDelay = (Math.random() * 0.3) + 's';
+        container.appendChild(petal);
+    }
+    // ২ সেকেন্ড পর ফুলগুলো মুছে ফেলা হবে (পারফরম্যান্স ঠিক রাখতে)
+    setTimeout(function () {
+        container.innerHTML = '';
+    }, 2200);
 }
 </script>
 </div>

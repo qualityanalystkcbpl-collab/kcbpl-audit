@@ -45,6 +45,13 @@
         .submit-btn:disabled { background: #cbd5e0 !important; cursor: not-allowed; transform: none; box-shadow: none; }
         
         .fatal-select { border-left: 4px solid #e53e3e; }
+        /* Call Link থেকে অটো-ফিল হওয়া ফিল্ড ও অটো-সিলেক্ট হওয়া TL Name - ম্যানুয়ালি এডিট করা যাবে না */
+        .locked-field {
+            background-color: #f1f5f9 !important;
+            color: #334155;
+            cursor: not-allowed;
+            border-color: #cbd5e1 !important;
+        }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
 
         /* Section 2 পাশাপাশি (side-by-side) গ্রিড লেআউট - স্ক্রলিং কমানোর জন্য */
@@ -320,25 +327,25 @@ function loadAudio(){
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর</span></label>
-                    <input type="text" name="Calling Number" required>
+                    <input type="text" name="Calling Number" id="callingNumberInput" class="locked-field" readonly required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
-                    <input type="date" name="Call Date" required>
+                    <input type="date" name="Call Date" id="callDateInput" class="locked-field" readonly required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call time</span><span class="bn-label">কলের সময়</span></label>
-                    <input type="time" name="Call time" required>
+                    <input type="time" name="Call time" id="callTimeInput" class="locked-field" readonly required>
                 </div>
             </div>
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
-                    <input type="text" name="Call ID" required>
+                    <input type="text" name="Call ID" id="callIdInput" class="locked-field" readonly required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
-                    <select name="TL Name" id="tlNameSelect" required>
+                    <select name="TL Name" id="tlNameSelect" class="locked-field" required>
                         <option value="">Select TL Name</option>
                         <option value="ANWESHA GANGULY">ANWESHA GANGULY</option>
                         <option value="SOMA SAMANTA">SOMA SAMANTA</option>
@@ -363,7 +370,7 @@ function loadAudio(){
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
-                    <input type="text" name="Call Link" required>
+                    <input type="text" name="Call Link" id="callLinkInput" oninput="parseCallLink()" placeholder="Paste the full recording link here..." required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
@@ -969,7 +976,7 @@ function loadAudio(){
 </style>
 
 <script>
-    // Process অনুযায়ী TL Name স্বয়ংক্রিয়ভাবে সিলেক্ট (ম্যানুয়ালি পরে চেঞ্জ করা যাবে)
+    // Process অনুযায়ী TL Name স্বয়ংক্রিয়ভাবে সিলেক্ট হয় (এখন এটি লকড, ম্যানুয়ালি এডিট করা যাবে না)
     function autoSelectTLName() {
         const process = document.getElementById('processSelect').value;
         const tlSelect = document.getElementById('tlNameSelect');
@@ -981,6 +988,58 @@ function loadAudio(){
         if (map[process]) {
             tlSelect.value = map[process];
         }
+    }
+
+    // TL Name সিলেক্টটি লক করা হলো - ইউজার মাউস/কিবোর্ড দিয়ে ম্যানুয়ালি চেঞ্জ করতে পারবে না, শুধু autoSelectTLName() দিয়েই ভ্যালু বসবে
+    (function lockTLNameSelect() {
+        const tlSelect = document.getElementById('tlNameSelect');
+        if (!tlSelect) return;
+        tlSelect.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        tlSelect.addEventListener('keydown', function (e) { e.preventDefault(); });
+    })();
+
+    // ─── Call Link থেকে Calling Number, Call ID, Call Date, Call time অটো-ফিল করা ───
+    // উদাহরণ: http://192.168.145.35/RECORDINGS/MP3/20260921-172342_9733275695-all.mp3
+    //   -> Calling Number: 9733275695 | Call ID: 20260921-172342_9733275695 | Call Date: 2026-09-21 | Call time: 17:23
+    function parseCallLink() {
+        const linkInput = document.getElementById('callLinkInput');
+        if (!linkInput) return;
+        const url = linkInput.value.trim();
+        if (!url) return;
+
+        // URL থেকে ফাইলনেম (শেষ অংশ) বের করা, এক্সটেনশন বাদ দিয়ে
+        const fileNameWithExt = url.split('/').pop().split('?')[0].split('#')[0];
+        const fileName = fileNameWithExt.replace(/\.[a-zA-Z0-9]+$/, '');
+
+        // প্যাটার্ন: YYYYMMDD-HHMMSS_PHONENUMBER...
+        const match = fileName.match(/^(\d{8})-(\d{6})_(\d+)/);
+        if (!match) return; // ফরম্যাট না মিললে অটো-ফিল হবে না
+
+        const datePart = match[1];
+        const timePart = match[2];
+        const callingNumber = match[3];
+
+        // Call ID = পুরো ফাইলনেম (এক্সটেনশন ছাড়া), শেষে "-all" থাকলে সেটা বাদ দিয়ে
+        const callId = fileName.replace(/-all$/i, '');
+
+        const year = datePart.substring(0, 4);
+        const month = datePart.substring(4, 6);
+        const day = datePart.substring(6, 8);
+        const hh = timePart.substring(0, 2);
+        const mm = timePart.substring(2, 4);
+
+        const callingNumberEl = document.getElementById('callingNumberInput');
+        const callIdEl = document.getElementById('callIdInput');
+        const callDateEl = document.getElementById('callDateInput');
+        const callTimeEl = document.getElementById('callTimeInput');
+
+        if (callingNumberEl) callingNumberEl.value = callingNumber;
+        if (callIdEl) callIdEl.value = callId;
+        if (callDateEl) callDateEl.value = year + '-' + month + '-' + day;
+        if (callTimeEl) callTimeEl.value = hh + ':' + mm;
+
+        // স্কোর/অন্যান্য লাইভ ক্যালকুলেশন থাকলে রিফ্রেশ করা (থাকলে ক্ষতি নেই, না থাকলেও সমস্যা নেই)
+        if (typeof calculateLiveScore === 'function') { calculateLiveScore(); }
     }
 
     // ইন্টারনেট স্ট্যাটাস (Online = সবুজ / Offline = লাল) + লাইভ স্পিড টেস্ট

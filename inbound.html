@@ -1019,8 +1019,8 @@ function loadAudio(){
         const timePart = match[2];
         const callingNumber = match[3];
 
-        // Call ID = পুরো ফাইলনেম (এক্সটেনশন ছাড়া), শেষে "-all" থাকলে সেটা বাদ দিয়ে
-        const callId = fileName.replace(/-all$/i, '');
+        // Call ID = শুধু DATE-TIME_PHONENUMBER অংশ, এরপর যাই থাকুক (RENEWAL_Beauty, -all ইত্যাদি) সব বাদ
+        const callId = datePart + '-' + timePart + '_' + callingNumber;
 
         const year = datePart.substring(0, 4);
         const month = datePart.substring(4, 6);

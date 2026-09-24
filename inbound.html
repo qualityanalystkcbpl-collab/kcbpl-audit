@@ -45,12 +45,18 @@
         .submit-btn:disabled { background: #cbd5e0 !important; cursor: not-allowed; transform: none; box-shadow: none; }
         
         .fatal-select { border-left: 4px solid #e53e3e; }
-        /* Call Link থেকে অটো-ফিল হওয়া ফিল্ড ও অটো-সিলেক্ট হওয়া TL Name - লক করা আছে (এডিট করা যাবে না), কিন্তু দেখতে সাধারণ ফিল্ডের মতোই, আলাদা বক্স/হাইলাইট নেই */
+        /* Call Link থেকে অটো-ফিল হওয়া ফিল্ড ও অটো-সিলেক্ট হওয়া TL Name - লক করা (এডিট করা যাবে না), শুধু ধূসর প্লেইন টেক্সটের মতো দেখাবে, কোনো বক্স/বর্ডার নেই */
         .locked-field {
-            background-color: #fff;
-            color: #333;
+            background: transparent !important;
+            color: #6b7280 !important;
             cursor: default;
-            border-color: #cbd5e0;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 6px 2px !important;
+            box-shadow: none !important;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
 

@@ -54,6 +54,15 @@
         }
         #score-counter-box:hover { transform: translateY(-5px) scale(1.02); }
 
+        /* Call Link ফিল্ডটা ফুল-উইথ করা হলো, যাতে পুরো লিংকটা দেখা যায়, স্ক্রল/কাট না হয় */
+        .full-width-field { width: 100%; }
+        .full-width-field input {
+            width: 100%;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 13px;
+            letter-spacing: 0.2px;
+        }
+
         /* Section 2 পাশাপাশি (side-by-side) গ্রিড লেআউট - স্ক্রলিং কমানোর জন্য */
         .eval-grid {
             display: grid;
@@ -365,17 +374,17 @@ function loadAudio(){
             </div>
             <div class="form-inline">
                 <div class="form-group">
-                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
-                    <input type="text" name="Call Duration" placeholder="e.g. 03:45" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
-                    <input type="text" name="Call Link" id="callLinkInput" oninput="parseCallLink()" placeholder="Paste the full recording link here..." required>
+                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
+                    <input type="text" name="Call Duration" placeholder="e.g. 00:03:45" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
                     <input type="text" name="Disposition" required>
                 </div>
+            </div>
+            <div class="form-group full-width-field">
+                <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
+                <input type="text" name="Call Link" id="callLinkInput" oninput="parseCallLink()" placeholder="Paste the full recording link here..." required>
             </div>
         </fieldset>
         <!-- Section 2: Core Parameter Checklist -->

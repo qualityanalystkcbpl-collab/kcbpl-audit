@@ -69,6 +69,24 @@
             letter-spacing: 0.2px;
         }
 
+        /* Calling Number, Call Date, Call time, Call ID, TL Name - এই ৫টা অটো-ফিল ফিল্ড একসাথে একটা বক্সে */
+        .auto-fields-box {
+            margin-top: 15px;
+            padding: 14px 16px 4px;
+            background: #f8fafc;
+            border: 1px dashed #94a3b8;
+            border-radius: 10px;
+        }
+        .auto-fields-heading {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+        .auto-fields-box .form-inline { margin-bottom: 10px; }
+
         /* Section 2 পাশাপাশি (side-by-side) গ্রিড লেআউট - স্ক্রলিং কমানোর জন্য */
         .eval-grid {
             display: grid;
@@ -338,35 +356,8 @@ function loadAudio(){
                     <input type="text" name="Associate Name" required>
                 </div>
             </div>
-            
+
             <div class="form-inline">
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর</span></label>
-                    <input type="text" name="Calling Number" id="callingNumberInput" class="locked-field" readonly required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
-                    <input type="date" name="Call Date" id="callDateInput" class="locked-field" readonly required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call time</span><span class="bn-label">কলের সময়</span></label>
-                    <input type="time" name="Call time" id="callTimeInput" class="locked-field" readonly required>
-                </div>
-            </div>
-            <div class="form-inline">
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
-                    <input type="text" name="Call ID" id="callIdInput" class="locked-field" readonly required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
-                    <select name="TL Name" id="tlNameSelect" class="locked-field" required>
-                        <option value="">Select TL Name</option>
-                        <option value="ANWESHA GANGULY">ANWESHA GANGULY</option>
-                        <option value="SOMA SAMANTA">SOMA SAMANTA</option>
-                        <option value="BANIBRATA MAJUMDER">BANIBRATA MAJUMDER</option>
-                    </select>
-                </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
                     <select name="Language" required>
@@ -377,8 +368,6 @@ function loadAudio(){
                         <option value="OTHERS">OTHERS</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
                     <input type="text" name="Call Duration" placeholder="e.g. 03:45" required>
@@ -388,9 +377,42 @@ function loadAudio(){
                     <input type="text" name="Disposition" required>
                 </div>
             </div>
+
             <div class="form-group full-width-field">
                 <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
                 <input type="text" name="Call Link" id="callLinkInput" oninput="parseCallLink()" placeholder="Paste the full recording link here..." required>
+            </div>
+
+            <!-- ⬇️ এই ৫টা ফিল্ড Call Link / Process থেকে অটো-ফিল হয়, তাই আলাদা একটা বক্সে একসাথে রাখা হলো (Google Sheet কলামের সাথে নাম অপরিবর্তিত, শুধু ভিজ্যুয়াল গ্রুপিং) -->
+            <div class="auto-fields-box">
+                <div class="auto-fields-heading">🔒 AUTO-FILLED DETAILS (Not Editable)</div>
+                <div class="form-inline">
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর</span></label>
+                        <input type="text" name="Calling Number" id="callingNumberInput" class="locked-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
+                        <input type="date" name="Call Date" id="callDateInput" class="locked-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call time</span><span class="bn-label">কলের সময়</span></label>
+                        <input type="time" name="Call time" id="callTimeInput" class="locked-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
+                        <input type="text" name="Call ID" id="callIdInput" class="locked-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
+                        <select name="TL Name" id="tlNameSelect" class="locked-field" required>
+                            <option value="">Select TL Name</option>
+                            <option value="ANWESHA GANGULY">ANWESHA GANGULY</option>
+                            <option value="SOMA SAMANTA">SOMA SAMANTA</option>
+                            <option value="BANIBRATA MAJUMDER">BANIBRATA MAJUMDER</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </fieldset>
         <!-- Section 2: Core Parameter Checklist -->

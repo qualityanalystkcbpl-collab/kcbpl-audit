@@ -1262,23 +1262,19 @@ function loadAudio(){
             const textarea = group.querySelector('textarea');
             if (!select || !textarea) return;
 
-            if (textarea.dataset.origPlaceholder === undefined) {
-                textarea.dataset.origPlaceholder = textarea.placeholder;
-            }
-
             const selectedOption = select.options[select.selectedIndex];
             const selectedText = selectedOption ? selectedOption.textContent : '';
             const isNoErrorZero = /no error/i.test(selectedText);
             const isFailZero = (select.value === '0' && !isNoErrorZero) || select.value === 'FATAL';
+            const hasRemarks = textarea.value.trim().length > 0;
 
             if (isFailZero) {
                 textarea.required = true;
-                textarea.classList.add('remarks-mandatory');
-                textarea.placeholder = '⚠ Remarks is mandatory for this fail';
+                // রিমার্কস লেখা হয়ে গেলে সাথে সাথেই লাল হাইলাইট সরে যাবে (প্লেসহোল্ডার অপরিবর্তিত থাকবে)
+                textarea.classList.toggle('remarks-mandatory', !hasRemarks);
             } else {
                 textarea.required = false;
                 textarea.classList.remove('remarks-mandatory');
-                textarea.placeholder = textarea.dataset.origPlaceholder;
             }
         });
     }

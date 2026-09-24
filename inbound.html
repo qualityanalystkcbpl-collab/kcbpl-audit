@@ -45,6 +45,12 @@
         .submit-btn:disabled { background: #cbd5e0 !important; cursor: not-allowed; transform: none; box-shadow: none; }
         
         .fatal-select { border-left: 4px solid #e53e3e; }
+        /* "0" (ফেইল) সিলেক্ট করা হলে সেই ফিল্ডের Remarks বক্স হাইলাইট হবে, বোঝানোর জন্য যে এটা এখন মাস্ট */
+        .remarks-mandatory {
+            border: 1px solid #ef4444 !important;
+            background-color: #fff5f5 !important;
+        }
+        .remarks-mandatory::placeholder { color: #b91c1c; font-weight: 600; }
         /* Call Link থেকে অটো-ফিল হওয়া ফিল্ড ও অটো-সিলেক্ট হওয়া TL Name - লক করা (এডিট করা যাবে না), শুধু ধূসর প্লেইন টেক্সটের মতো দেখাবে, কোনো বক্স/বর্ডার নেই */
         .locked-field {
             background: transparent !important;
@@ -370,7 +376,7 @@ function loadAudio(){
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
-                    <input type="text" name="Call Duration" placeholder="e.g. 00:03:45" required>
+                    <input type="text" name="Call Duration" id="callDurationInput" placeholder="--:--:--" maxlength="8" pattern="^\d{2}:\d{2}:\d{2}$" title="Format: HH:MM:SS" oninput="formatCallDuration(this)" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
@@ -1038,6 +1044,16 @@ function loadAudio(){
     // ─── Call Link থেকে Calling Number, Call ID, Call Date, Call time অটো-ফিল করা ───
     // উদাহরণ: http://192.168.145.35/RECORDINGS/MP3/20260921-172342_9733275695-all.mp3
     //   -> Calling Number: 9733275695 | Call ID: 20260921-172342_9733275695 | Call Date: 2026-09-21 | Call time: 17:23
+    // Call Duration ফিল্ড HH:MM:SS ফরম্যাটে অটো-মাস্ক করা (--:--:-- এর মতো দেখাবে)
+    function formatCallDuration(el) {
+        let digits = el.value.replace(/\D/g, '').slice(0, 6);
+        let parts = [];
+        if (digits.length > 0) parts.push(digits.slice(0, 2));
+        if (digits.length > 2) parts.push(digits.slice(2, 4));
+        if (digits.length > 4) parts.push(digits.slice(4, 6));
+        el.value = parts.join(':');
+    }
+
     function parseCallLink() {
         const linkInput = document.getElementById('callLinkInput');
         if (!linkInput) return;
@@ -1235,8 +1251,41 @@ function loadAudio(){
         box.classList.toggle('has-fails', count > 0);
     }
 
+    // ⚠️ কোনো ফিল্ডে "0" (ফেইল) সিলেক্ট করলেই - "0 (No Error)" ছাড়া - সাথে সাথে সেই ফিল্ডের Remarks লেখা মাস্ট হয়ে যাবে
+    function updateMandatoryRemarks() {
+        const evalGrid = document.querySelector('.eval-grid');
+        if (!evalGrid) return;
+        const groups = evalGrid.querySelectorAll('.form-group');
+
+        groups.forEach(function (group) {
+            const select = group.querySelector('select:not(.remarks-select)');
+            const textarea = group.querySelector('textarea');
+            if (!select || !textarea) return;
+
+            if (textarea.dataset.origPlaceholder === undefined) {
+                textarea.dataset.origPlaceholder = textarea.placeholder;
+            }
+
+            const selectedOption = select.options[select.selectedIndex];
+            const selectedText = selectedOption ? selectedOption.textContent : '';
+            const isNoErrorZero = /no error/i.test(selectedText);
+            const isFailZero = (select.value === '0' && !isNoErrorZero) || select.value === 'FATAL';
+
+            if (isFailZero) {
+                textarea.required = true;
+                textarea.classList.add('remarks-mandatory');
+                textarea.placeholder = '⚠ Remarks is mandatory for this fail';
+            } else {
+                textarea.required = false;
+                textarea.classList.remove('remarks-mandatory');
+                textarea.placeholder = textarea.dataset.origPlaceholder;
+            }
+        });
+    }
+
     function calculateLiveScore() {
         updateFailCountBox();
+        updateMandatoryRemarks();
         const scoreFields = [
             "Opening", "Enthusiatic tone", "Assurance", "Closing", "Account Authentication/Security Checks",
             "Query and system probing", "Empathy/Apology", "Paraphrasing/ Acknowledgement", "Hold / Transfer Procedure",

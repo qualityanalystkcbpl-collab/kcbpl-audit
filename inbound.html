@@ -1211,6 +1211,13 @@ function loadAudio(){
         groups.forEach(function (group) {
             const select = group.querySelector('select:not(.remarks-select)');
             if (!select || select.value !== '0') return;
+
+            // "0" ভ্যালু হলেই ফেইল ধরা হবে না - যদি সিলেক্ট করা অপশনটা "No Error" বোঝায় (যেমন "0 (No Error)"),
+            // তাহলে এটা আসলে পাস, তাই ফেইল লিস্টে দেখানো হবে না
+            const selectedOption = select.options[select.selectedIndex];
+            const selectedText = selectedOption ? selectedOption.textContent : '';
+            if (/no error/i.test(selectedText)) return;
+
             count++;
 
             const labelEl = group.querySelector('.en-label');

@@ -439,6 +439,8 @@ function loadAudio(){
                         <option value="Call opening was not given over the call.">Call opening was not given over the call.</option>
                         <option value="Call opening was given after 3 sec.">Call opening was given after 3 sec.</option>
                         <option value="Brand name was not mentioned over the call.">Brand name was not mentioned over the call.</option>
+                        <option value="No clear opening statement from the advisor could be found.">No clear opening statement from the advisor could be found.</option>
+                        <option value="The call opening was not clear.">The call opening was not clear.</option>
                     </select>
                     <textarea name="Remarks 1" placeholder="write custom remarks (Other)..."></textarea>
                 </div>
@@ -786,7 +788,15 @@ function loadAudio(){
                     <option value="5">5 (Pass)</option>
                     <option value="FATAL">FATAL (Auto Fail)</option>
                 </select>
-                <textarea name="Remarks 22" class="remarks-field" placeholder="write custom remarks..."></textarea>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark / মন্তব্য বাছুন --</option>
+                        <option value="Agent provided incorrect information to the customer.">Agent provided incorrect information to the customer.</option>
+                        <option value="Incorrect information was provided by the agent regarding the customer's query.">Incorrect information was provided by the agent regarding the customer's query.</option>
+                        <option value="The agent provided incorrect information regarding ___________.">The agent provided incorrect information regarding ___________.</option>
+                    </select>
+                    <textarea name="Remarks 22" placeholder="write custom remarks..."></textarea>
+                </div>
             </div>
             <!-- 23. Incomplete information (Fatal Option) -->
             <div class="form-group">
@@ -825,7 +835,14 @@ function loadAudio(){
                     <option value="5">5 (Pass)</option>
                     <option value="FATAL">FATAL (Auto Fail)</option>
                 </select>
-                <textarea name="Remarks 25" class="remarks-field" placeholder="write custom remarks..."></textarea>
+                <div class="remarks-container">
+                    <select class="remarks-select" onchange="this.nextElementSibling.value=this.value">
+                        <option value="">-- Choose Predefined Remark / মন্তব্য বাছুন --</option>
+                        <option value="The agent selected the disposition '_____________', but the correct disposition should have been '______________'">The agent selected the disposition '_____________', but the correct disposition should have been '______________'</option>
+                        <option value="Incorrect disposition selected by the advisor: '__________'. The advisor should have opted for '_____________' instead.">Incorrect disposition selected by the advisor: '__________'. The advisor should have opted for '_____________' instead.</option>
+                    </select>
+                    <textarea name="Remarks 25" placeholder="write custom remarks..."></textarea>
+                </div>
             </div>
             <!-- 26. Disconnection/Call ignorance (Fatal Option) -->
             <div class="form-group">

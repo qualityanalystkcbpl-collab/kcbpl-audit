@@ -91,23 +91,35 @@
             letter-spacing: 0.2px;
         }
 
-        /* Calling Number, Call Date, Call time, Call ID, TL Name - এই ৫টা অটো-ফিল ফিল্ড একসাথে একটা বক্সে */
+        /* Calling Number, Call Date, Call time, Call ID, TL Name - এই ৫টা অটো-ফিল ফিল্ড একসাথে একটা ছোট কমপ্যাক্ট বক্সে */
         .auto-fields-box {
-            margin-top: 15px;
-            padding: 14px 16px 4px;
+            margin-top: 12px;
+            padding: 8px 12px 6px;
             background: #f8fafc;
             border: 1px dashed #94a3b8;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         .auto-fields-heading {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
             letter-spacing: 0.5px;
             text-transform: uppercase;
             color: #64748b;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
-        .auto-fields-box .form-inline { margin-bottom: 10px; }
+        .auto-fields-box .form-inline {
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px 14px;
+            margin-bottom: 0;
+        }
+        .auto-fields-box .form-group { margin-bottom: 8px; }
+        .auto-fields-box label { font-size: 12px; margin-bottom: 0; }
+        .auto-fields-box .bn-label { font-size: 10px; margin-top: 0; }
+        .auto-fields-box input,
+        .auto-fields-box select {
+            padding: 5px 6px;
+            font-size: 12px;
+        }
 
         /* Section 2 পাশাপাশি (side-by-side) গ্রিড লেআউট - স্ক্রলিং কমানোর জন্য */
         .eval-grid {

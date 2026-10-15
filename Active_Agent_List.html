@@ -57,7 +57,7 @@ th,td{padding:3px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-
 thead th{font-size:10.5px;color:var(--mute);font-weight:600;background:#faf8ff;padding:5px}
 thead tr.g th{font-size:10.5px;color:var(--c2);background:#f1ecff}
 td.id,th.id{position:sticky;left:0;z-index:2;background:#fff;text-align:left;font-weight:600;font-size:11.5px;padding-left:10px}
-td.nm,th.nm{position:sticky;left:72px;z-index:2;background:#fff;text-align:left;font-weight:600;box-shadow:6px 0 8px -6px rgba(60,30,140,.18)}
+td.nm,th.nm{position:sticky;left:100px;z-index:2;background:#fff;text-align:left;font-weight:600;box-shadow:6px 0 8px -6px rgba(60,30,140,.18)}
 thead th.id,thead th.nm{background:#faf8ff;z-index:3}
 tr.ag:hover td{background:#faf7ff}
 tr.ag.done td{background:#effcf6}
@@ -97,6 +97,17 @@ td.gap,th.gap{padding:0;background:#faf8ff}
 .mbox label{display:block;font-size:11px;font-weight:600;color:var(--mute);margin:8px 0 3px}
 .mbox input,.mbox select{width:100%;padding:8px 10px;font-size:13px}
 .mrow{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+td.id .cell,td.nm .cell{display:flex;align-items:center;gap:3px}
+.cell .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.cp{border:0;background:transparent;cursor:pointer;opacity:.35;font-size:11px;padding:2px 4px;border-radius:6px;transition:opacity .15s,background .15s,transform .15s;line-height:1}
+tr.ag:hover .cp{opacity:.8}
+.cp:hover{opacity:1!important;background:#e9e1ff;transform:scale(1.15)}
+.b-lock{background-image:linear-gradient(90deg,#ff5f6d,#ff9a5c,#ff5f6d);min-width:128px}
+.b-lock.open{background-image:linear-gradient(90deg,#1fd6a0,#00b8f0,#1fd6a0)}
+.b-lock.shake{animation:shake .5s}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+#content.locked .cb{cursor:not-allowed}
+#content.locked .cb:hover{transform:none}
 canvas{position:fixed;inset:0;pointer-events:none;z-index:40}
 button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -119,6 +130,7 @@ button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offse
       <option value="exact">Exact: হুবহু মেলাও</option>
     </select>
     <button class="btn b-sync" id="syncBtn">⚡ Raw data থেকে অটো মার্ক</button>
+    <button class="btn b-lock" id="lockBtn" title="টিক ম্যানুয়ালি বদলাতে আগে আনলক করুন">🔒 Locked</button>
     <input type="search" id="q" placeholder="🔍 নাম / ID খুঁজুন" aria-label="Search">
     <span class="sp"></span>
     <button class="btn b-new" id="newBtn">➕ নতুন মাস</button>
@@ -274,7 +286,7 @@ function render(){
     head += '<tr><th class="id">ID</th><th class="nm">Agent Name</th><th>DOJ</th><th>Gender</th><th>Week</th><th>Target</th>';
     for (let i = 1; i <= PER; i++){ if (i === 9) head += '<th class="gap"></th>'; head += `<th>${i}</th>`; }
     head += '<th>Total</th><th>Left</th><th>Progress</th><th>1</th><th>2</th><th>3</th><th>4</th><th>Total</th><th></th></tr>';
-    const widths = [72,170,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
+    const widths = [100,200,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
     const colgroup = '<colgroup>' + widths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
     const tw = widths.reduce((x, y) => x + y, 0);
     div.innerHTML = `<div class="sec-h" style="--a:${g[0]};--b:${g[1]}"><h2>${esc(sec.name)}</h2><span class="chip" data-sc></span><span class="sp"></span><button class="btn" data-add="${si}">➕ এজেন্ট যোগ</button></div>
@@ -285,7 +297,7 @@ function render(){
       const tr = document.createElement('tr'); tr.className = 'ag'; tr.dataset.s = si; tr.dataset.a = ai;
       tr.dataset.k = (a.id + ' ' + a.name).toLowerCase();
       const gcls = /^f/i.test(a.gender) ? 'f' : 'm';
-      let h = `<td class="id">${esc(a.id)}</td><td class="nm">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</td>
+      let h = `<td class="id"><div class="cell"><span class="t">${esc(a.id)}</span>${a.id ? `<button class="cp" data-copy="${esc(a.id)}" title="ID কপি">📋</button>` : ''}</div></td><td class="nm"><div class="cell"><span class="t">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</span>${a.name ? `<button class="cp" data-copy="${esc(a.name)}" title="নাম কপি">📋</button>` : ''}</div></td>
         <td class="dim">${esc(a.doj) || '–'}</td><td>${a.gender ? `<span class="g ${gcls}">${esc(a.gender)}</span>` : '–'}</td><td class="dim">${esc(a.week) || '–'}</td><td class="num">${a.target}</td>`;
       for (let i = 0; i < PER; i++){
         if (i === 8) h += '<td class="gap"></td>';
@@ -345,6 +357,30 @@ function countUp(el, to){
   (function f(t){ const k = Math.min((t - t0) / 600, 1); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); else { (window.__prev = window.__prev || {})[el.previousElementSibling.textContent] = to; } })(t0);
 }
 
+/* ---------- কপি ---------- */
+async function copyText(txt, btn){
+  try{ await navigator.clipboard.writeText(txt); }
+  catch(e){ const t = document.createElement('textarea'); t.value = txt; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(_){} t.remove(); }
+  if (btn){ const o = btn.textContent; btn.textContent = '✅'; setTimeout(() => btn.textContent = o, 900); }
+  toast('📋 কপি হয়েছে: ' + txt, 1800);
+}
+
+/* ---------- লক ---------- */
+let locked = true, lockT = null;
+function setLock(v, auto){
+  locked = v;
+  const b = $('#lockBtn');
+  b.textContent = v ? '🔒 Locked' : '🔓 Unlocked';
+  b.classList.toggle('open', !v);
+  $('#content').classList.toggle('locked', v);
+  clearTimeout(lockT);
+  if (!v) armLock();
+  if (auto) toast('🔒 কিছুক্ষণ কাজ না করায় আবার লক হয়েছে', 3000);
+}
+function armLock(){ clearTimeout(lockT); if (!locked) lockT = setTimeout(() => setLock(true, true), 180000); }   // ৩ মিনিট কাজ না করলে নিজে লক
+$('#lockBtn').onclick = () => { setLock(!locked); toast(locked ? '🔒 লক হয়েছে' : '🔓 আনলক: এখন টিক বদলানো যাবে (৩ মিনিট কাজ না করলে আবার লক)', 3000); };
+setLock(true);
+
 /* ---------- খোঁজা ---------- */
 function filterRows(){
   const q = $('#q').value.trim().toLowerCase();
@@ -354,6 +390,8 @@ $('#q').oninput = filterRows;
 
 /* ---------- ক্লিক হ্যান্ডলার ---------- */
 $('#content').addEventListener('click', e => {
+  const cp = e.target.closest('[data-copy]');
+  if (cp){ copyText(cp.dataset.copy, cp); return; }
   const addB = e.target.closest('[data-add]');
   if (addB) return openAgentModal('add', +addB.dataset.add);
   const tr = e.target.closest('tr.ag'); if (!tr) return;
@@ -361,6 +399,8 @@ $('#content').addEventListener('click', e => {
   if (e.target.closest('[data-edit]')) return openAgentModal('edit', si, a);
   if (e.target.closest('[data-del]')) return openDeleteModal(a);
   const b = e.target.closest('.cb'); if (!b) return;
+  if (locked){ const L = $('#lockBtn'); L.classList.remove('shake'); void L.offsetWidth; L.classList.add('shake'); toast('🔒 ম্যানুয়াল টিকের জন্য উপরের লক বাটনে ক্লিক করে আগে আনলক করুন', 3500); return; }
+  armLock();
   const live = b.dataset.live !== undefined, idx = live ? +b.dataset.live : +b.dataset.i;
   const arr = live ? a.live : a.ticks;
   arr[idx] = !arr[idx];

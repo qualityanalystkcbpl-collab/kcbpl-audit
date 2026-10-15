@@ -108,6 +108,7 @@ button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offse
   <div class="top">
     <h1>QA Audit Tracker</h1>
     <span class="live" id="live"><i></i><span id="liveTxt">লোড হচ্ছে…</span></span>
+    <span class="live off" id="auto" title="ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে" style="cursor:pointer"><i></i><span id="autoTxt">Auto-tick…</span></span>
   </div>
 
   <div class="bar">
@@ -138,10 +139,10 @@ button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offse
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzVZ2A42rIxh5UgpBPuHSlb2tJnwyp2eunQc3kcNeZ495bqUJTeMwT8ir6cMA_3HBHESw/exec';
-const PER = 16, POLL_MS = 20000;
+const PER = 16, POLL_MS = 15000;
 const PALETTE = ['#7c4dff','#e5195f','#1e6bff','#ff2fd0','#12a150','#ff8a00','#00a6c7','#9b27af'];
 const SEC_GRAD = [['#7c4dff','#00b8f0'],['#ff4fa3','#ffb02e'],['#12c98a','#00a6c7'],['#ff7a45','#e5195f']];
-let STATE = null, current = '', busy = 0, lastJson = '', lastDone = 0;
+let STATE = null, current = '', busy = 0, lastJson = '', lastDone = 0, pollN = 0;
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -184,6 +185,7 @@ async function init(){
     sel.value = names[names.length-1];
     sel.onchange = () => load(sel.value);
     await load(sel.value);
+    loadAuto();
     setInterval(poll, POLL_MS);
   }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
 }
@@ -196,16 +198,56 @@ async function load(name){
     render(); setLive(true);
   }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
 }
-async function poll(){            // Sheet-এ অন্য কেউ বদলালে এখানে নিজে থেকে আসবে
+async function poll(){            // Sheet-এ বদল (অটো টিক বা অন্য কেউ) নিজে থেকে এখানে আসবে
   if (busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
   try{
     const d = await run('getData', current);
     setLive(true);
     if (busy) return;
     const j = JSON.stringify(d);
-    if (j !== lastJson){ lastJson = j; STATE = d; const y = scrollY; render(); scrollTo(0, y); }
+    if (j !== lastJson){
+      const fresh = diffTicks(STATE, d);
+      lastJson = j; STATE = d; const y = scrollY; render(); scrollTo(0, y);
+      if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক অটো মার্ক হয়েছে`, 4500); }
+    }
+    if (++pollN % 4 === 0) loadAuto();
   }catch(e){ setLive(false); }
 }
+function diffTicks(a, b){
+  const out = []; if (!a) return out;
+  b.sections.forEach((s, si) => { const os = a.sections[si]; if (!os) return;
+    s.agents.forEach((ag, ai) => { const o = os.agents.find(x => x.id === ag.id && x.name === ag.name); if (!o) return;
+      ag.ticks.forEach((t, i) => { if (t && !o.ticks[i]) out.push([si, ai, i]); }); }); });
+  return out;
+}
+function flash(list){
+  list.forEach(([si, ai, i], n) => {
+    const tr = document.querySelector(`tr[data-s="${si}"][data-a="${ai}"]`); if (!tr) return;
+    const c = tr.querySelectorAll('.cb:not([data-live])')[i];
+    setTimeout(() => { if (c){ c.classList.add('auto'); } }, 40 * n);
+  });
+  const first = list[0]; const tr = first && document.querySelector(`tr[data-s="${first[0]}"][data-a="${first[1]}"]`);
+  if (tr) confetti(tr.getBoundingClientRect());
+}
+async function loadAuto(){
+  try{
+    const s = await run('getAutoStatus'), el = $('#auto');
+    el.classList.toggle('off', s.on === false || !!s.err);
+    $('#autoTxt').textContent = s.err ? 'Auto-tick: এরর' : s.on === false ? 'Auto-tick বন্ধ' :
+      'Auto-tick ON' + (s.last ? ' · ' + new Date(s.last).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'}) : '');
+    el.title = s.err ? s.err : 'ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে';
+  }catch(e){}
+}
+$('#auto').onclick = async () => {
+  if (busy) return; busy++; toast('⏳ raw data মেলানো হচ্ছে…', 8000);
+  try{
+    const r = await run('autoSyncNow');
+    if (r && r.error) throw new Error(r.error);
+    await reloadSilent(); loadAuto();
+    toast(r && r.changed ? `✅ ${r.changed} জনের নতুন টিক পড়েছে` : '✅ সব আপ-টু-ডেট');
+  }catch(e){ toast('⚠️ ' + e.message, 5000); }
+  busy--;
+};
 
 /* ---------- রেন্ডার ---------- */
 const ndone = a => a.ticks.filter(Boolean).length;

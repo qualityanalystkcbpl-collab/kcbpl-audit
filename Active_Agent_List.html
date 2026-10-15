@@ -131,6 +131,8 @@ table.dt{table-layout:auto;width:100%;min-width:560px}
 .dt th,.dt td{padding:6px 10px;height:auto}
 .dt td.dl{text-align:left;font-weight:700}
 .dt td.dl small{display:block;color:var(--mute);font-weight:400;font-size:10.5px}
+.tg{display:inline-block;background:linear-gradient(90deg,var(--c1),var(--c5));color:#fff;font-size:10px;font-weight:700;padding:0 7px;border-radius:99px;vertical-align:middle}
+.dt tr.yest .tg{background:linear-gradient(90deg,var(--c2),var(--c3))}
 .dt tr.today td{background:#fff3cf}
 .dt tr.yest td{background:#f1ecff}
 .dt tr:not(.today):hover td{background:#faf7ff}
@@ -360,7 +362,9 @@ function dashSeries(idx){
 const BN_WD = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
 const dDate = k => new Date(k + 'T00:00:00');
 const dfmt = k => dDate(k).toLocaleDateString('bn-BD', {day:'numeric', month:'short'});
-const axisLab = (k, i, n) => i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : dfmt(k);
+const wdShort = k => BN_WD[dDate(k).getDay()];
+const wdFull = k => dDate(k).toLocaleDateString('bn-BD', {weekday:'long'});
+const axisLab = (k, i, n) => [i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : wdShort(k), dfmt(k)];   // ২ লাইন: বার + তারিখ
 
 /* ---------- লোড ---------- */
 async function init(){
@@ -596,8 +600,8 @@ function renderHome(box){
     let rows = '';
     for (let i = n - 1; i >= 0; i--){
       const k = DASH.days[i], cls = i === n - 1 ? 'today' : i === n - 2 ? 'yest' : '';
-      const nm = i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : BN_WD[dDate(k).getDay()];
-      rows += `<tr class="${cls}"><td class="dl">${nm}<small>${dfmt(k)}</small></td>${CATS.map(p => `<td>${ser[p.key][i]}</td>`).join('')}${showOth ? `<td>${othAll[i]}</td>` : ''}<td class="num">${DASH.total[i]}</td><td style="width:140px"><div class="mb" style="width:${DASH.total[i] / maxT * 100}%"></div></td></tr>`;
+      const tg = i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : '';
+      rows += `<tr class="${cls}"><td class="dl">${wdFull(k)}${tg ? ` <span class="tg">${tg}</span>` : ''}<small>${dfmt(k)}</small></td>${CATS.map(p => `<td>${ser[p.key][i]}</td>`).join('')}${showOth ? `<td>${othAll[i]}</td>` : ''}<td class="num">${DASH.total[i]}</td><td style="width:140px"><div class="mb" style="width:${DASH.total[i] / maxT * 100}%"></div></td></tr>`;
     }
     h += `<div class="cgrid"><div class="cardc"><h4>দিন অনুযায়ী মোট অডিট</h4><div class="cbox"><canvas id="c7"></canvas></div></div>
       <div class="cardc"><h4>দিন অনুযায়ী ক্যাটাগরি ভাগ</h4><div class="cbox"><canvas id="c7s"></canvas></div></div></div>

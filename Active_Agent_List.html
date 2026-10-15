@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QA Audit Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://script.google.com"><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{--ink:#241a4d;--mute:#7a7399;--card:rgba(255,255,255,.82);--line:#ece7fb;--c1:#ff4fa3;--c2:#7c4dff;--c3:#00b8f0;--c4:#1fd6a0;--c5:#ffb02e}
@@ -217,6 +217,25 @@ tr.ag:hover .cp{opacity:.8}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
 button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- নতুন লোডার (% + অ্যানিমেশন) ---- */
+.loader{display:flex;flex-direction:column;align-items:center;gap:10px;padding:44px 20px}
+.ldr{position:relative;width:96px;height:96px;animation:lpulse 1.8s ease-in-out infinite}
+.ldr svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ldr circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ldr .lb{stroke:#ece6ff}.ldr .lf{stroke:url(#lg);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset .25s linear}
+.ldr .lp{position:absolute;inset:0;display:grid;place-items:center;font-family:'Baloo Da 2',sans-serif;font-size:24px;color:var(--c2)}
+.ldr::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:3px solid transparent;border-top-color:var(--c1);border-right-color:var(--c3);animation:sp 1.1s linear infinite}
+@keyframes lpulse{50%{transform:scale(1.05)}}
+.ls{font-size:13px;font-weight:600;color:var(--mute)}
+.lbar{width:180px;height:5px;border-radius:99px;background:#ece6ff;overflow:hidden}
+.lbar i{display:block;height:100%;width:40%;border-radius:99px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));animation:lslide 1.2s ease-in-out infinite}
+@keyframes lslide{from{transform:translateX(-100%)}to{transform:translateX(450%)}}
+/* ---- এজেন্টের গড় স্কোর ব্যাজ ---- */
+.scw{flex:none;display:inline-flex}
+.sc{min-width:36px;text-align:center;padding:0 7px;border-radius:99px;font-size:10.5px;font-weight:700;font-family:'Baloo Da 2',sans-serif;line-height:17px;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.14)}
+.sc.s1{background:linear-gradient(90deg,#12c98a,#1fd6a0)}.sc.s2{background:linear-gradient(90deg,#00a6c7,#00b8f0)}
+.sc.s3{background:linear-gradient(90deg,#ff9a1f,#ffb02e)}.sc.s4{background:linear-gradient(90deg,#ff5f6d,#ff8a5c)}
 </style>
 </head>
 <body data-page="home">
@@ -249,7 +268,7 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
     <button class="btn b-ghost" id="refBtn" title="রিফ্রেশ">⟳</button>
   </div>
 
-  <div id="content"><div class="loader"><div class="spin"></div>লোড হচ্ছে…</div></div>
+  <div id="content"></div>
 </div>
 
 <div class="modal" id="modal"><div class="mbox">
@@ -279,6 +298,56 @@ let STATE = null, DASH = null, DASHM = null, dashmJson = '', dashJson = '', dash
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const alpha = (hex, a) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
+
+/* ---------- লোডার (% সহ) ---------- */
+let LP = 0, LT = null;
+function loaderHtml(msg){
+  return `<div class="loader"><div class="ldr"><svg viewBox="0 0 100 100"><defs><linearGradient id="lg"><stop offset="0" stop-color="#ff4fa3"/><stop offset=".5" stop-color="#7c4dff"/><stop offset="1" stop-color="#1fd6a0"/></linearGradient></defs><circle class="lb" cx="50" cy="50" r="42"/><circle class="lf" cx="50" cy="50" r="42" style="stroke-dashoffset:${264 * (1 - LP / 100)}"/></svg><b class="lp">${Math.round(LP)}%</b></div><div class="ls">${msg}</div><div class="lbar"><i></i></div></div>`;
+}
+function ldrTick(){
+  document.querySelectorAll('.loader .lf').forEach(c => c.style.strokeDashoffset = 264 * (1 - LP / 100));
+  document.querySelectorAll('.loader .lp').forEach(c => c.textContent = Math.round(LP) + '%');
+}
+function ldrStart(){ LP = 0; clearInterval(LT); LT = setInterval(() => { LP += (93 - LP) * .06; ldrTick(); }, 120); }
+function ldrStop(){ clearInterval(LT); LT = null; LP = 100; ldrTick(); }
+
+/* ---------- গড় স্কোর (কন্ডিশনাল ফরম্যাট: 90+ সবুজ · 80+ নীল · 70+ কমলা · নিচে লাল) ---------- */
+let SCORES = null, scoresJson = '';
+const SCORE_BANDS = [90, 80, 70];
+const normN = s => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
+function paintScore(tr){
+  const el = tr.querySelector('[data-score]'); if (!el || !STATE) return;
+  const a = STATE.sections[+tr.dataset.s].agents[+tr.dataset.a];
+  const e = SCORES && ((a.id && SCORES.byId[a.id.toUpperCase()]) || SCORES.byName[normN(a.name)]);
+  if (!e){ el.innerHTML = ''; return; }
+  const c = e.a >= SCORE_BANDS[0] ? 's1' : e.a >= SCORE_BANDS[1] ? 's2' : e.a >= SCORE_BANDS[2] ? 's3' : 's4';
+  el.innerHTML = `<span class="sc ${c}" title="গড় স্কোর · ${e.n}টি অডিট">${e.a}</span>`;
+}
+function paintScores(){ document.querySelectorAll('tr.ag').forEach(paintScore); }
+async function loadScores(){
+  const for_ = current;
+  try{
+    const s = await run('getScores', current); if (for_ !== current) return;
+    const j = JSON.stringify(s); if (j !== scoresJson){ scoresJson = j; SCORES = s; paintScores(); }
+  }catch(e){}
+}
+/* ---------- প্রগ্রেস বারের রং: কম → বেশি ---------- */
+const PBC = [['#ff4d5e','#ff7a6b'], ['#ff7a45','#ffa24d'], ['#ffc83d','#ffe066'], ['#8be04e','#4cd964'], ['#00c9a7','#00b8f0']];
+const pbColor = r => PBC[r >= 1 ? 4 : r > .75 ? 3 : r > .5 ? 2 : r > .25 ? 1 : 0];
+
+/* ---------- ক্যাশ: আগের ডাটা সাথে সাথে দেখায়, পেছনে নতুন ডাটা আনে ---------- */
+const readBoot = () => { try{ return JSON.parse(localStorage.getItem('qa_boot') || 'null'); }catch(e){ return null; } };
+const saveBoot = b => { try{ localStorage.setItem('qa_boot', JSON.stringify(b)); }catch(e){} };
+function applyBoot(b, anim){
+  const sel = $('#sheetSel');
+  sel.innerHTML = b.sheets.map(n => `<option>${esc(n)}</option>`).join(''); sel.value = b.name; sel.onchange = () => load(sel.value);
+  current = b.name; $('#month').value = monthFromName(b.name) || new Date().toISOString().slice(0,7);
+  STATE = b.data; lastJson = JSON.stringify(STATE);
+  DASH = b.dash || null; dashJson = DASH ? JSON.stringify(DASH) : ''; dashErr = b.dashErr || '';
+  DASHM = b.month || null; dashmJson = DASHM ? JSON.stringify(DASHM) : '';
+  SCORES = b.scores || null; scoresJson = SCORES ? JSON.stringify(SCORES) : '';
+  const y = scrollY; render(anim); scrollTo(0, y);
+}
 
 /* ---------- লোগো (gtpl_logo.png না পেলে লেখা দিয়ে একই লোগো) ---------- */
 $('#logoImg').addEventListener('error', () => {
@@ -393,18 +462,21 @@ const axisLab = (k, i, n) => [i === n - 1 ? 'আজ' : i === n - 2 ? 'গতক�
 /* ---------- লোড ---------- */
 async function init(){
   buildNav(); route();
+  $('#content').innerHTML = loaderHtml('ডাটা আনা হচ্ছে'); ldrStart();
+  const c = readBoot(); let shown = false;
+  if (c && c.data){ try{ applyBoot(c, true); shown = true; $('#liveTxt').textContent = 'আপডেট হচ্ছে…'; }catch(e){} }
   try{
-    const names = await run('getSheets');
-    const sel = $('#sheetSel');
-    sel.innerHTML = names.map(n => `<option>${esc(n)}</option>`).join('');
-    sel.value = names[names.length-1];
-    sel.onchange = () => load(sel.value);
-    await load(sel.value);
+    const b = await run('bootstrap', shown ? c.name : '');
+    applyBoot(b, !shown); saveBoot(b); setLive(true);
     loadAuto();
     setTimeout(pollLoop, POLL_MS);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });   // ট্যাবে ফিরলেই সাথে সাথে আপডেট
     addEventListener('focus', () => poll());
-  }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
+  }catch(e){
+    if (!shown) $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>';
+    setLive(false);
+  }
+  ldrStop();
 }
 async function refreshSheetList(keep){
   const names = await run('getSheets'), sel = $('#sheetSel');
@@ -413,18 +485,19 @@ async function refreshSheetList(keep){
   return sel.value;
 }
 async function load(name, retried){
-  current = name; DASH = null; dashJson = ''; DASHM = null; dashmJson = ''; dashErr = '';
+  current = name; DASH = null; dashJson = ''; DASHM = null; dashmJson = ''; dashErr = ''; SCORES = null; scoresJson = '';
   $('#month').value = monthFromName(name) || new Date().toISOString().slice(0,7);
-  $('#content').innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>';
+  $('#content').innerHTML = loaderHtml('লোড হচ্ছে'); ldrStart();
   try{
-    STATE = await run('getData', name); lastJson = JSON.stringify(STATE);
-    render(true); setLive(true); loadDash(); loadMonth();
+    const b = await run('bootstrap', name);
+    applyBoot(b, true); saveBoot(b); setLive(true);
   }catch(e){
     if (!retried && /Sheet পাওয়া যায়নি/.test(e.message)){
-      try{ const n = await refreshSheetList(name); return load(n, true); }catch(_){}
+      try{ const n = await refreshSheetList(name); ldrStop(); return load(n, true); }catch(_){}
     }
     $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false);
   }
+  ldrStop();
 }
 async function loadDash(){          // শেষ 7 দিনের কাউন্ট (raw data থেকে)
   const for_ = current;
@@ -470,9 +543,9 @@ async function poll(){
       const fresh = diffTicks(STATE, d);
       lastJson = j; STATE = d; const y = scrollY; render(false); scrollTo(0, y);
       if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক পড়েছে`, 4500); }
-      loadDash(); if (PAGE === 'home') loadMonth();   // টিক বদলালে দিন-ভিত্তিক গণনাও সাথে সাথে নতুন করে আনো
+      loadScores(); loadDash(); if (PAGE === 'home') loadMonth();   // টিক বদলালে দিন-ভিত্তিক গণনাও সাথে সাথে নতুন করে আনো
     }
-    if (++pollN % 5 === 0){ loadAuto(); loadDash(); if (PAGE === 'home') loadMonth(); }
+    if (++pollN % 5 === 0){ loadAuto(); loadScores(); loadDash(); if (PAGE === 'home') loadMonth(); }
   }catch(e){ setLive(false); }
   finally{ polling = false; }
 }
@@ -604,7 +677,7 @@ let enterT = null;
 function render(anim){
   killCharts();
   const box = $('#content');
-  if (!STATE){ box.innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>'; return; }
+  if (!STATE){ box.innerHTML = loaderHtml('লোড হচ্ছে…'); return; }
   box.classList.toggle('enter', !!anim);
   if (PAGE === 'home') renderHome(box); else renderCat(box, PAGES.find(p => p.key === PAGE));
   updateNavBadges();
@@ -653,7 +726,7 @@ function renderHome(box){
   } else if (dashErr){
     h += `<div class="warn">⚠️ ${esc(dashErr)}</div>`;
   } else {
-    h += '<div class="loader"><div class="spin"></div>raw data থেকে গুনছি…</div>';
+    h += loaderHtml('raw data থেকে গুনছি…');
   }
   h += '</div>';
 
@@ -708,7 +781,7 @@ function buildSection(si, p, box){
   head += '<tr><th class="id">ID</th><th class="nm">Agent Name</th><th>DOJ</th><th>Gender</th><th>Week</th><th>Target</th>';
   for (let i = 1; i <= PER; i++){ if (i === 9) head += '<th class="gap"></th>'; head += `<th>${i}</th>`; }
   head += '<th>Total</th><th>Left</th><th>Progress</th><th>1</th><th>2</th><th>3</th><th>4</th><th>Total</th><th></th></tr>';
-  const widths = [100,200,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
+  const widths = [100,240,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
   const colgroup = '<colgroup>' + widths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
   const tw = widths.reduce((x, y) => x + y, 0);
   div.innerHTML = `<div class="sec-h" style="--a:${p.c[0]};--b:${p.c[1]}"><h2>${esc(sec.name)}</h2><span class="chip" data-sc></span><span class="sp"></span><button class="btn" data-add="${si}">➕ এজেন্ট যোগ</button></div>
@@ -720,7 +793,7 @@ function buildSection(si, p, box){
     tr.dataset.k = (a.id + ' ' + a.name).toLowerCase();
     tr.style.setProperty('--d', Math.min(ai * 16, 500) + 'ms');
     const gcls = /^f/i.test(a.gender) ? 'f' : 'm';
-    let h = `<td class="id"><div class="cell"><span class="t">${esc(a.id)}</span>${a.id ? `<button class="cp" data-copy="${esc(a.id)}" title="ID কপি">📋</button>` : ''}</div></td><td class="nm"><div class="cell"><span class="t">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</span>${a.name ? `<button class="cp" data-copy="${esc(a.name)}" title="নাম কপি">📋</button>` : ''}</div></td>
+    let h = `<td class="id"><div class="cell"><span class="t">${esc(a.id)}</span>${a.id ? `<button class="cp" data-copy="${esc(a.id)}" title="ID কপি">📋</button>` : ''}</div></td><td class="nm"><div class="cell"><span class="t">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</span><span class="scw" data-score></span>${a.name ? `<button class="cp" data-copy="${esc(a.name)}" title="নাম কপি">📋</button>` : ''}</div></td>
       <td class="dim">${esc(a.doj) || '–'}</td><td>${a.gender ? `<span class="g ${gcls}">${esc(a.gender)}</span>` : '–'}</td><td class="dim">${esc(a.week) || '–'}</td><td class="num">${a.target}</td>`;
     for (let i = 0; i < PER; i++){
       if (i === 8) h += '<td class="gap"></td>';
@@ -730,7 +803,7 @@ function buildSection(si, p, box){
     for (let i = 0; i < 4; i++) h += `<td><button class="cb ${a.live[i] ? 'on' : ''}" style="--col:${col}" data-live="${i}" aria-label="Live ${i+1}"></button></td>`;
     h += `<td class="num ext" data-ext></td><td class="act"><button class="e" data-edit title="এডিট">✏️</button> <button class="d" data-del title="ডিলিট">🗑️</button></td>`;
     tr.innerHTML = h; tb.appendChild(tr);
-    refreshRow(tr, true);
+    refreshRow(tr, true); paintScore(tr);
   });
   if (!sec.agents.length) tb.innerHTML = '<tr><td colspan="40" class="empty">কোনো এজেন্ট নেই</td></tr>';
   box.appendChild(div);
@@ -743,7 +816,7 @@ function refreshRow(tr, skipStats){
   tr.querySelector('[data-done]').textContent = n;
   tr.querySelector('[data-left]').textContent = Math.max(a.target - n, 0);
   tr.querySelector('[data-ext]').textContent = ex;
-  tr.querySelector('.pb i').style.width = Math.min(n / a.target * 100, 100) + '%';
+  { const r = a.target ? n / a.target : 0, bar = tr.querySelector('.pb i'), c = pbColor(r); bar.style.width = Math.min(r * 100, 100) + '%'; bar.style.background = `linear-gradient(90deg,${c[0]},${c[1]})`; bar.parentNode.title = Math.round(Math.min(r, 1) * 100) + '%'; }
   tr.classList.toggle('done', n >= a.target);
   if (!skipStats){ updateSecChip(si); updateStats(); }
 }

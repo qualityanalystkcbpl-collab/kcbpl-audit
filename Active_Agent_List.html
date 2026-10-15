@@ -258,7 +258,7 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzVZ2A42rIxh5UgpBPuHSlb2tJnwyp2eunQc3kcNeZ495bqUJTeMwT8ir6cMA_3HBHESw/exec';
-const PER = 16, POLL_MS = 15000;
+const PER = 16, POLL_MS = 4000;                 // প্রতি 4 সেকেন্ডে Sheet দেখে, বদল থাকলে নিজে আপডেট
 const PALETTE = ['#7c4dff','#e5195f','#1e6bff','#ff2fd0','#12a150','#ff8a00','#00a6c7','#9b27af'];
 
 /* পেজ লিস্ট: re = Sheet-এর সেকশন নামের সাথে মেলানোর প্যাটার্ন, c = রং (গ্রেডিয়েন্ট) */
@@ -281,7 +281,7 @@ const alpha = (hex, a) => hex + Math.round(a * 255).toString(16).padStart(2, '0'
 $('#logoImg').addEventListener('error', () => {
   $('#logoBox').innerHTML = '<span class="lg"><span class="r1"><span class="a">GTPL</span> <span class="b">KCBPL</span></span><small>Digital Cable TV &amp; Broadband</small></span>';
 });
-$('#dateChip').textContent = '📅 ' + new Date().toLocaleDateString('bn-BD', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+$('#dateChip').textContent = '📅 ' + new Date().toLocaleDateString('bn-BD-u-nu-latn', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 
 /* ---------- API ---------- */
 function getKey(){
@@ -304,7 +304,7 @@ function toast(msg, ms=3000){
 }
 function setLive(ok){
   $('#live').classList.toggle('off', !ok);
-  $('#liveTxt').textContent = ok ? 'Live · ' + new Date().toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit', second:'2-digit'}) : 'সংযোগ নেই';
+  $('#liveTxt').textContent = ok ? 'Live · ' + new Date().toLocaleTimeString('bn-BD-u-nu-latn', {hour:'2-digit', minute:'2-digit', second:'2-digit'}) : 'সংযোগ নেই';
 }
 function monthFromName(n){
   const M=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -367,10 +367,10 @@ function dashSeries(idx){
 }
 const BN_WD = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
 const dDate = k => new Date(k + 'T00:00:00');
-const dfmt = k => dDate(k).toLocaleDateString('bn-BD', {day:'numeric', month:'short'});
+const dfmt = k => dDate(k).toLocaleDateString('bn-BD-u-nu-latn', {day:'numeric', month:'short'});
 const wdShort = k => BN_WD[dDate(k).getDay()];
-const wdFull = k => dDate(k).toLocaleDateString('bn-BD', {weekday:'long'});
-const axisLab = (k, i, n) => [i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : wdShort(k), dfmt(k)];   // ২ লাইন: বার + তারিখ
+const wdFull = k => dDate(k).toLocaleDateString('bn-BD-u-nu-latn', {weekday:'long'});
+const axisLab = (k, i, n) => [i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : wdShort(k), dfmt(k)];   // 2 লাইন: বার + তারিখ
 
 /* ---------- লোড ---------- */
 async function init(){
@@ -383,7 +383,9 @@ async function init(){
     sel.onchange = () => load(sel.value);
     await load(sel.value);
     loadAuto();
-    setInterval(poll, POLL_MS);
+    setTimeout(pollLoop, POLL_MS);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });   // ট্যাবে ফিরলেই সাথে সাথে আপডেট
+    addEventListener('focus', () => poll());
   }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
 }
 async function refreshSheetList(keep){
@@ -406,7 +408,7 @@ async function load(name, retried){
     $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false);
   }
 }
-async function loadDash(){          // শেষ ৭ দিনের কাউন্ট (raw data থেকে)
+async function loadDash(){          // শেষ 7 দিনের কাউন্ট (raw data থেকে)
   const for_ = current;
   try{
     const d = await run('getDashboard', current, 7);
@@ -423,8 +425,11 @@ async function loadDash(){          // শেষ ৭ দিনের কাউ�
     if (!DASH && PAGE === 'home' && STATE) render(false);
   }
 }
+let polling = false;
+async function pollLoop(){ await poll(); setTimeout(pollLoop, POLL_MS); }
 async function poll(){
-  if (busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
+  if (polling || busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
+  polling = true;
   try{
     const d = await run('getData', current);
     setLive(true);
@@ -433,10 +438,12 @@ async function poll(){
     if (j !== lastJson){
       const fresh = diffTicks(STATE, d);
       lastJson = j; STATE = d; const y = scrollY; render(false); scrollTo(0, y);
-      if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক অটো মার্ক হয়েছে`, 4500); }
+      if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক পড়েছে`, 4500); }
+      loadDash();                                   // টিক বদলালে দিন-ভিত্তিক গণনাও সাথে সাথে নতুন করে আনো
     }
-    if (++pollN % 4 === 0){ loadAuto(); loadDash(); }
+    if (++pollN % 5 === 0) loadAuto();
   }catch(e){ setLive(false); }
+  finally{ polling = false; }
 }
 function diffTicks(a, b){
   const out = []; if (!a) return out;
@@ -459,7 +466,7 @@ async function loadAuto(){
     const s = await run('getAutoStatus'), el = $('#auto');
     el.classList.toggle('off', s.on === false || !!s.err);
     $('#autoTxt').textContent = s.err ? 'Auto-tick: এরর' : s.on === false ? 'Auto-tick বন্ধ' :
-      'Auto-tick ON' + (s.last ? ' · ' + new Date(s.last).toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'}) : '');
+      'Auto-tick ON' + (s.last ? ' · ' + new Date(s.last).toLocaleTimeString('bn-BD-u-nu-latn', {hour:'2-digit', minute:'2-digit'}) : '');
     el.title = s.err ? s.err : 'ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে';
   }catch(e){}
 }
@@ -558,7 +565,7 @@ function drawCat(key){
   chart('pcD', 'doughnut', ['Completed', 'Remaining', 'Extra / Live'], [{data:[a.done, a.left, a.extra], backgroundColor:[p.c[0], '#e4dcff', '#ffb02e'], borderColor:'#fff', borderWidth:3, hoverOffset:12}], opts({donut:true, legend:true}));
   const b = [0, 0, 0, 0, 0, 0];
   idx.forEach(si => STATE.sections[si].agents.forEach(g => { const r = ndone(g) / g.target; b[r === 0 ? 0 : r <= .25 ? 1 : r <= .5 ? 2 : r <= .75 ? 3 : r < 1 ? 4 : 5]++; }));
-  chart('pcH', 'bar', ['০%', '১–২৫%', '২৬–৫০%', '৫১–৭৫%', '৭৬–৯৯%', '১০০%'], [{label:'এজেন্ট', data:b, backgroundColor:['#ff6b6b', '#ff9a5c', '#ffd166', '#9be37a', '#1fd6a0', '#00b8f0'], borderRadius:8, borderSkipped:false}], opts({vals:true}));
+  chart('pcH', 'bar', ['0%', '1–25%', '26–50%', '51–75%', '76–99%', '100%'], [{label:'এজেন্ট', data:b, backgroundColor:['#ff6b6b', '#ff9a5c', '#ffd166', '#9be37a', '#1fd6a0', '#00b8f0'], borderRadius:8, borderSkipped:false}], opts({vals:true}));
 }
 
 /* ---------- রেন্ডার ---------- */
@@ -591,13 +598,13 @@ function renderHome(box){
   let h = `<div class="hero">
     ${kp('#ff4fa3', '#ffb02e', 'আজকের অডিট', today, delta, 0)}
     ${kp('#7c4dff', '#00b8f0', 'গতকালের অডিট', yest, 'আগের দিন', 70)}
-    ${kp('#12c98a', '#00a6c7', 'শেষ ৭ দিনে মোট', wk, D ? `গড় ${(wk / n).toFixed(1)}টি / দিন` : '', 140)}
+    ${kp('#12c98a', '#00a6c7', 'শেষ 7 দিনে মোট', wk, D ? `গড় ${(wk / n).toFixed(1)}টি / দিন` : '', 140)}
     ${kp('#ff7a45', '#e5195f', 'এই মাসে Completed', all.done, `Target ${all.target} · বাকি ${all.left} · Extra ${all.extra}`, 210)}
     <div class="rcard rise" style="--d:280ms">${ringSvg(all.pct)}<div><small>মাসের অগ্রগতি</small><b>${(all.pct * 100).toFixed(1)}%</b><small>${all.full}/${all.agents} জন Target পূর্ণ</small></div></div>
   </div>`;
 
-  /* শেষ ৭ দিন */
-  h += `<div class="pn rise" style="--a:#ff4fa3;--b:#ffb02e;--d:300ms"><div class="pn-h"><h2>📅 শেষ ৭ দিনে কতটা অডিট হলো</h2></div>`;
+  /* শেষ 7 দিন */
+  h += `<div class="pn rise" style="--a:#ff4fa3;--b:#ffb02e;--d:300ms"><div class="pn-h"><h2>📅 শেষ 7 দিনে কতটা অডিট হলো</h2></div>`;
   if (D){
     const ser = {}; RAWCATS.forEach(p => ser[p.key] = dashSeries(m[p.key]));
     const maxT = Math.max(1, ...DASH.total);
@@ -625,7 +632,7 @@ function renderHome(box){
       const a = agg(m[p.key]);
       let t = '';
       if (p.manual){ t = '<div class="cc-t">✍️ <b>ম্যানুয়াল</b> – raw data থেকে আসে না, টিক সবসময় হাতে দিতে হয়</div>'; }
-      else if (D){ const s = dashSeries(m[p.key]); t = `<div class="spk"><canvas id="sp_${p.key}"></canvas></div><div class="cc-t">আজ <b>${s[n - 1]}</b> · গতকাল <b>${s[n - 2]}</b> · ৭ দিনে <b>${s.reduce((x, y) => x + y, 0)}</b></div>`; }
+      else if (D){ const s = dashSeries(m[p.key]); t = `<div class="spk"><canvas id="sp_${p.key}"></canvas></div><div class="cc-t">আজ <b>${s[n - 1]}</b> · গতকাল <b>${s[n - 2]}</b> · 7 দিনে <b>${s.reduce((x, y) => x + y, 0)}</b></div>`; }
       return `<a class="cc rise" href="#${p.key}" style="--a:${p.c[0]};--b:${p.c[1]};--d:${420 + i * 80}ms"><div class="cc-h"><span>${p.ico}</span>${esc(p.label)}<i>→</i></div>
         <div class="cc-n"><b data-n="${a.done}" data-k="${p.key}">${a.done}</b><small>/ ${a.target}</small></div>
         <div class="pb"><i style="width:${a.pct * 100}%"></i></div>
@@ -646,7 +653,7 @@ function renderCat(box, p){
   box.innerHTML = `<div class="banner rise" style="--a:${p.c[0]};--b:${p.c[1]}"><span class="ico">${p.ico}</span><div><h2>${esc(p.label)}</h2><small>${a.agents} জন এজেন্ট · ${esc(current)}${p.manual ? ' · ✍️ সবসময় ম্যানুয়াল আপডেট' : ''}</small></div></div>
     <div class="stats" id="stats"></div>
     <div class="pn rise" style="--a:${p.c[0]};--b:${p.c[1]};--d:200ms"><div class="pn-h"><h2>📈 ${esc(p.label)} – চার্ট</h2></div><div class="cgrid">
-      ${p.manual ? `<div class="cardc"><h4>✍️ ম্যানুয়াল ট্যাব</h4><div class="note">এই ট্যাবের ডাটা <b>RAW DATA (Parameter wise fail count)</b> থেকে আসে না। অডিট হলে টিক <b>নিজের হাতে</b> দিতে হবে। এখানে <b>লক / আনলক নেই</b>, টিক সবসময় সরাসরি বদলানো যায়।</div></div>` : `<div class="cardc"><h4>শেষ ৭ দিনে অডিট</h4><div class="cbox"><canvas id="pc7"></canvas></div>${hasDash() ? '' : `<div class="empty">${dashErr ? esc(dashErr) : 'দিনের ডাটা আনছি…'}</div>`}</div>`}
+      ${p.manual ? `<div class="cardc"><h4>✍️ ম্যানুয়াল ট্যাব</h4><div class="note">এই ট্যাবের ডাটা <b>RAW DATA (Parameter wise fail count)</b> থেকে আসে না। অডিট হলে টিক <b>নিজের হাতে</b> দিতে হবে। এখানে <b>লক / আনলক নেই</b>, টিক সবসময় সরাসরি বদলানো যায়।</div></div>` : `<div class="cardc"><h4>শেষ 7 দিনে অডিট</h4><div class="cbox"><canvas id="pc7"></canvas></div>${hasDash() ? '' : `<div class="empty">${dashErr ? esc(dashErr) : 'দিনের ডাটা আনছি…'}</div>`}</div>`}
       <div class="cardc"><h4>Completed / Remaining / Extra</h4><div class="cbox"><canvas id="pcD"></canvas></div></div>
       <div class="cardc"><h4>কতজন এজেন্ট কত % Target-এ</h4><div class="cbox"><canvas id="pcH"></canvas></div></div></div></div>`;
   lastDone = a.pct;
@@ -750,7 +757,7 @@ function setLock(v, auto){
   if (auto) toast('🔒 কিছুক্ষণ কাজ না করায় আবার লক হয়েছে', 3000);
 }
 function armLock(){ clearTimeout(lockT); if (!locked) lockT = setTimeout(() => setLock(true, true), 180000); }
-$('#lockBtn').onclick = () => { setLock(!locked); toast(locked ? '🔒 লক হয়েছে' : '🔓 আনলক: এখন টিক বদলানো যাবে (৩ মিনিট কাজ না করলে আবার লক)', 3000); };
+$('#lockBtn').onclick = () => { setLock(!locked); toast(locked ? '🔒 লক হয়েছে' : '🔓 আনলক: এখন টিক বদলানো যাবে (3 মিনিট কাজ না করলে আবার লক)', 3000); };
 setLock(true);
 
 /* ---------- খোঁজা ---------- */

@@ -140,6 +140,9 @@ table.dt{table-layout:auto;width:100%;min-width:560px}
 .dt tr.yest td{background:#f1ecff}
 .dt tr:not(.today):hover td{background:#faf7ff}
 .mb{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--c3),var(--c4));transform-origin:left;animation:grow 1.2s cubic-bezier(.2,.8,.2,1) both}
+.mstack{display:flex;flex-direction:column;gap:12px;padding:12px}
+.mt{float:right;font-weight:600;color:var(--mute)}.mt b{color:var(--c2);font-size:14px}
+.pn-h .chip{margin-left:auto;background:rgba(255,255,255,.24);padding:2px 10px;border-radius:99px;font-weight:600;font-size:11.5px}
 .warn{padding:16px;line-height:1.7;color:#b3261e}
 
 /* ---- ক্যাটাগরি ব্যানার ---- */
@@ -272,7 +275,7 @@ const PAGES = [
 const CATS = PAGES.slice(1);
 const RAWCATS = CATS.filter(p => !p.manual);          // raw data থেকে আসা ক্যাটাগরি (Outbound বাদ: ওটা সবসময় ম্যানুয়াল)
 const isManual = () => { const p = PAGES.find(x => x.key === PAGE); return !!(p && p.manual); };
-let STATE = null, DASH = null, dashJson = '', dashErr = '', current = '', busy = 0, lastJson = '', lastDone = 0, pollN = 0, PAGE = 'home';
+let STATE = null, DASH = null, DASHM = null, dashmJson = '', dashJson = '', dashErr = '', current = '', busy = 0, lastJson = '', lastDone = 0, pollN = 0, PAGE = 'home';
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const alpha = (hex, a) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
@@ -360,6 +363,21 @@ function agg(idx){
   return {target, done, left, extra, agents, full, pct: target ? Math.min(done / target, 1) : 0};
 }
 const hasDash = () => !!(DASH && DASH.sheet === current);
+const hasMonth = () => !!(DASHM && DASHM.sheet === current);
+/* মাসের ১ তারিখ থেকে ১০ দিন করে ৩টা ভাগ: 1–10, 11–20, 21–শেষ */
+function monthChunks(){
+  const d = DASHM.days, n = d.length, today = DASHM.today || '';
+  return [[0, 10], [10, 20], [20, n]].filter(r => r[0] < n).map(([a, b]) => {
+    const ks = d.slice(a, Math.min(b, n));
+    const data = ks.map(k => k > today ? null : DASHM.total[d.indexOf(k)]);
+    return {
+      title: dfmt(ks[0]) + ' – ' + dfmt(ks[ks.length - 1]),
+      labels: ks.map(k => [String(+k.slice(8)), k === today ? 'আজ' : wdShort(k)]),
+      data: data, colors: ks.map(k => k === today ? '#ff4fa3' : '#7c4dff'),
+      sum: data.reduce((s, x) => s + (x || 0), 0)
+    };
+  });
+}
 function dashSeries(idx){
   const arr = new Array(DASH.days.length).fill(0);
   idx.forEach(si => { const s = DASH.sections[si]; if (s) s.counts.forEach((c, i) => arr[i] += c); });
@@ -395,12 +413,12 @@ async function refreshSheetList(keep){
   return sel.value;
 }
 async function load(name, retried){
-  current = name; DASH = null; dashJson = ''; dashErr = '';
+  current = name; DASH = null; dashJson = ''; DASHM = null; dashmJson = ''; dashErr = '';
   $('#month').value = monthFromName(name) || new Date().toISOString().slice(0,7);
   $('#content').innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>';
   try{
     STATE = await run('getData', name); lastJson = JSON.stringify(STATE);
-    render(true); setLive(true); loadDash();
+    render(true); setLive(true); loadDash(); loadMonth();
   }catch(e){
     if (!retried && /Sheet পাওয়া যায়নি/.test(e.message)){
       try{ const n = await refreshSheetList(name); return load(n, true); }catch(_){}
@@ -425,6 +443,19 @@ async function loadDash(){          // শেষ 7 দিনের কাউন�
     if (!DASH && PAGE === 'home' && STATE) render(false);
   }
 }
+async function loadMonth(){         // মাসের ১ তারিখ থেকে দিন-ভিত্তিক মোট অডিট (Home-এর ৩টা চার্টের ডাটা)
+  const for_ = current;
+  try{
+    const d = await run('getDashboard', current, 'month');
+    if (for_ !== current) return;
+    const j = JSON.stringify(d);
+    if (j !== dashmJson){
+      dashmJson = j; DASHM = d;
+      if (busy || $('#modal').classList.contains('show')) return;
+      if (PAGE === 'home'){ const y = scrollY; render(false); scrollTo(0, y); }
+    }
+  }catch(e){ if (!dashErr) dashErr = e.message; }
+}
 let polling = false;
 async function pollLoop(){ await poll(); setTimeout(pollLoop, POLL_MS); }
 async function poll(){
@@ -439,9 +470,9 @@ async function poll(){
       const fresh = diffTicks(STATE, d);
       lastJson = j; STATE = d; const y = scrollY; render(false); scrollTo(0, y);
       if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক পড়েছে`, 4500); }
-      loadDash();                                   // টিক বদলালে দিন-ভিত্তিক গণনাও সাথে সাথে নতুন করে আনো
+      loadDash(); if (PAGE === 'home') loadMonth();   // টিক বদলালে দিন-ভিত্তিক গণনাও সাথে সাথে নতুন করে আনো
     }
-    if (++pollN % 5 === 0) loadAuto();
+    if (++pollN % 5 === 0){ loadAuto(); loadDash(); if (PAGE === 'home') loadMonth(); }
   }catch(e){ setLive(false); }
   finally{ polling = false; }
 }
@@ -540,13 +571,13 @@ function drawHome(){
   const m = mapSections();
   if (hasDash()){
     const n = DASH.days.length, lab = DASH.days.map((k, i) => axisLab(k, i, n));
-    chart('c7', 'bar', lab, trendSets(DASH.total, '#ff4fa3', '#7c4dff', '#b9a6ff'), opts({vals:true}));
     const sets = RAWCATS.map(p => ({label:p.label, data:dashSeries(m[p.key]), backgroundColor:p.c[0], borderRadius:5, stack:'s', maxBarThickness:46}));
     const oth = DASH.total.map((t, i) => t - sets.reduce((s, d) => s + d.data[i], 0));
     if (oth.some(x => x > 0)) sets.push({label:'অন্যান্য', data:oth, backgroundColor:'#c9c3de', borderRadius:5, stack:'s', maxBarThickness:46});
     chart('c7s', 'bar', lab, sets, opts({stack:true, legend:true}));
     RAWCATS.forEach(p => chart('sp_' + p.key, 'line', lab, [{label:p.label, data:dashSeries(m[p.key]), borderColor:p.c[0], backgroundColor:alpha(p.c[0], .18), fill:true, tension:.4, pointRadius:0, borderWidth:2}], opts({noAxes:true, pad:{top:4, bottom:2}})));
   }
+  if (hasMonth()) monthChunks().forEach((c, i) => chart('m' + i, 'bar', c.labels, [{label:'অডিট', data:c.data, backgroundColor:c.colors, borderRadius:8, borderSkipped:false, maxBarThickness:44}], opts({vals:true})));
   const A = CATS.map(p => agg(m[p.key]));
   chart('cCat', 'bar', CATS.map(p => p.label), [
     {label:'Target', data:A.map(a => a.target), backgroundColor:'#d9ccff', borderRadius:8, borderSkipped:false},
@@ -616,7 +647,7 @@ function renderHome(box){
       const tg = i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : '';
       rows += `<tr class="${cls}"><td class="dl">${wdFull(k)}${tg ? ` <span class="tg">${tg}</span>` : ''}<small>${dfmt(k)}</small></td>${RAWCATS.map(p => `<td>${ser[p.key][i]}</td>`).join('')}${showOth ? `<td>${othAll[i]}</td>` : ''}<td class="num">${DASH.total[i]}</td><td style="width:140px"><div class="mb" style="width:${DASH.total[i] / maxT * 100}%"></div></td></tr>`;
     }
-    h += `<div class="cgrid"><div class="cardc"><h4>দিন অনুযায়ী মোট অডিট</h4><div class="cbox"><canvas id="c7"></canvas></div></div>
+    h += `<div class="cgrid">
       <div class="cardc"><h4>দিন অনুযায়ী ক্যাটাগরি ভাগ</h4><div class="cbox"><canvas id="c7s"></canvas></div></div></div>
       <div class="scroll" style="padding:0 12px 12px"><table class="dt"><thead><tr><th style="text-align:left">দিন</th>${RAWCATS.map(p => `<th>${esc(p.label)}</th>`).join('')}${showOth ? '<th>অন্যান্য</th>' : ''}<th>মোট</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
   } else if (dashErr){
@@ -625,6 +656,15 @@ function renderHome(box){
     h += '<div class="loader"><div class="spin"></div>raw data থেকে গুনছি…</div>';
   }
   h += '</div>';
+
+  /* মাসের ১ তারিখ থেকে দিন অনুযায়ী মোট অডিট: ১০ দিন করে ৩টা চার্ট, নিচে নিচে */
+  if (hasMonth()){
+    const ch = monthChunks(), tot = ch.reduce((s, c) => s + c.sum, 0);
+    h += `<div class="pn rise" style="--a:#7c4dff;--b:#ff4fa3;--d:340ms"><div class="pn-h"><h2>📆 দিন অনুযায়ী মোট অডিট (মাসের 1 তারিখ থেকে)</h2><span class="chip">মাসে মোট ${tot}</span></div><div class="mstack">` +
+      ch.map((c, i) => `<div class="cardc"><h4>${c.title}<span class="mt">মোট <b>${c.sum}</b></span></h4><div class="cbox" style="height:220px"><canvas id="m${i}"></canvas></div></div>`).join('') + '</div></div>';
+  } else if (!dashErr){
+    h += '<div class="pn rise" style="--a:#7c4dff;--b:#ff4fa3;--d:340ms"><div class="pn-h"><h2>📆 দিন অনুযায়ী মোট অডিট</h2></div><div class="loader"><div class="spin"></div>মাসের ডাটা আনছি…</div></div>';
+  }
 
   /* ক্যাটাগরি কার্ড */
   h += `<div class="pn rise" style="--a:#7c4dff;--b:#00b8f0;--d:380ms"><div class="pn-h"><h2>🗂️ ক্যাটাগরি অনুযায়ী এই মাসের হিসাব</h2></div><div class="ccs">` +

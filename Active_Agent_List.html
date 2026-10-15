@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QA Audit Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{--ink:#241a4d;--mute:#7a7399;--card:rgba(255,255,255,.82);--line:#ece7fb;--c1:#ff4fa3;--c2:#7c4dff;--c3:#00b8f0;--c4:#1fd6a0;--c5:#ffb02e}
 *{box-sizing:border-box}
@@ -12,19 +13,49 @@ html,body{margin:0}
 body{font-family:'Hind Siliguri',sans-serif;font-size:12.5px;color:var(--ink);min-height:100vh;
  background:radial-gradient(900px 500px at 5% -10%,#ffd3ea 0,transparent 60%),radial-gradient(800px 500px at 100% 0,#cfe9ff 0,transparent 60%),radial-gradient(900px 600px at 50% 110%,#d8ffe9 0,transparent 60%),#f6f2ff;
  background-attachment:fixed}
-.wrap{max-width:1500px;margin:0 auto;padding:14px 14px 50px}
-.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.wrap{max-width:1500px;margin:0 auto;padding:14px 14px 50px;position:relative}
+
+/* ---- ভাসমান ব্যাকগ্রাউন্ড ---- */
+.blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.42;z-index:-1;animation:float 18s ease-in-out infinite;pointer-events:none}
+.bl1{width:340px;height:340px;background:#ff9ccf;left:-90px;top:8%}
+.bl2{width:380px;height:380px;background:#9ad7ff;right:-110px;top:34%;animation-delay:-6s}
+.bl3{width:320px;height:320px;background:#9bf3cf;left:38%;bottom:-130px;animation-delay:-11s}
+@keyframes float{50%{transform:translate(44px,-54px) scale(1.14)}}
+
+/* ---- হেডার + লোগো ---- */
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;animation:drop .7s cubic-bezier(.2,1.2,.4,1) both}
+@keyframes drop{from{opacity:0;transform:translateY(-22px)}}
+.logo{background:#fff;border-radius:14px;padding:5px 12px;box-shadow:0 6px 20px rgba(124,77,255,.16);display:flex;align-items:center;min-height:50px;transition:transform .3s}
+.logo:hover{transform:scale(1.04) rotate(-1deg)}
+.logo img{height:44px;display:block}
+.lg{display:flex;flex-direction:column;line-height:1}
+.lg .r1{font-family:'Baloo Da 2',sans-serif;font-weight:800;font-size:26px;font-style:italic;letter-spacing:-.5px}
+.lg .a{color:#1d4fd8}.lg .b{color:#e3121e}
+.lg small{font-size:10.5px;font-weight:700;color:#222;margin-top:2px}
 h1{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;font-size:24px;margin:0;line-height:1;
  background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c1));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
 @keyframes shine{to{background-position:300% 0}}
 .live{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute);background:var(--card);padding:4px 10px;border-radius:99px}
 .live i{width:8px;height:8px;border-radius:50%;background:var(--c4);box-shadow:0 0 0 0 rgba(31,214,160,.6);animation:pulse 1.8s infinite}
 .live.off i{background:#ff6b6b;animation:none}
+.live.plain i{display:none}
 @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(31,214,160,0)}100%{box-shadow:0 0 0 0 rgba(31,214,160,0)}}
-.bar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;background:var(--card);padding:8px 10px;border-radius:14px;box-shadow:0 6px 20px rgba(124,77,255,.12);backdrop-filter:blur(8px)}
+
+/* ---- নেভিগেশন ---- */
+.navw{position:relative;display:flex;gap:4px;background:var(--card);padding:5px;border-radius:16px;box-shadow:0 6px 20px rgba(124,77,255,.12);overflow-x:auto;margin-bottom:10px;backdrop-filter:blur(8px);scrollbar-width:none;animation:drop .7s .1s cubic-bezier(.2,1.2,.4,1) both}
+.navw::-webkit-scrollbar{display:none}
+.navw a{position:relative;z-index:1;display:flex;align-items:center;gap:6px;padding:8px 15px;border-radius:12px;text-decoration:none;color:var(--ink);font-weight:600;font-size:13px;white-space:nowrap;transition:color .25s,transform .2s}
+.navw a:hover{transform:translateY(-2px)}
+.navw a.on{color:#fff}
+.nb{font-size:10.5px;background:rgba(124,77,255,.12);padding:1px 8px;border-radius:99px;font-weight:700}
+.navw a.on .nb{background:rgba(255,255,255,.3)}
+#pill{position:absolute;top:5px;bottom:5px;left:0;width:0;border-radius:12px;box-shadow:0 8px 18px rgba(124,77,255,.35);transition:left .5s cubic-bezier(.3,1.3,.5,1),width .5s cubic-bezier(.3,1.3,.5,1),background .4s}
+
+.bar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;background:var(--card);padding:8px 10px;border-radius:14px;box-shadow:0 6px 20px rgba(124,77,255,.12);backdrop-filter:blur(8px);animation:drop .7s .2s cubic-bezier(.2,1.2,.4,1) both}
+body[data-page=home] .only-cat{display:none!important}
 select,input,button{font:inherit}
-select,input[type=month],input[type=text],input[type=search]{padding:6px 10px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--ink);outline:none;font-size:12.5px}
-select:focus,input:focus{border-color:var(--c2)}
+select,input[type=month],input[type=text],input[type=search]{padding:6px 10px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--ink);outline:none;font-size:12.5px;transition:border-color .2s,box-shadow .2s}
+select:focus,input:focus{border-color:var(--c2);box-shadow:0 0 0 3px rgba(124,77,255,.15)}
 .btn{border:0;padding:7px 13px;border-radius:10px;color:#fff;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .2s;background-size:200% 100%;font-size:12.5px}
 .btn:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.16);background-position:100% 0}
 .btn:active{transform:scale(.96)}
@@ -35,8 +66,20 @@ select:focus,input:focus{border-color:var(--c2)}
 .b-ghost{background:#efeaff;color:var(--c2)}
 .b-del{background:linear-gradient(90deg,#ff5f6d,#ff8a5c)}
 .sp{flex:1}
+
+/* ---- এন্ট্রি অ্যানিমেশন ---- */
+@keyframes rise{from{opacity:0;transform:translateY(20px) scale(.98)}}
+@keyframes grow{from{transform:scaleX(0)}}
+@keyframes bob{50%{transform:translateY(-5px) rotate(-6deg)}}
+.enter .rise{animation:rise .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0ms)}
+.enter .stat{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.enter .stat:nth-child(2){animation-delay:60ms}.enter .stat:nth-child(3){animation-delay:120ms}.enter .stat:nth-child(4){animation-delay:180ms}.enter .stat:nth-child(5){animation-delay:240ms}.enter .stat:nth-child(6){animation-delay:300ms}
+.enter .sec{animation:rise .7s cubic-bezier(.2,.8,.2,1) both;animation-delay:.25s}
+.enter tr.ag{animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.35s + var(--d,0ms))}
+
 .stats{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-.stat{flex:1;min-width:130px;background:var(--card);border-radius:14px;padding:9px 14px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(60,30,140,.07)}
+.stat{flex:1;min-width:130px;background:var(--card);border-radius:14px;padding:9px 14px;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(60,30,140,.07);transition:transform .25s,box-shadow .25s}
+.stat:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(60,30,140,.14)}
 .stat::before{content:'';position:absolute;inset:0 auto 0 0;width:5px;background:var(--g)}
 .stat small{color:var(--mute);font-weight:600;font-size:11px}
 .stat b{display:block;font-family:'Baloo Da 2',sans-serif;font-size:26px;line-height:1.1}
@@ -45,6 +88,61 @@ select:focus,input:focus{border-color:var(--c2)}
 .ring circle{fill:none;stroke-width:9;stroke-linecap:round}
 .ring .bg{stroke:#ece6ff}
 .ring .fg{stroke:url(#grad);stroke-dasharray:264;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+
+/* ---- হোম পেজ ---- */
+.hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:12px 0}
+.kpi{position:relative;overflow:hidden;border-radius:18px;padding:14px 16px;color:#fff;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 24px rgba(60,30,140,.18);transition:transform .25s}
+.kpi:hover{transform:translateY(-4px) scale(1.02)}
+.kpi::after{content:'';position:absolute;right:-30px;top:-34px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.18);animation:bob 5s ease-in-out infinite}
+.kpi small{font-weight:600;opacity:.92;font-size:12.5px}
+.kpi b{display:block;font-family:'Baloo Da 2',sans-serif;font-size:42px;line-height:1.05}
+.kpi em{font-style:normal;font-size:11.5px;opacity:.96}
+.rcard{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 16px;background:var(--card);box-shadow:0 10px 24px rgba(60,30,140,.12)}
+.rcard svg{width:70px;height:70px;transform:rotate(-90deg)}
+.rcard circle{fill:none;stroke-width:9;stroke-linecap:round}
+.rcard .bg{stroke:#ece6ff}
+.rcard .fg{stroke:url(#grad);stroke-dasharray:264;transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
+.rcard small{color:var(--mute);font-weight:600}
+.rcard b{display:block;font-family:'Baloo Da 2',sans-serif;font-size:28px;line-height:1.1}
+.pn{background:var(--card);border-radius:16px;margin:14px 0;overflow:hidden;box-shadow:0 8px 24px rgba(60,30,140,.1)}
+.pn-h{display:flex;align-items:center;gap:10px;padding:8px 14px;color:#fff;background:linear-gradient(90deg,var(--a),var(--b))}
+.pn-h h2{margin:0;font-family:'Baloo Da 2',sans-serif;font-size:16px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;padding:12px}
+.cardc{background:#fff;border-radius:14px;padding:10px 12px;box-shadow:0 3px 12px rgba(60,30,140,.07)}
+.cardc h4{margin:0 0 6px;font-size:13px}
+.cbox{position:relative;height:250px}
+.ccs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;padding:12px}
+a.cc{display:block;text-decoration:none;color:var(--ink);background:#fff;border-radius:16px;padding:12px 14px;border-top:5px solid var(--a);box-shadow:0 4px 14px rgba(60,30,140,.08);transition:transform .25s,box-shadow .25s}
+a.cc:hover{transform:translateY(-5px);box-shadow:0 14px 28px rgba(60,30,140,.18)}
+.cc-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.cc-h span{font-size:20px}.cc-h i{margin-left:auto;font-style:normal;color:var(--a);transition:transform .25s}
+a.cc:hover .cc-h i{transform:translateX(5px)}
+.cc-n{margin:6px 0 4px}
+.cc-n b{font-family:'Baloo Da 2',sans-serif;font-size:34px;line-height:1;color:var(--a)}
+.cc-n small{color:var(--mute);font-size:13px;margin-left:4px}
+.cc .pb i{width:0;background:linear-gradient(90deg,var(--a),var(--b));transform-origin:left;animation:grow 1.2s cubic-bezier(.2,.8,.2,1) both}
+.cc .pb{margin:0 0 8px}
+.cc-f{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mute)}
+.cc-f b{color:var(--ink)}
+.spk{height:54px;margin-top:8px}
+.cc-t{font-size:11.5px;color:var(--mute);margin-top:2px}
+.cc-t b{color:var(--a);font-size:13px}
+table.dt{table-layout:auto;width:100%;min-width:560px}
+.dt th,.dt td{padding:6px 10px;height:auto}
+.dt td.dl{text-align:left;font-weight:700}
+.dt td.dl small{display:block;color:var(--mute);font-weight:400;font-size:10.5px}
+.dt tr.today td{background:#fff3cf}
+.dt tr.yest td{background:#f1ecff}
+.dt tr:not(.today):hover td{background:#faf7ff}
+.mb{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--c3),var(--c4));transform-origin:left;animation:grow 1.2s cubic-bezier(.2,.8,.2,1) both}
+.warn{padding:16px;line-height:1.7;color:#b3261e}
+
+/* ---- ক্যাটাগরি ব্যানার ---- */
+.banner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:18px;color:#fff;background:linear-gradient(110deg,var(--a),var(--b));box-shadow:0 12px 26px rgba(60,30,140,.2);margin:12px 0}
+.banner .ico{font-size:36px;animation:bob 2.6s ease-in-out infinite}
+.banner h2{margin:0;font-family:'Baloo Da 2',sans-serif;font-size:24px;line-height:1.1}
+.banner small{opacity:.92;font-size:12px}
+
 .sec{background:var(--card);border-radius:16px;margin:14px 0;overflow:hidden;box-shadow:0 8px 24px rgba(60,30,140,.1)}
 .sec-h{display:flex;align-items:center;gap:10px;padding:8px 14px;color:#fff;background:linear-gradient(90deg,var(--a),var(--b))}
 .sec-h h2{margin:0;font-family:'Baloo Da 2',sans-serif;font-size:16px}
@@ -108,19 +206,24 @@ tr.ag:hover .cp{opacity:.8}
 @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
 #content.locked .cb{cursor:not-allowed}
 #content.locked .cb:hover{transform:none}
-canvas{position:fixed;inset:0;pointer-events:none;z-index:40}
-button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:40;width:100%;height:100%}
+button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c2);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
+<body data-page="home">
+<div class="blob bl1"></div><div class="blob bl2"></div><div class="blob bl3"></div>
 <canvas id="fx"></canvas>
 <div class="wrap">
   <div class="top">
+    <div class="logo" id="logoBox"><img id="logoImg" src="logo.png" alt="GTPL KCBPL – Digital Cable TV &amp; Broadband"></div>
     <h1>QA Audit Tracker</h1>
     <span class="live" id="live"><i></i><span id="liveTxt">লোড হচ্ছে…</span></span>
     <span class="live off" id="auto" title="ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে" style="cursor:pointer"><i></i><span id="autoTxt">Auto-tick…</span></span>
+    <span class="live plain" id="dateChip"></span>
   </div>
+
+  <nav class="navw" id="nav"><span id="pill"></span></nav>
 
   <div class="bar">
     <select id="sheetSel" aria-label="Sheet"></select>
@@ -130,15 +233,14 @@ button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offse
       <option value="exact">Exact: হুবহু মেলাও</option>
     </select>
     <button class="btn b-sync" id="syncBtn">⚡ Raw data থেকে অটো মার্ক</button>
-    <button class="btn b-lock" id="lockBtn" title="টিক ম্যানুয়ালি বদলাতে আগে আনলক করুন">🔒 Locked</button>
-    <input type="search" id="q" placeholder="🔍 নাম / ID খুঁজুন" aria-label="Search">
+    <button class="btn b-lock only-cat" id="lockBtn" title="টিক ম্যানুয়ালি বদলাতে আগে আনলক করুন">🔒 Locked</button>
+    <input type="search" class="only-cat" id="q" placeholder="🔍 নাম / ID খুঁজুন" aria-label="Search">
     <span class="sp"></span>
     <button class="btn b-new" id="newBtn">➕ নতুন মাস</button>
     <button class="btn b-link" id="lnkBtn">🔗 Link</button>
     <button class="btn b-ghost" id="refBtn" title="রিফ্রেশ">⟳</button>
   </div>
 
-  <div class="stats" id="stats"></div>
   <div id="content"><div class="loader"><div class="spin"></div>লোড হচ্ছে…</div></div>
 </div>
 
@@ -153,10 +255,26 @@ button:focus-visible,.cb:focus-visible{outline:2px solid var(--c2);outline-offse
 const API_URL = 'https://script.google.com/macros/s/AKfycbzVZ2A42rIxh5UgpBPuHSlb2tJnwyp2eunQc3kcNeZ495bqUJTeMwT8ir6cMA_3HBHESw/exec';
 const PER = 16, POLL_MS = 15000;
 const PALETTE = ['#7c4dff','#e5195f','#1e6bff','#ff2fd0','#12a150','#ff8a00','#00a6c7','#9b27af'];
-const SEC_GRAD = [['#7c4dff','#00b8f0'],['#ff4fa3','#ffb02e'],['#12c98a','#00a6c7'],['#ff7a45','#e5195f']];
-let STATE = null, current = '', busy = 0, lastJson = '', lastDone = 0, pollN = 0;
+
+/* পেজ লিস্ট: re = Sheet-এর সেকশন নামের সাথে মেলানোর প্যাটার্ন, c = রং (গ্রেডিয়েন্ট) */
+const PAGES = [
+  {key:'home',     label:'Home',               ico:'🏠', c:['#7c4dff','#00b8f0']},
+  {key:'catv',     label:'CATV',               ico:'📺', c:['#7c4dff','#00b8f0'], re:/catv|cable/i},
+  {key:'bbtech',   label:'BB TECH',            ico:'🛠️', c:['#00a6c7','#12c98a'], re:/tech/i},
+  {key:'bbrenew',  label:'BB RENEWAL',         ico:'🔄', c:['#ff4fa3','#ffb02e'], re:/renew/i},
+  {key:'outbound', label:'Outbound Retention', ico:'📞', c:['#ff7a45','#e5195f'], re:/outbound|retention/i}
+];
+const CATS = PAGES.slice(1);
+let STATE = null, DASH = null, dashJson = '', dashErr = '', current = '', busy = 0, lastJson = '', lastDone = 0, pollN = 0, PAGE = 'home';
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const alpha = (hex, a) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
+
+/* ---------- লোগো (logo.png না পেলে লেখা দিয়ে একই লোগো) ---------- */
+$('#logoImg').addEventListener('error', () => {
+  $('#logoBox').innerHTML = '<span class="lg"><span class="r1"><span class="a">GTPL</span> <span class="b">KCBPL</span></span><small>Digital Cable TV &amp; Broadband</small></span>';
+});
+$('#dateChip').textContent = '📅 ' + new Date().toLocaleDateString('bn-BD', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 
 /* ---------- API ---------- */
 function getKey(){
@@ -188,8 +306,65 @@ function monthFromName(n){
   return (y&&m)? y[0]+'-'+String(m).padStart(2,'0') : '';
 }
 
+/* ---------- নেভিগেশন ও রাউটিং (#home, #catv, #bbtech, #bbrenew, #outbound) ---------- */
+function buildNav(){
+  const nav = $('#nav');
+  nav.insertAdjacentHTML('beforeend', PAGES.map(p => `<a href="#${p.key}" data-p="${p.key}">${p.ico} ${esc(p.label)}${p.key === 'home' ? '' : ` <span class="nb" data-nb="${p.key}">–</span>`}</a>`).join(''));
+}
+function placePill(){
+  const a = document.querySelector('#nav a.on'), p = $('#pill'); if (!a) return;
+  p.style.left = a.offsetLeft + 'px'; p.style.width = a.offsetWidth + 'px';
+  const pg = PAGES.find(x => x.key === PAGE);
+  p.style.background = `linear-gradient(90deg,${pg.c[0]},${pg.c[1]})`;
+  const nav = $('#nav'); nav.scrollTo({left: Math.max(a.offsetLeft - 40, 0), behavior: 'smooth'});
+}
+function updateNavBadges(){
+  if (!STATE) return;
+  const m = mapSections();
+  CATS.forEach(p => { const el = document.querySelector(`[data-nb="${p.key}"]`); if (el){ const a = agg(m[p.key]); el.textContent = a.done + '/' + a.target; } });
+  placePill();
+}
+function route(){
+  const k = (location.hash || '#home').slice(1);
+  PAGE = PAGES.some(p => p.key === k) ? k : 'home';
+  document.body.dataset.page = PAGE === 'home' ? 'home' : 'cat';
+  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.dataset.p === PAGE));
+  document.title = 'QA Audit · ' + PAGES.find(p => p.key === PAGE).label;
+  placePill(); scrollTo({top: 0});
+  if (STATE) render(true);
+}
+addEventListener('hashchange', route);
+addEventListener('resize', placePill);
+
+/* ---------- সেকশন → পেজ ম্যাপিং ---------- */
+function mapSections(){
+  const map = {}, used = new Set(); CATS.forEach(p => map[p.key] = []);
+  STATE.sections.forEach((s, si) => { const p = CATS.find(p => p.re.test(s.name)); if (p){ map[p.key].push(si); used.add(si); } });
+  const free = CATS.filter(p => !map[p.key].length);          // নাম না মিললে ক্রম অনুযায়ী বসাবে
+  STATE.sections.forEach((s, si) => { if (used.has(si)) return; const p = free.shift(); if (p){ map[p.key].push(si); used.add(si); } });
+  return map;
+}
+const ndone = a => a.ticks.filter(Boolean).length;
+const nlive = a => a.live.filter(Boolean).length;
+function agg(idx){
+  let target = 0, done = 0, left = 0, extra = 0, agents = 0, full = 0;
+  idx.forEach(si => STATE.sections[si].agents.forEach(a => { const n = ndone(a); target += a.target; done += n; left += Math.max(a.target - n, 0); extra += nlive(a); agents++; if (n >= a.target) full++; }));
+  return {target, done, left, extra, agents, full, pct: target ? Math.min(done / target, 1) : 0};
+}
+const hasDash = () => !!(DASH && DASH.sheet === current);
+function dashSeries(idx){
+  const arr = new Array(DASH.days.length).fill(0);
+  idx.forEach(si => { const s = DASH.sections[si]; if (s) s.counts.forEach((c, i) => arr[i] += c); });
+  return arr;
+}
+const BN_WD = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
+const dDate = k => new Date(k + 'T00:00:00');
+const dfmt = k => dDate(k).toLocaleDateString('bn-BD', {day:'numeric', month:'short'});
+const axisLab = (k, i, n) => i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : dfmt(k);
+
 /* ---------- লোড ---------- */
 async function init(){
+  buildNav(); route();
   try{
     const names = await run('getSheets');
     const sel = $('#sheetSel');
@@ -208,20 +383,37 @@ async function refreshSheetList(keep){
   return sel.value;
 }
 async function load(name, retried){
-  current = name;
+  current = name; DASH = null; dashJson = ''; dashErr = '';
   $('#month').value = monthFromName(name) || new Date().toISOString().slice(0,7);
   $('#content').innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>';
   try{
     STATE = await run('getData', name); lastJson = JSON.stringify(STATE);
-    render(); setLive(true);
+    render(true); setLive(true); loadDash();
   }catch(e){
-    if (!retried && /Sheet পাওয়া যায়নি/.test(e.message)){      // ট্যাবের নাম বদলে গেলে তালিকা নতুন করে এনে আবার চেষ্টা
+    if (!retried && /Sheet পাওয়া যায়নি/.test(e.message)){
       try{ const n = await refreshSheetList(name); return load(n, true); }catch(_){}
     }
     $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false);
   }
 }
-async function poll(){            // Sheet-এ বদল (অটো টিক বা অন্য কেউ) নিজে থেকে এখানে আসবে
+async function loadDash(){          // শেষ ৭ দিনের কাউন্ট (raw data থেকে)
+  const for_ = current;
+  try{
+    const d = await run('getDashboard', current, 7);
+    if (for_ !== current) return;
+    dashErr = '';
+    const j = JSON.stringify(d);
+    if (j !== dashJson){
+      dashJson = j; DASH = d;
+      if (busy || $('#modal').classList.contains('show')) return;
+      if (PAGE === 'home'){ const y = scrollY; render(false); scrollTo(0, y); } else drawCharts();
+    }
+  }catch(e){
+    dashErr = /Unknown function/.test(e.message) ? 'Code.gs-এ getDashboard নেই। নতুন Code.gs পেস্ট করে Deploy → Manage deployments → New version দিন।' : e.message;
+    if (!DASH && PAGE === 'home' && STATE) render(false);
+  }
+}
+async function poll(){
   if (busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
   try{
     const d = await run('getData', current);
@@ -230,10 +422,10 @@ async function poll(){            // Sheet-এ বদল (অটো টিক �
     const j = JSON.stringify(d);
     if (j !== lastJson){
       const fresh = diffTicks(STATE, d);
-      lastJson = j; STATE = d; const y = scrollY; render(); scrollTo(0, y);
+      lastJson = j; STATE = d; const y = scrollY; render(false); scrollTo(0, y);
       if (fresh.length){ flash(fresh); toast(`🆕 ${fresh.length}টি নতুন টিক অটো মার্ক হয়েছে`, 4500); }
     }
-    if (++pollN % 4 === 0) loadAuto();
+    if (++pollN % 4 === 0){ loadAuto(); loadDash(); }
   }catch(e){ setLive(false); }
 }
 function diffTicks(a, b){
@@ -272,48 +464,219 @@ $('#auto').onclick = async () => {
   busy--;
 };
 
-/* ---------- রেন্ডার ---------- */
-const ndone = a => a.ticks.filter(Boolean).length;
-const nlive = a => a.live.filter(Boolean).length;
+/* ---------- চার্ট ---------- */
+const CH = {};
+function killCharts(){ Object.keys(CH).forEach(k => { try{ CH[k].destroy(); }catch(_){} delete CH[k]; }); }
+if (window.Chart){
+  Chart.defaults.font.family = "'Hind Siliguri',sans-serif";
+  Chart.defaults.color = '#7a7399';
+  Chart.register({ id:'vals', afterDatasetsDraw(c){
+    const o = c.options.plugins && c.options.plugins.vals; if (!o || !o.on) return;
+    const ctx = c.ctx; ctx.save(); ctx.font = '700 11px Hind Siliguri'; ctx.fillStyle = '#241a4d'; ctx.textAlign = 'center';
+    c.data.datasets.forEach((ds, i) => { if (ds.type === 'line') return; const meta = c.getDatasetMeta(i); if (meta.hidden) return;
+      meta.data.forEach((el, j) => { const v = ds.data[j]; if (v == null) return; ctx.fillText(v, el.x, el.y - 5); }); });
+    ctx.restore();
+  }});
+}
+function opts(o){
+  o = o || {};
+  const axes = o.noAxes ? {x:{display:false}, y:{display:false, beginAtZero:true}} : {
+    x:{stacked:!!o.stack, grid:{display:false}, ticks:{font:{size:11}}},
+    y:{stacked:!!o.stack, beginAtZero:true, grid:{color:'rgba(124,77,255,.09)'}, ticks:{precision:0, font:{size:11}}}};
+  return {
+    responsive:true, maintainAspectRatio:false,
+    animation:{duration:1100, easing:'easeOutQuart'},
+    layout:{padding:o.pad || {top:20}},
+    cutout:o.donut ? '66%' : undefined,
+    plugins:{
+      legend:{display:!!o.legend, position:'bottom', labels:{usePointStyle:true, boxWidth:8, font:{size:11}}},
+      tooltip:{backgroundColor:'#241a4d', padding:10, cornerRadius:10, titleFont:{weight:'700'}},
+      vals:{on:!!o.vals}
+    },
+    scales:o.donut ? {} : axes
+  };
+}
+function chart(id, type, labels, datasets, options){
+  if (!window.Chart) return;
+  const el = document.getElementById(id); if (!el) return;
+  const c = CH[id];
+  if (c && c.canvas === el){
+    c.data.labels = labels;
+    if (c.data.datasets.length === datasets.length) datasets.forEach((d, i) => { c.data.datasets[i].data = d.data; if (d.backgroundColor) c.data.datasets[i].backgroundColor = d.backgroundColor; });
+    else c.data.datasets = datasets;
+    c.update(); return;
+  }
+  CH[id] = new Chart(el, {type, data:{labels, datasets}, options});
+}
+function drawCharts(){
+  if (!window.Chart || !STATE) return;
+  if (PAGE === 'home') drawHome(); else drawCat(PAGE);
+}
+function trendSets(total, hiLast, hiPrev, base){
+  const n = total.length;
+  return [
+    {type:'bar', label:'অডিট', data:total, backgroundColor:total.map((_, i) => i === n - 1 ? hiLast : i === n - 2 ? hiPrev : base), borderRadius:10, borderSkipped:false, maxBarThickness:46},
+    {type:'line', label:'ট্রেন্ড', data:total, borderColor:'#241a4d', backgroundColor:'#241a4d', tension:.4, pointRadius:4, borderWidth:2}
+  ];
+}
+function drawHome(){
+  const m = mapSections();
+  if (hasDash()){
+    const n = DASH.days.length, lab = DASH.days.map((k, i) => axisLab(k, i, n));
+    chart('c7', 'bar', lab, trendSets(DASH.total, '#ff4fa3', '#7c4dff', '#b9a6ff'), opts({vals:true}));
+    const sets = CATS.map(p => ({label:p.label, data:dashSeries(m[p.key]), backgroundColor:p.c[0], borderRadius:5, stack:'s', maxBarThickness:46}));
+    const oth = DASH.total.map((t, i) => t - sets.reduce((s, d) => s + d.data[i], 0));
+    if (oth.some(x => x > 0)) sets.push({label:'অন্যান্য', data:oth, backgroundColor:'#c9c3de', borderRadius:5, stack:'s', maxBarThickness:46});
+    chart('c7s', 'bar', lab, sets, opts({stack:true, legend:true}));
+    CATS.forEach(p => chart('sp_' + p.key, 'line', lab, [{label:p.label, data:dashSeries(m[p.key]), borderColor:p.c[0], backgroundColor:alpha(p.c[0], .18), fill:true, tension:.4, pointRadius:0, borderWidth:2}], opts({noAxes:true, pad:{top:4, bottom:2}})));
+  }
+  const A = CATS.map(p => agg(m[p.key]));
+  chart('cCat', 'bar', CATS.map(p => p.label), [
+    {label:'Target', data:A.map(a => a.target), backgroundColor:'#d9ccff', borderRadius:8, borderSkipped:false},
+    {label:'Completed', data:A.map(a => a.done), backgroundColor:'#7c4dff', borderRadius:8, borderSkipped:false},
+    {label:'Extra / Live', data:A.map(a => a.extra), backgroundColor:'#ffb02e', borderRadius:8, borderSkipped:false}
+  ], opts({legend:true, vals:true}));
+  chart('cDonut', 'doughnut', CATS.map(p => p.label), [{data:A.map(a => a.done), backgroundColor:CATS.map(p => p.c[0]), borderColor:'#fff', borderWidth:3, hoverOffset:12}], opts({donut:true, legend:true}));
+}
+function drawCat(key){
+  const p = PAGES.find(x => x.key === key), idx = mapSections()[key]; if (!idx.length) return;
+  const a = agg(idx);
+  if (hasDash()){
+    const n = DASH.days.length, lab = DASH.days.map((k, i) => axisLab(k, i, n));
+    chart('pc7', 'bar', lab, trendSets(dashSeries(idx), p.c[0], p.c[1], alpha(p.c[0], .45)), opts({vals:true}));
+  }
+  chart('pcD', 'doughnut', ['Completed', 'Remaining', 'Extra / Live'], [{data:[a.done, a.left, a.extra], backgroundColor:[p.c[0], '#e4dcff', '#ffb02e'], borderColor:'#fff', borderWidth:3, hoverOffset:12}], opts({donut:true, legend:true}));
+  const b = [0, 0, 0, 0, 0, 0];
+  idx.forEach(si => STATE.sections[si].agents.forEach(g => { const r = ndone(g) / g.target; b[r === 0 ? 0 : r <= .25 ? 1 : r <= .5 ? 2 : r <= .75 ? 3 : r < 1 ? 4 : 5]++; }));
+  chart('pcH', 'bar', ['০%', '১–২৫%', '২৬–৫০%', '৫১–৭৫%', '৭৬–৯৯%', '১০০%'], [{label:'এজেন্ট', data:b, backgroundColor:['#ff6b6b', '#ff9a5c', '#ffd166', '#9be37a', '#1fd6a0', '#00b8f0'], borderRadius:8, borderSkipped:false}], opts({vals:true}));
+}
 
-function render(){
-  const box = $('#content'); box.innerHTML = '';
-  if (!STATE.sections.length){ box.innerHTML = '<div class="empty">এই শিটে কোনো সেকশন পাওয়া যায়নি</div>'; updateStats(); return; }
-  STATE.sections.forEach((sec, si) => {
-    const g = SEC_GRAD[si % SEC_GRAD.length];
-    const div = document.createElement('div'); div.className = 'sec'; div.dataset.s = si;
-    let head = '<tr class="g"><th class="id"></th><th class="nm"></th><th colspan="4"></th><th colspan="8">Audit 1 – 8</th><th class="gap"></th><th colspan="8">Audit 9 – 16</th><th colspan="3">Result</th><th colspan="4">Live call audit</th><th>Extra</th><th></th></tr>';
-    head += '<tr><th class="id">ID</th><th class="nm">Agent Name</th><th>DOJ</th><th>Gender</th><th>Week</th><th>Target</th>';
-    for (let i = 1; i <= PER; i++){ if (i === 9) head += '<th class="gap"></th>'; head += `<th>${i}</th>`; }
-    head += '<th>Total</th><th>Left</th><th>Progress</th><th>1</th><th>2</th><th>3</th><th>4</th><th>Total</th><th></th></tr>';
-    const widths = [100,200,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
-    const colgroup = '<colgroup>' + widths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
-    const tw = widths.reduce((x, y) => x + y, 0);
-    div.innerHTML = `<div class="sec-h" style="--a:${g[0]};--b:${g[1]}"><h2>${esc(sec.name)}</h2><span class="chip" data-sc></span><span class="sp"></span><button class="btn" data-add="${si}">➕ এজেন্ট যোগ</button></div>
-      <div class="scroll"><table style="width:${tw}px">${colgroup}<thead>${head}</thead><tbody></tbody></table></div>`;
-    const tb = div.querySelector('tbody');
-    sec.agents.forEach((a, ai) => {
-      const col = PALETTE[(ai + si * 3) % PALETTE.length];
-      const tr = document.createElement('tr'); tr.className = 'ag'; tr.dataset.s = si; tr.dataset.a = ai;
-      tr.dataset.k = (a.id + ' ' + a.name).toLowerCase();
-      const gcls = /^f/i.test(a.gender) ? 'f' : 'm';
-      let h = `<td class="id"><div class="cell"><span class="t">${esc(a.id)}</span>${a.id ? `<button class="cp" data-copy="${esc(a.id)}" title="ID কপি">📋</button>` : ''}</div></td><td class="nm"><div class="cell"><span class="t">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</span>${a.name ? `<button class="cp" data-copy="${esc(a.name)}" title="নাম কপি">📋</button>` : ''}</div></td>
-        <td class="dim">${esc(a.doj) || '–'}</td><td>${a.gender ? `<span class="g ${gcls}">${esc(a.gender)}</span>` : '–'}</td><td class="dim">${esc(a.week) || '–'}</td><td class="num">${a.target}</td>`;
-      for (let i = 0; i < PER; i++){
-        if (i === 8) h += '<td class="gap"></td>';
-        h += `<td><button class="cb ${a.ticks[i] ? 'on' : ''}" style="--col:${col}" data-i="${i}" aria-label="Audit ${i+1}"></button></td>`;
-      }
-      h += '<td class="num" data-done></td><td class="num left" data-left></td><td><div class="pb"><i></i></div></td>';
-      for (let i = 0; i < 4; i++) h += `<td><button class="cb ${a.live[i] ? 'on' : ''}" style="--col:${col}" data-live="${i}" aria-label="Live ${i+1}"></button></td>`;
-      h += `<td class="num ext" data-ext></td><td class="act"><button class="e" data-edit title="এডিট">✏️</button> <button class="d" data-del title="ডিলিট">🗑️</button></td>`;
-      tr.innerHTML = h; tb.appendChild(tr);
-      refreshRow(tr, true);
-    });
-    if (!sec.agents.length) tb.innerHTML = '<tr><td colspan="40" class="empty">কোনো এজেন্ট নেই</td></tr>';
-    box.appendChild(div);
-    updateSecChip(si);
-  });
+/* ---------- রেন্ডার ---------- */
+let enterT = null;
+function render(anim){
+  killCharts();
+  const box = $('#content');
+  if (!STATE){ box.innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>'; return; }
+  box.classList.toggle('enter', !!anim);
+  if (PAGE === 'home') renderHome(box); else renderCat(box, PAGES.find(p => p.key === PAGE));
+  updateNavBadges();
+  clearTimeout(enterT); if (anim) enterT = setTimeout(() => box.classList.remove('enter'), 1900);
+  drawCharts();
+  document.querySelectorAll('#content [data-n]').forEach(countUp);
+}
+
+function ringSvg(pct){
+  return `<svg viewBox="0 0 100 100"><defs><linearGradient id="grad"><stop offset="0" stop-color="#ff4fa3"/><stop offset=".5" stop-color="#7c4dff"/><stop offset="1" stop-color="#1fd6a0"/></linearGradient></defs>
+     <circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" style="stroke-dashoffset:${264 * (1 - pct)}"/></svg>`;
+}
+
+function renderHome(box){
+  const m = mapSections(), all = agg(STATE.sections.map((_, i) => i)), D = hasDash();
+  const n = D ? DASH.days.length : 0;
+  const today = D ? DASH.total[n - 1] : null, yest = D ? DASH.total[n - 2] : null;
+  const wk = D ? DASH.total.reduce((s, x) => s + x, 0) : null;
+  let delta = D ? '' : 'ডাটা আনছি…';
+  if (D){ const d = today - yest; delta = d > 0 ? `▲ গতকালের চেয়ে ${d}টি বেশি` : d < 0 ? `▼ গতকালের চেয়ে ${-d}টি কম` : 'গতকালের সমান'; }
+  const kp = (a, b, label, val, sub, d) => `<div class="kpi rise" style="--a:${a};--b:${b};--d:${d}ms"><small>${label}</small><b ${val != null ? `data-n="${val}" data-k="${label}"` : ''}>${val == null ? '–' : val}</b><em>${sub}</em></div>`;
+  let h = `<div class="hero">
+    ${kp('#ff4fa3', '#ffb02e', 'আজকের অডিট', today, delta, 0)}
+    ${kp('#7c4dff', '#00b8f0', 'গতকালের অডিট', yest, 'আগের দিন', 70)}
+    ${kp('#12c98a', '#00a6c7', 'শেষ ৭ দিনে মোট', wk, D ? `গড় ${(wk / n).toFixed(1)}টি / দিন` : '', 140)}
+    ${kp('#ff7a45', '#e5195f', 'এই মাসে Completed', all.done, `Target ${all.target} · বাকি ${all.left} · Extra ${all.extra}`, 210)}
+    <div class="rcard rise" style="--d:280ms">${ringSvg(all.pct)}<div><small>মাসের অগ্রগতি</small><b>${(all.pct * 100).toFixed(1)}%</b><small>${all.full}/${all.agents} জন Target পূর্ণ</small></div></div>
+  </div>`;
+
+  /* শেষ ৭ দিন */
+  h += `<div class="pn rise" style="--a:#ff4fa3;--b:#ffb02e;--d:300ms"><div class="pn-h"><h2>📅 শেষ ৭ দিনে কতটা অডিট হলো</h2></div>`;
+  if (D){
+    const ser = {}; CATS.forEach(p => ser[p.key] = dashSeries(m[p.key]));
+    const maxT = Math.max(1, ...DASH.total);
+    const othAll = DASH.total.map((t, i) => t - CATS.reduce((s, p) => s + ser[p.key][i], 0));
+    const showOth = othAll.some(x => x > 0);
+    let rows = '';
+    for (let i = n - 1; i >= 0; i--){
+      const k = DASH.days[i], cls = i === n - 1 ? 'today' : i === n - 2 ? 'yest' : '';
+      const nm = i === n - 1 ? 'আজ' : i === n - 2 ? 'গতকাল' : BN_WD[dDate(k).getDay()];
+      rows += `<tr class="${cls}"><td class="dl">${nm}<small>${dfmt(k)}</small></td>${CATS.map(p => `<td>${ser[p.key][i]}</td>`).join('')}${showOth ? `<td>${othAll[i]}</td>` : ''}<td class="num">${DASH.total[i]}</td><td style="width:140px"><div class="mb" style="width:${DASH.total[i] / maxT * 100}%"></div></td></tr>`;
+    }
+    h += `<div class="cgrid"><div class="cardc"><h4>দিন অনুযায়ী মোট অডিট</h4><div class="cbox"><canvas id="c7"></canvas></div></div>
+      <div class="cardc"><h4>দিন অনুযায়ী ক্যাটাগরি ভাগ</h4><div class="cbox"><canvas id="c7s"></canvas></div></div></div>
+      <div class="scroll" style="padding:0 12px 12px"><table class="dt"><thead><tr><th style="text-align:left">দিন</th>${CATS.map(p => `<th>${esc(p.label)}</th>`).join('')}${showOth ? '<th>অন্যান্য</th>' : ''}<th>মোট</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  } else if (dashErr){
+    h += `<div class="warn">⚠️ ${esc(dashErr)}</div>`;
+  } else {
+    h += '<div class="loader"><div class="spin"></div>raw data থেকে গুনছি…</div>';
+  }
+  h += '</div>';
+
+  /* ক্যাটাগরি কার্ড */
+  h += `<div class="pn rise" style="--a:#7c4dff;--b:#00b8f0;--d:380ms"><div class="pn-h"><h2>🗂️ ক্যাটাগরি অনুযায়ী এই মাসের হিসাব</h2></div><div class="ccs">` +
+    CATS.map((p, i) => {
+      const a = agg(m[p.key]);
+      let t = '';
+      if (D){ const s = dashSeries(m[p.key]); t = `<div class="spk"><canvas id="sp_${p.key}"></canvas></div><div class="cc-t">আজ <b>${s[n - 1]}</b> · গতকাল <b>${s[n - 2]}</b> · ৭ দিনে <b>${s.reduce((x, y) => x + y, 0)}</b></div>`; }
+      return `<a class="cc rise" href="#${p.key}" style="--a:${p.c[0]};--b:${p.c[1]};--d:${420 + i * 80}ms"><div class="cc-h"><span>${p.ico}</span>${esc(p.label)}<i>→</i></div>
+        <div class="cc-n"><b data-n="${a.done}" data-k="${p.key}">${a.done}</b><small>/ ${a.target}</small></div>
+        <div class="pb"><i style="width:${a.pct * 100}%"></i></div>
+        <div class="cc-f"><span>বাকি <b>${a.left}</b></span><span>Extra <b>${a.extra}</b></span><span><b>${(a.pct * 100).toFixed(0)}%</b></span></div>${t}</a>`;
+    }).join('') + '</div></div>';
+
+  /* তুলনামূলক চার্ট */
+  h += `<div class="pn rise" style="--a:#12c98a;--b:#00a6c7;--d:460ms"><div class="pn-h"><h2>📊 ক্যাটাগরি তুলনা</h2></div><div class="cgrid">
+    <div class="cardc"><h4>Target বনাম Completed বনাম Extra</h4><div class="cbox"><canvas id="cCat"></canvas></div></div>
+    <div class="cardc"><h4>Completed অডিটের ভাগ</h4><div class="cbox"><canvas id="cDonut"></canvas></div></div></div></div>`;
+  box.innerHTML = h;
+}
+
+function renderCat(box, p){
+  const idx = mapSections()[p.key];
+  if (!idx.length){ box.innerHTML = `<div class="banner rise" style="--a:${p.c[0]};--b:${p.c[1]}"><span class="ico">${p.ico}</span><div><h2>${esc(p.label)}</h2></div></div><div class="empty">এই নামের কোনো সেকশন Sheet-এ পাওয়া যায়নি</div>`; return; }
+  const a = agg(idx);
+  box.innerHTML = `<div class="banner rise" style="--a:${p.c[0]};--b:${p.c[1]}"><span class="ico">${p.ico}</span><div><h2>${esc(p.label)}</h2><small>${a.agents} জন এজেন্ট · ${esc(current)}</small></div></div>
+    <div class="stats" id="stats"></div>
+    <div class="pn rise" style="--a:${p.c[0]};--b:${p.c[1]};--d:200ms"><div class="pn-h"><h2>📈 ${esc(p.label)} – চার্ট</h2></div><div class="cgrid">
+      <div class="cardc"><h4>শেষ ৭ দিনে অডিট</h4><div class="cbox"><canvas id="pc7"></canvas></div>${hasDash() ? '' : `<div class="empty">${dashErr ? esc(dashErr) : 'দিনের ডাটা আনছি…'}</div>`}</div>
+      <div class="cardc"><h4>Completed / Remaining / Extra</h4><div class="cbox"><canvas id="pcD"></canvas></div></div>
+      <div class="cardc"><h4>কতজন এজেন্ট কত % Target-এ</h4><div class="cbox"><canvas id="pcH"></canvas></div></div></div></div>`;
+  lastDone = a.pct;
+  idx.forEach(si => buildSection(si, p, box));
   filterRows(); updateStats();
+}
+
+function buildSection(si, p, box){
+  const sec = STATE.sections[si];
+  const div = document.createElement('div'); div.className = 'sec'; div.dataset.s = si;
+  let head = '<tr class="g"><th class="id"></th><th class="nm"></th><th colspan="4"></th><th colspan="8">Audit 1 – 8</th><th class="gap"></th><th colspan="8">Audit 9 – 16</th><th colspan="3">Result</th><th colspan="4">Live call audit</th><th>Extra</th><th></th></tr>';
+  head += '<tr><th class="id">ID</th><th class="nm">Agent Name</th><th>DOJ</th><th>Gender</th><th>Week</th><th>Target</th>';
+  for (let i = 1; i <= PER; i++){ if (i === 9) head += '<th class="gap"></th>'; head += `<th>${i}</th>`; }
+  head += '<th>Total</th><th>Left</th><th>Progress</th><th>1</th><th>2</th><th>3</th><th>4</th><th>Total</th><th></th></tr>';
+  const widths = [100,200,118,66,98,48].concat(Array(8).fill(28), [10], Array(8).fill(28), [48,48,84], Array(4).fill(28), [48,66]);
+  const colgroup = '<colgroup>' + widths.map(w => `<col style="width:${w}px">`).join('') + '</colgroup>';
+  const tw = widths.reduce((x, y) => x + y, 0);
+  div.innerHTML = `<div class="sec-h" style="--a:${p.c[0]};--b:${p.c[1]}"><h2>${esc(sec.name)}</h2><span class="chip" data-sc></span><span class="sp"></span><button class="btn" data-add="${si}">➕ এজেন্ট যোগ</button></div>
+    <div class="scroll"><table style="width:${tw}px">${colgroup}<thead>${head}</thead><tbody></tbody></table></div>`;
+  const tb = div.querySelector('tbody');
+  sec.agents.forEach((a, ai) => {
+    const col = PALETTE[(ai + si * 3) % PALETTE.length];
+    const tr = document.createElement('tr'); tr.className = 'ag'; tr.dataset.s = si; tr.dataset.a = ai;
+    tr.dataset.k = (a.id + ' ' + a.name).toLowerCase();
+    tr.style.setProperty('--d', Math.min(ai * 16, 500) + 'ms');
+    const gcls = /^f/i.test(a.gender) ? 'f' : 'm';
+    let h = `<td class="id"><div class="cell"><span class="t">${esc(a.id)}</span>${a.id ? `<button class="cp" data-copy="${esc(a.id)}" title="ID কপি">📋</button>` : ''}</div></td><td class="nm"><div class="cell"><span class="t">${a.name ? esc(a.name) : '<i style="opacity:.45;font-weight:400">নাম নেই</i>'}</span>${a.name ? `<button class="cp" data-copy="${esc(a.name)}" title="নাম কপি">📋</button>` : ''}</div></td>
+      <td class="dim">${esc(a.doj) || '–'}</td><td>${a.gender ? `<span class="g ${gcls}">${esc(a.gender)}</span>` : '–'}</td><td class="dim">${esc(a.week) || '–'}</td><td class="num">${a.target}</td>`;
+    for (let i = 0; i < PER; i++){
+      if (i === 8) h += '<td class="gap"></td>';
+      h += `<td><button class="cb ${a.ticks[i] ? 'on' : ''}" style="--col:${col}" data-i="${i}" aria-label="Audit ${i+1}"></button></td>`;
+    }
+    h += '<td class="num" data-done></td><td class="num left" data-left></td><td><div class="pb"><i></i></div></td>';
+    for (let i = 0; i < 4; i++) h += `<td><button class="cb ${a.live[i] ? 'on' : ''}" style="--col:${col}" data-live="${i}" aria-label="Live ${i+1}"></button></td>`;
+    h += `<td class="num ext" data-ext></td><td class="act"><button class="e" data-edit title="এডিট">✏️</button> <button class="d" data-del title="ডিলিট">🗑️</button></td>`;
+    tr.innerHTML = h; tb.appendChild(tr);
+    refreshRow(tr, true);
+  });
+  if (!sec.agents.length) tb.innerHTML = '<tr><td colspan="40" class="empty">কোনো এজেন্ট নেই</td></tr>';
+  box.appendChild(div);
+  updateSecChip(si);
 }
 
 function refreshRow(tr, skipStats){
@@ -335,26 +698,24 @@ function updateSecChip(si){
 }
 
 function updateStats(){
-  if (!STATE) return;
-  let target = 0, done = 0, left = 0, extra = 0;
-  STATE.sections.forEach(s => s.agents.forEach(a => { target += a.target; done += ndone(a); left += Math.max(a.target - ndone(a), 0); extra += nlive(a); }));
-  const pct = target ? Math.min(done / target, 1) : 0;
+  if (!STATE || PAGE === 'home' || !$('#stats')) return;
+  const a = agg(mapSections()[PAGE] || []);
   $('#stats').innerHTML = `
-   <div class="stat" style="--g:linear-gradient(#7c4dff,#00b8f0)"><small>Total Target</small><b data-n="${target}">${target}</b></div>
-   <div class="stat" style="--g:linear-gradient(#1fd6a0,#00b8f0)"><small>Completed</small><b data-n="${done}">${done}</b></div>
-   <div class="stat" style="--g:linear-gradient(#ff4fa3,#ffb02e)"><small>Remaining</small><b data-n="${left}">${left}</b></div>
-   <div class="stat" style="--g:linear-gradient(#ffb02e,#ff7a45)"><small>Extra / Live call</small><b data-n="${extra}">${extra}</b></div>
-   <div class="stat" style="--g:linear-gradient(#7c4dff,#ff4fa3)"><small>Total incl. extra</small><b data-n="${done + extra}">${done + extra}</b></div>
-   <div class="stat ring"><svg viewBox="0 0 100 100"><defs><linearGradient id="grad"><stop offset="0" stop-color="#ff4fa3"/><stop offset=".5" stop-color="#7c4dff"/><stop offset="1" stop-color="#1fd6a0"/></linearGradient></defs>
-     <circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" style="stroke-dashoffset:${264 * (1 - pct)}"/></svg>
-     <div><small>Progress</small><b>${(pct * 100).toFixed(1)}%</b></div></div>`;
-  document.querySelectorAll('.stat b[data-n]').forEach(b => countUp(b, +b.dataset.n));
-  if (pct >= 1 && lastDone < 1) confetti({left: innerWidth / 2, top: 160, width: 0, height: 0});
-  lastDone = pct;
+   <div class="stat" style="--g:linear-gradient(#7c4dff,#00b8f0)"><small>Total Target</small><b data-n="${a.target}" data-k="t">${a.target}</b></div>
+   <div class="stat" style="--g:linear-gradient(#1fd6a0,#00b8f0)"><small>Completed</small><b data-n="${a.done}" data-k="d">${a.done}</b></div>
+   <div class="stat" style="--g:linear-gradient(#ff4fa3,#ffb02e)"><small>Remaining</small><b data-n="${a.left}" data-k="l">${a.left}</b></div>
+   <div class="stat" style="--g:linear-gradient(#ffb02e,#ff7a45)"><small>Extra / Live call</small><b data-n="${a.extra}" data-k="e">${a.extra}</b></div>
+   <div class="stat" style="--g:linear-gradient(#7c4dff,#ff4fa3)"><small>Total incl. extra</small><b data-n="${a.done + a.extra}" data-k="x">${a.done + a.extra}</b></div>
+   <div class="stat ring">${ringSvg(a.pct)}<div><small>Progress</small><b>${(a.pct * 100).toFixed(1)}%</b></div></div>`;
+  document.querySelectorAll('#stats [data-n]').forEach(countUp);
+  if (a.pct >= 1 && lastDone < 1) confetti({left: innerWidth / 2, top: 160, width: 0, height: 0});
+  lastDone = a.pct;
+  updateNavBadges(); drawCharts();
 }
-function countUp(el, to){
-  const from = +(window.__prev && window.__prev[el.previousElementSibling.textContent] || 0), t0 = performance.now();
-  (function f(t){ const k = Math.min((t - t0) / 600, 1); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); else { (window.__prev = window.__prev || {})[el.previousElementSibling.textContent] = to; } })(t0);
+function countUp(el){
+  const to = +el.dataset.n, key = PAGE + '|' + (el.dataset.k || ''), prev = window.__prev = window.__prev || {};
+  const from = +(prev[key] || 0), t0 = performance.now();
+  (function f(t){ const k = Math.min((t - t0) / 800, 1); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); else prev[key] = to; })(t0);
 }
 
 /* ---------- কপি ---------- */
@@ -377,7 +738,7 @@ function setLock(v, auto){
   if (!v) armLock();
   if (auto) toast('🔒 কিছুক্ষণ কাজ না করায় আবার লক হয়েছে', 3000);
 }
-function armLock(){ clearTimeout(lockT); if (!locked) lockT = setTimeout(() => setLock(true, true), 180000); }   // ৩ মিনিট কাজ না করলে নিজে লক
+function armLock(){ clearTimeout(lockT); if (!locked) lockT = setTimeout(() => setLock(true, true), 180000); }
 $('#lockBtn').onclick = () => { setLock(!locked); toast(locked ? '🔒 লক হয়েছে' : '🔓 আনলক: এখন টিক বদলানো যাবে (৩ মিনিট কাজ না করলে আবার লক)', 3000); };
 setLock(true);
 
@@ -455,7 +816,7 @@ function openDeleteModal(a){
   }, true);
 }
 async function reloadSilent(){
-  const y = scrollY; STATE = await run('getData', current); lastJson = JSON.stringify(STATE); render(); scrollTo(0, y); setLive(true);
+  const y = scrollY; STATE = await run('getData', current); lastJson = JSON.stringify(STATE); render(false); scrollTo(0, y); setLive(true);
 }
 
 /* ---------- অটো মার্ক ---------- */
@@ -517,6 +878,7 @@ function tick(){
   if (parts.length) requestAnimationFrame(tick); else cx.clearRect(0, 0, cv.width, cv.height);
 }
 
+addEventListener('load', placePill);
 init();
 </script>
 </body>

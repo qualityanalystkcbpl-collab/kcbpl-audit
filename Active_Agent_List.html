@@ -216,7 +216,7 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
 <canvas id="fx"></canvas>
 <div class="wrap">
   <div class="top">
-    <div class="logo" id="logoBox"><img id="logoImg" src="logo.png" alt="GTPL KCBPL – Digital Cable TV &amp; Broadband"></div>
+    <div class="logo" id="logoBox"><img id="logoImg" src="gtpl_logo.png" alt="GTPL KCBPL – Digital Cable TV &amp; Broadband"></div>
     <h1>QA Audit Tracker</h1>
     <span class="live" id="live"><i></i><span id="liveTxt">লোড হচ্ছে…</span></span>
     <span class="live off" id="auto" title="ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে" style="cursor:pointer"><i></i><span id="autoTxt">Auto-tick…</span></span>
@@ -270,7 +270,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const alpha = (hex, a) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
-/* ---------- লোগো (logo.png না পেলে লেখা দিয়ে একই লোগো) ---------- */
+/* ---------- লোগো (gtpl_logo.png না পেলে লেখা দিয়ে একই লোগো) ---------- */
 $('#logoImg').addEventListener('error', () => {
   $('#logoBox').innerHTML = '<span class="lg"><span class="r1"><span class="a">GTPL</span> <span class="b">KCBPL</span></span><small>Digital Cable TV &amp; Broadband</small></span>';
 });

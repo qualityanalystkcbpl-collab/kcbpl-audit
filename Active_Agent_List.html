@@ -236,6 +236,20 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
 .sc{min-width:36px;text-align:center;padding:0 7px;border-radius:99px;font-size:10.5px;font-weight:700;font-family:'Baloo Da 2',sans-serif;line-height:17px;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.14)}
 .sc.s1{background:linear-gradient(90deg,#12c98a,#1fd6a0)}.sc.s2{background:linear-gradient(90deg,#00a6c7,#00b8f0)}
 .sc.s3{background:linear-gradient(90deg,#ff9a1f,#ffb02e)}.sc.s4{background:linear-gradient(90deg,#ff5f6d,#ff8a5c)}
+
+/* ---- Lite mode: শুধু টেবিল, কোনো ভারী ইফেক্ট নেই ---- */
+.b-lite{background-image:linear-gradient(90deg,#ff7a45,#e5195f,#ff7a45);margin-left:auto}
+body.lite{background:#f6f2ff!important}
+body.lite .blob,body.lite canvas#fx,body.lite .hero,body.lite .stats,body.lite .banner,body.lite .pn{display:none!important}
+body.lite .pn.keep{display:block!important}
+body.lite .pn.keep .cgrid{display:none}
+body.lite *{animation:none!important;transition:none!important;backdrop-filter:none!important}
+body.lite .ldr::after{animation:sp 1.1s linear infinite!important}
+body.lite .lbar i{animation:lslide 1.2s ease-in-out infinite!important}
+/* ---- Top / Bottom বাটন ---- */
+.fab{position:fixed;right:14px;bottom:18px;z-index:45;display:flex;flex-direction:column;gap:8px}
+.fab button{border:0;border-radius:99px;padding:8px 13px;color:#fff;font-weight:700;font-size:12px;cursor:pointer;background:linear-gradient(135deg,var(--c2),var(--c3));box-shadow:0 6px 16px rgba(60,30,140,.3)}
+.fab button:hover{filter:brightness(1.1)}
 </style>
 </head>
 <body data-page="home">
@@ -248,6 +262,7 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
     <span class="live" id="live"><i></i><span id="liveTxt">লোড হচ্ছে…</span></span>
     <span class="live off" id="auto" title="ক্লিক করলে এখনই raw data মিলিয়ে টিক দেবে" style="cursor:pointer"><i></i><span id="autoTxt">Auto-tick…</span></span>
     <span class="live plain" id="dateChip"></span>
+    <button class="btn b-lite" id="liteBtn"></button>
   </div>
 
   <nav class="navw" id="nav"><span id="pill"></span></nav>
@@ -270,6 +285,8 @@ button:focus-visible,.cb:focus-visible,a:focus-visible{outline:2px solid var(--c
 
   <div id="content"></div>
 </div>
+
+<div class="fab"><button id="goTop" title="Go to top">⬆ Go to top</button><button id="goBot" title="Go to bottom">⬇ Go to bottom</button></div>
 
 <div class="modal" id="modal"><div class="mbox">
   <h3 id="mTitle"></h3>
@@ -312,7 +329,7 @@ function ldrStart(){ LP = 0; clearInterval(LT); LT = setInterval(() => { LP += (
 function ldrStop(){ clearInterval(LT); LT = null; LP = 100; ldrTick(); }
 
 /* ---------- গড় স্কোর (কন্ডিশনাল ফরম্যাট: 90+ সবুজ · 80+ নীল · 70+ কমলা · নিচে লাল) ---------- */
-let SCORES = null, scoresJson = '';
+let LITE = false, SCORES = null, scoresJson = '';
 const SCORE_BANDS = [90, 80, 70];
 const normN = s => String(s || '').toUpperCase().replace(/\s+/g, ' ').trim();
 function paintScore(tr){
@@ -516,7 +533,8 @@ async function loadDash(){          // শেষ 7 দিনের কাউন�
     if (!DASH && PAGE === 'home' && STATE) render(false);
   }
 }
-async function loadMonth(){         // মাসের ১ তারিখ থেকে দিন-ভিত্তিক মোট অডিট (Home-এর ৩টা চার্টের ডাটা)
+async function loadMonth(){
+  if (LITE) return;         // মাসের ১ তারিখ থেকে দিন-ভিত্তিক মোট অডিট (Home-এর ৩টা চার্টের ডাটা)
   const for_ = current;
   try{
     const d = await run('getDashboard', current, 'month');
@@ -530,7 +548,7 @@ async function loadMonth(){         // মাসের ১ তারিখ থ�
   }catch(e){ if (!dashErr) dashErr = e.message; }
 }
 let polling = false;
-async function pollLoop(){ await poll(); setTimeout(pollLoop, POLL_MS); }
+async function pollLoop(){ await poll(); setTimeout(pollLoop, LITE ? 12000 : POLL_MS); }
 async function poll(){
   if (polling || busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
   polling = true;
@@ -630,7 +648,7 @@ function chart(id, type, labels, datasets, options){
   CH[id] = new Chart(el, {type, data:{labels, datasets}, options});
 }
 function drawCharts(){
-  if (!window.Chart || !STATE) return;
+  if (!window.Chart || !STATE || LITE) return;
   if (PAGE === 'home') drawHome(); else drawCat(PAGE);
 }
 function trendSets(total, hiLast, hiPrev, base){
@@ -708,7 +726,7 @@ function renderHome(box){
   </div>`;
 
   /* শেষ 7 দিন */
-  h += `<div class="pn rise" style="--a:#ff4fa3;--b:#ffb02e;--d:300ms"><div class="pn-h"><h2>📅 শেষ 7 দিনে কতটা অডিট হলো</h2></div>`;
+  h += `<div class="pn rise keep" style="--a:#ff4fa3;--b:#ffb02e;--d:300ms"><div class="pn-h"><h2>📅 শেষ 7 দিনে কতটা অডিট হলো</h2></div>`;
   if (D){
     const ser = {}; RAWCATS.forEach(p => ser[p.key] = dashSeries(m[p.key]));
     const maxT = Math.max(1, ...DASH.total);
@@ -1008,6 +1026,19 @@ function tick(){
   parts = parts.filter(p => p.l > 0);
   if (parts.length) requestAnimationFrame(tick); else cx.clearRect(0, 0, cv.width, cv.height);
 }
+
+/* ---------- Lite mode + Top/Bottom ---------- */
+function setLite(v){
+  LITE = v; try{ localStorage.setItem('qa_lite', v ? '1' : '0'); }catch(e){}
+  document.body.classList.toggle('lite', v);
+  $('#liteBtn').textContent = v ? '🏠 Go to main page' : '⚡ Go to lite mode';
+  if (STATE){ const y = scrollY; render(false); scrollTo(0, y); if (!v) loadMonth(); }
+  placePill();
+}
+$('#liteBtn').onclick = () => { setLite(!LITE); toast(LITE ? '⚡ Lite mode: শুধু টেবিল দেখাচ্ছে' : '🏠 মূল পেজে ফিরেছেন', 2500); };
+$('#goTop').onclick = () => scrollTo({top: 0, behavior: LITE ? 'auto' : 'smooth'});
+$('#goBot').onclick = () => scrollTo({top: document.documentElement.scrollHeight, behavior: LITE ? 'auto' : 'smooth'});
+try{ setLite(localStorage.getItem('qa_lite') === '1'); }catch(e){ setLite(false); }
 
 addEventListener('load', placePill);
 init();

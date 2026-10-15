@@ -189,14 +189,25 @@ async function init(){
     setInterval(poll, POLL_MS);
   }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
 }
-async function load(name){
+async function refreshSheetList(keep){
+  const names = await run('getSheets'), sel = $('#sheetSel');
+  sel.innerHTML = names.map(n => `<option>${esc(n)}</option>`).join('');
+  sel.value = names.indexOf(keep) > -1 ? keep : names[names.length - 1];
+  return sel.value;
+}
+async function load(name, retried){
   current = name;
   $('#month').value = monthFromName(name) || new Date().toISOString().slice(0,7);
   $('#content').innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>';
   try{
     STATE = await run('getData', name); lastJson = JSON.stringify(STATE);
     render(); setLive(true);
-  }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false); }
+  }catch(e){
+    if (!retried && /Sheet পাওয়া যায়নি/.test(e.message)){      // ট্যাবের নাম বদলে গেলে তালিকা নতুন করে এনে আবার চেষ্টা
+      try{ const n = await refreshSheetList(name); return load(n, true); }catch(_){}
+    }
+    $('#content').innerHTML = '<div class="loader">⚠️ ' + esc(e.message) + '</div>'; setLive(false);
+  }
 }
 async function poll(){            // Sheet-এ বদল (অটো টিক বা অন্য কেউ) নিজে থেকে এখানে আসবে
   if (busy || document.hidden || $('#modal').classList.contains('show') || !current) return;
@@ -443,7 +454,7 @@ $('#newBtn').onclick = () => {
     } finally { busy--; }
   });
 };
-$('#refBtn').onclick = () => load(current);
+$('#refBtn').onclick = async () => { try{ const n = await refreshSheetList(current); await load(n); }catch(e){ load(current); } };
 $('#lnkBtn').onclick = async () => {
   try{ await navigator.clipboard.writeText(location.href); toast('🔗 Link copy হয়েছে'); }
   catch(e){ prompt('Link copy করুন:', location.href); }

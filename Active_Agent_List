@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<title>QA Audit Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Baloo+Da+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d1340;--card:rgba(255,255,255,.88);--c1:#ff4fa3;--c2:#7c4dff;--c3:#00c2ff;--c4:#2ee6a6;--c5:#ffb938}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Hind Siliguri',sans-serif;color:var(--ink);min-height:100vh;
+ background:linear-gradient(120deg,#ffd6ec,#d9ccff,#c6f1ff,#d2ffe9,#fff0c6);background-size:400% 400%;animation:bg 18s ease infinite;overflow-x:hidden}
+@keyframes bg{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+.blob{position:fixed;border-radius:50%;filter:blur(60px);opacity:.45;z-index:0;animation:float 14s ease-in-out infinite}
+.b1{width:380px;height:380px;background:var(--c1);top:-80px;left:-80px}
+.b2{width:340px;height:340px;background:var(--c3);bottom:-60px;right:-60px;animation-delay:-5s}
+.b3{width:260px;height:260px;background:var(--c5);top:40%;left:55%;animation-delay:-9s}
+@keyframes float{50%{transform:translate(40px,-50px) scale(1.15)}}
+.wrap{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:22px 16px 60px}
+h1{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;font-size:clamp(28px,5vw,46px);margin:0 0 4px;
+ background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c1));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+.sub{margin:0 0 18px;font-weight:500;opacity:.7}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);padding:12px 14px;border-radius:18px;box-shadow:0 10px 30px rgba(124,77,255,.18);backdrop-filter:blur(8px)}
+select,input[type=month],input[type=text]{font:inherit;padding:9px 12px;border-radius:12px;border:2px solid #e2d9ff;background:#fff;color:var(--ink);outline:none}
+select:focus,input:focus{border-color:var(--c2)}
+button{font:inherit;font-weight:600;border:0;padding:10px 18px;border-radius:14px;color:#fff;cursor:pointer;transition:transform .15s,box-shadow .2s;background-size:200% 100%}
+button:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+button:active{transform:scale(.96)}
+button:focus-visible,.cb:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
+.sync{background-image:linear-gradient(90deg,var(--c2),var(--c3),var(--c2))}
+.newm{background-image:linear-gradient(90deg,var(--c1),var(--c5),var(--c1))}
+.ref{background:#8b7fb8}
+.lnk{background-image:linear-gradient(90deg,var(--c4),var(--c3),var(--c4))}
+a.lnk{font:inherit;font-weight:600;color:#fff;text-decoration:none;padding:10px 18px;border-radius:14px;background-size:200% 100%;transition:transform .15s,background-position .3s}
+a.lnk:hover{transform:translateY(-2px) scale(1.03);background-position:100% 0}
+button:hover{background-position:100% 0}
+.spacer{flex:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:18px 0}
+.stat{background:var(--card);border-radius:20px;padding:16px 20px;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.08)}
+.stat::before{content:'';position:absolute;inset:0 auto 0 0;width:8px;background:var(--g)}
+.stat small{font-weight:600;opacity:.65}
+.stat b{display:block;font-family:'Baloo Da 2',sans-serif;font-size:42px;line-height:1.1}
+.ringbox{display:flex;align-items:center;gap:14px}
+.ring{width:96px;height:96px;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .bg{stroke:#ece6ff}
+.ring .fg{stroke:url(#grad);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
+.sec{background:var(--card);border-radius:24px;margin:20px 0;overflow:hidden;box-shadow:0 14px 34px rgba(60,30,140,.14)}
+.sec-h{display:flex;align-items:center;gap:12px;padding:14px 20px;color:#fff;background:linear-gradient(90deg,var(--a),var(--b));background-size:200% 100%;animation:shine 8s linear infinite}
+.sec-h h2{margin:0;font-family:'Baloo Da 2',sans-serif;font-size:24px}
+.sec-h span{margin-left:auto;background:rgba(255,255,255,.25);padding:4px 14px;border-radius:999px;font-weight:600}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th,td{padding:7px 8px;text-align:center;white-space:nowrap}
+th{font-size:13px;opacity:.7;font-weight:600}
+td.nm{text-align:left;font-weight:600;min-width:170px}
+td.nm small{display:block;opacity:.55;font-weight:500}
+tr.ag{transition:background .2s}
+tr.ag:hover{background:rgba(124,77,255,.07)}
+tr.ag.done{background:linear-gradient(90deg,rgba(46,230,166,.18),transparent)}
+.ticks{display:flex;gap:5px;justify-content:center}
+.cb{width:21px;height:21px;border-radius:7px;border:2.5px solid var(--col);background:transparent;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .2s,background .2s;position:relative}
+.cb:hover{transform:scale(1.2)}
+.cb.on{background:var(--col)}
+.cb.on::after{content:'';width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px);animation:tick .3s ease}
+.cb.pop{animation:pop .45s ease}
+.cb.auto{animation:glow 1.2s ease}
+@keyframes tick{from{transform:rotate(45deg) scale(0)}to{transform:rotate(45deg) translate(-1px,-1px) scale(1)}}
+@keyframes pop{40%{transform:scale(1.55) rotate(8deg)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 var(--col)}100%{box-shadow:0 0 0 14px transparent}}
+.gap{width:10px}
+.pb{height:9px;background:#ece6ff;border-radius:99px;min-width:90px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--c3),var(--c4));transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.num{font-family:'Baloo Da 2',sans-serif;font-size:20px}
+.rem{color:#e0398a;font-weight:700}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:16px;font-weight:600;z-index:50;transition:transform .4s cubic-bezier(.2,1.4,.4,1);max-width:92vw}
+.toast.show{transform:translate(-50%,0)}
+.loader{text-align:center;padding:60px;font-size:20px;font-weight:600}
+.spin{width:46px;height:46px;margin:0 auto 12px;border-radius:50%;border:6px solid #ddd0ff;border-top-color:var(--c1);border-right-color:var(--c3);animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:40}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <h1>QA Audit Tracker</h1>
+  <p class="sub">Raw data থেকে অটো টিক, সাথে ম্যানুয়াল টিক / আনটিক</p>
+
+  <div class="bar">
+    <select id="sheetSel" aria-label="Sheet"></select>
+    <input type="month" id="month" aria-label="Month">
+    <select id="mode" aria-label="Sync mode">
+      <option value="fill">Fill – শুধু বাকি টিক যোগ হবে</option>
+      <option value="exact">Exact – raw data-র সাথে হুবহু মিলবে</option>
+    </select>
+    <button class="sync" id="syncBtn">⚡ Raw data থেকে অটো মার্ক</button>
+    <span class="spacer"></span>
+    <button class="newm" id="newBtn">➕ নতুন মাসের শিট</button>
+    <button class="lnk" id="lnkBtn" title="Page link copy করুন">🔗 Link copy</button>
+    <button class="ref" id="refBtn">⟳</button>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div id="content"><div class="loader"><div class="spin"></div>লোড হচ্ছে…</div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PER = 16;
+const PALETTE = ['#7c4dff','#e5195f','#1e6bff','#ff2fd0','#12a150','#ff8a00','#00a6c7','#9b27af'];
+const SEC_GRAD = [['#7c4dff','#00c2ff'],['#ff4fa3','#ffb938'],['#12c98a','#00a6c7'],['#ff7a45','#e5195f']];
+let STATE = null, current = '';
+const $ = s => document.querySelector(s);
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbzVZ2A42rIxh5UgpBPuHSlb2tJnwyp2eunQc3kcNeZ495bqUJTeMwT8ir6cMA_3HBHESw/exec';
+function getKey(){
+  let k = localStorage.getItem('qa_key');
+  if (!k){ k = prompt('Passkey দিন:') || ''; if (k) localStorage.setItem('qa_key', k); }
+  return k;
+}
+async function run(fn, ...args){
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ fn: fn, args: args, key: getKey() }) });
+  const j = await r.json();
+  if (!j.ok){ if (j.error === 'Unauthorized') localStorage.removeItem('qa_key'); throw new Error(j.error === 'Unauthorized' ? 'Passkey ভুল, রিফ্রেশ করে আবার দিন' : j.error); }
+  return j.data;
+}
+function toast(msg, ms=3200){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('show'),ms);
+}
+function monthFromName(n){
+  const M=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  const s=n.toLowerCase(), y=s.match(/20\d{2}/); let m=0;
+  M.forEach((x,i)=>{ if(s.indexOf(x)>-1) m=i+1; });
+  return (y&&m)? y[0]+'-'+String(m).padStart(2,'0') : '';
+}
+
+async function init(){
+  try{
+    const names = await run('getSheets');
+    const sel = $('#sheetSel');
+    sel.innerHTML = names.map(n=>`<option>${n}</option>`).join('');
+    sel.value = names[names.length-1];       // সবচেয়ে নতুন ট্যাব
+    sel.onchange = () => load(sel.value);
+    await load(sel.value);
+  }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ '+e.message+'</div>'; }
+}
+
+async function load(name){
+  current = name;
+  $('#month').value = monthFromName(name) || new Date().toISOString().slice(0,7);
+  $('#content').innerHTML = '<div class="loader"><div class="spin"></div>লোড হচ্ছে…</div>';
+  try{
+    STATE = await run('getData', name);
+    render();
+  }catch(e){ $('#content').innerHTML = '<div class="loader">⚠️ '+e.message+'</div>'; }
+}
+
+function render(autoMarked){
+  const box = $('#content'); box.innerHTML = '';
+  STATE.sections.forEach((sec, si) => {
+    const g = SEC_GRAD[si % SEC_GRAD.length];
+    const div = document.createElement('div'); div.className = 'sec';
+    div.innerHTML = `<div class="sec-h" style="--a:${g[0]};--b:${g[1]}"><h2>${sec.name}</h2><span data-sc="${si}"></span></div>
+      <div class="scroll"><table><thead><tr><th>Agent</th><th colspan="8">Audit 1 – 8</th><th class="gap"></th><th colspan="8">Audit 9 – 16</th><th>Done</th><th>Left</th><th>Progress</th><th>Live call</th></tr></thead><tbody></tbody></table></div>`;
+    const tb = div.querySelector('tbody');
+    sec.agents.forEach((a, ai) => {
+      const col = PALETTE[(ai + si * 3) % PALETTE.length];
+      const tr = document.createElement('tr'); tr.className = 'ag'; tr.dataset.s = si; tr.dataset.a = ai;
+      let cells = `<td class="nm">${a.name || '<i style="opacity:.5">(নাম নেই)</i>'}<small>${a.id}</small></td>`;
+      for (let i = 0; i < PER; i++){
+        if (i === 8) cells += '<td class="gap"></td>';
+        cells += `<td><button class="cb ${a.ticks[i]?'on':''}" style="--col:${col}" data-i="${i}" aria-label="Audit ${i+1}"></button></td>`;
+      }
+      cells += `<td class="num" data-done></td><td class="num rem" data-left></td><td><div class="pb"><i></i></div></td>
+        <td><div class="ticks">${a.live.map((l,i)=>`<button class="cb live ${l?'on':''}" style="--col:${col}" data-live="${i}" aria-label="Live ${i+1}"></button>`).join('')}</div></td>`;
+      tr.innerHTML = cells; tb.appendChild(tr);
+      tr.addEventListener('click', e => {
+        const b = e.target.closest('.cb'); if (!b) return;
+        const live = b.dataset.live !== undefined;
+        const idx = live ? +b.dataset.live : +b.dataset.i;
+        const arr = live ? a.live : a.ticks;
+        arr[idx] = !arr[idx];
+        b.classList.toggle('on', arr[idx]); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+        refreshRow(tr, a, si);
+        const wasFull = arr === a.ticks && arr[idx] && a.ticks.every(Boolean);
+        if (wasFull) confetti(b.getBoundingClientRect());
+        run('setTick', current, a.row, idx, arr[idx], live).catch(err => {
+          arr[idx] = !arr[idx]; b.classList.toggle('on', arr[idx]); refreshRow(tr, a, si); toast('⚠️ সেভ হয়নি: ' + err.message);
+        });
+      });
+      refreshRow(tr, a, si, true);
+    });
+    box.appendChild(div);
+  });
+  if (autoMarked) autoMarked.forEach(el => {});
+  updateStats();
+}
+
+function refreshRow(tr, a, si){
+  const n = a.ticks.filter(Boolean).length;
+  tr.querySelector('[data-done]').textContent = n;
+  tr.querySelector('[data-left]').textContent = Math.max(PER - n, 0);
+  tr.querySelector('.pb i').style.width = (n / PER * 100) + '%';
+  tr.classList.toggle('done', n >= PER);
+  const sec = STATE.sections[si];
+  const tot = sec.agents.reduce((s, x) => s + x.ticks.filter(Boolean).length, 0);
+  const el = document.querySelector(`[data-sc="${si}"]`);
+  if (el) el.textContent = tot + ' / ' + sec.agents.length * PER;
+  updateStats();
+}
+
+let lastDone = 0;
+function updateStats(){
+  if (!STATE) return;
+  let agents = 0, done = 0, live = 0;
+  STATE.sections.forEach(s => s.agents.forEach(a => { agents++; done += a.ticks.filter(Boolean).length; live += a.live.filter(Boolean).length; }));
+  const target = agents * PER, left = target - done, pct = target ? done / target : 0;
+  $('#stats').innerHTML = `
+   <div class="stat" style="--g:linear-gradient(#7c4dff,#00c2ff)"><small>Total Target</small><b data-n="${target}">${target}</b></div>
+   <div class="stat" style="--g:linear-gradient(#12c98a,#00c2ff)"><small>Completed</small><b data-n="${done}">${done}</b></div>
+   <div class="stat" style="--g:linear-gradient(#ff4fa3,#ffb938)"><small>Remaining</small><b data-n="${left}">${left}</b></div>
+   <div class="stat" style="--g:linear-gradient(#ffb938,#ff4fa3)"><small>Live call Audit</small><b data-n="${live}">${live}</b></div>
+   <div class="stat"><div class="ringbox">
+     <svg class="ring" viewBox="0 0 100 100"><defs><linearGradient id="grad"><stop offset="0" stop-color="#ff4fa3"/><stop offset=".5" stop-color="#7c4dff"/><stop offset="1" stop-color="#2ee6a6"/></linearGradient></defs>
+     <circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" style="stroke-dashoffset:${264*(1-pct)}"/></svg>
+     <div><small>Progress</small><b>${(pct*100).toFixed(1)}%</b></div></div></div>`;
+  document.querySelectorAll('.stat b[data-n]').forEach(b => countUp(b, +b.dataset.n));
+  if (pct >= 1 && lastDone < 1) confetti({left: innerWidth/2, top: 200, width:0, height:0});
+  lastDone = pct;
+}
+function countUp(el, to){
+  const from = +(el._v || 0), t0 = performance.now();
+  (function f(t){ const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))); el._v = to; if (k < 1) requestAnimationFrame(f); })(t0);
+}
+
+/* ---------- অটো মার্ক ---------- */
+$('#syncBtn').onclick = async () => {
+  const b = $('#syncBtn'); b.disabled = true; b.textContent = '⏳ সিঙ্ক হচ্ছে…';
+  try{
+    const before = STATE.sections.map(s => s.agents.map(a => a.ticks.slice()));
+    const r = await run('syncFromRaw', current, $('#month').value, $('#mode').value);
+    STATE = await run('getData', current);
+    render();
+    let n = 0;
+    STATE.sections.forEach((s, si) => s.agents.forEach((a, ai) => {
+      const tr = document.querySelector(`tr[data-s="${si}"][data-a="${ai}"]`);
+      a.ticks.forEach((t, i) => { if (t && !before[si][ai][i]) { const c = tr.querySelectorAll('.cb:not(.live)')[i]; setTimeout(() => c.classList.add('auto'), 25 * n++); } });
+    }));
+    toast(`✅ ${r.rawRows}টি raw কল পাওয়া গেছে, ${r.matched} জন এজেন্ট মিলেছে, ${r.changed} জনের টিক বদলেছে`);
+    if (n) confetti($('#syncBtn').getBoundingClientRect());
+  }catch(e){ toast('⚠️ ' + e.message, 6000); }
+  b.disabled = false; b.textContent = '⚡ Raw data থেকে অটো মার্ক';
+};
+
+/* ---------- নতুন মাসের শিট ---------- */
+$('#newBtn').onclick = async () => {
+  const d = new Date(); const M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const m = STATE && monthFromName(current) ? monthFromName(current).split('-') : [d.getFullYear(), d.getMonth()+1];
+  let ny = +m[0], nm = +m[1] + 1; if (nm > 12){ nm = 1; ny++; }
+  const def = 'Active List ' + M[nm-1] + ' ' + ny;
+  const name = prompt('নতুন শিটের নাম (আগের শিটের কপি, সব টিক খালি হয়ে যাবে):', def);
+  if (!name) return;
+  try{
+    toast('⏳ নতুন শিট বানানো হচ্ছে…', 8000);
+    await run('createMonthSheet', current, name);
+    const names = await run('getSheets');
+    $('#sheetSel').innerHTML = names.map(n => `<option>${n}</option>`).join('');
+    $('#sheetSel').value = name; await load(name);
+    toast('🎉 নতুন শিট তৈরি: ' + name);
+    confetti($('#newBtn').getBoundingClientRect());
+  }catch(e){ toast('⚠️ ' + e.message, 6000); }
+};
+$('#refBtn').onclick = () => load(current);
+const PAGE_URL = location.href;
+$('#lnkBtn').onclick = async () => {
+  try{ await navigator.clipboard.writeText(PAGE_URL); toast('🔗 Link copy হয়েছে!'); }
+  catch(e){ prompt('Link copy করুন:', PAGE_URL); }
+};
+
+/* ---------- কনফেটি ---------- */
+const cv = $('#fx'), cx = cv.getContext('2d'); let parts = [];
+function size(){ cv.width = innerWidth; cv.height = innerHeight; } size(); addEventListener('resize', size);
+function confetti(r){
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const x = r.left + (r.width||0)/2, y = r.top + (r.height||0)/2;
+  for (let i = 0; i < 90; i++) parts.push({x, y, vx: (Math.random()-.5)*12, vy: -Math.random()*12-3, g:.35, s: 5+Math.random()*6, c: PALETTE.concat(['#ffb938','#2ee6a6','#00c2ff'])[i % 11], r: Math.random()*6, vr:(Math.random()-.5)*.4, l: 90});
+  if (parts.length === 90) tick();
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += p.g; p.r += p.vr; p.l--; cx.save(); cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.globalAlpha = Math.max(p.l/90,0); cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); cx.restore(); });
+  parts = parts.filter(p => p.l > 0);
+  if (parts.length) requestAnimationFrame(tick); else cx.clearRect(0,0,cv.width,cv.height);
+}
+
+init();
+</script>
+</body>
+</html>

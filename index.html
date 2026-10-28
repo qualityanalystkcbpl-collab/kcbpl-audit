@@ -145,6 +145,14 @@
 #goToBottom:active {
     transform: scale(0.95);
 }
+
+/* ---- Auto-fill box (Call Link se auto-filled) ---- */
+.autofill-box { border: 1.5px dashed #94a3b8; border-radius: 10px; padding: 14px 14px 4px; margin: 4px 0 18px; background: #f8fafc; }
+.autofill-title { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #475569; margin-bottom: 12px; }
+.autofill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.autofill-box input[readonly] { background-color: #eef2f6; color: #334155; cursor: not-allowed; }
+.autofill-box input[type="date"][readonly], .autofill-box input[type="time"][readonly] { pointer-events: none; }
+.autofill-box label { font-size: 13px; }
     </style>
 </head>
 <body>
@@ -345,11 +353,11 @@ function scrollToBottom() {
             <div class="form-inline">
                 <div class="form-group">
                     <label class="required"><span class="en-label">Associate Emp ID</span><span class="bn-label">প্রতিনিধির এমপ্লয়ী আইডি</span></label>
-                    <input type="text" name="Associate Emp ID" required>
+                    <input type="text" name="Associate Emp ID" id="empId" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
-                    <select name="Associate Name" required>
+                    <select name="Associate Name" id="agentName" required>
                         <option value="">Select Agent Name / এজেন্টের নাম নির্বাচন করুন</option>
                         <option value="Jui Mondal">Jui Mondal</option>
                         <option value="Priyanka Dolui">Priyanka Dolui</option>
@@ -359,32 +367,42 @@ function scrollToBottom() {
                     </select>
                 </div>
             </div>
-            <div class="form-inline">
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর (গ্রাহকের নম্বর)</span></label>
-                    <input type="text" name="Calling Number" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
-                    <input type="date" name="Call Date" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Time</span><span class="bn-label">কলের সময়</span></label>
-                    <input type="time" name="Call Time" required>
+
+            <div class="form-group">
+                <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
+                <input type="text" name="Call Link" id="callLink" placeholder="Paste the full recording link here..." autocomplete="off" required>
+            </div>
+
+            <div class="autofill-box">
+                <div class="autofill-title">🔒 Auto-filled details (not editable)</div>
+                <div class="autofill-grid">
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Calling Number</span><span class="bn-label">কলিং নম্বর</span></label>
+                        <input type="text" name="Calling Number" id="callingNumber" readonly tabindex="-1">
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call Date</span><span class="bn-label">কলের তারিখ</span></label>
+                        <input type="date" name="Call Date" id="callDate" readonly tabindex="-1">
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call time</span><span class="bn-label">কলের সময়</span></label>
+                        <input type="time" name="Call Time" id="callTime" step="1" readonly tabindex="-1">
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
+                        <input type="text" name="Call ID" id="callId" readonly tabindex="-1">
+                    </div>
+                    <div class="form-group">
+                        <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
+                        <select name="TL Name" required>
+                            <option value="">Select TL Name</option>
+                            <option value="Dipankar Mondal">Dipankar Mondal</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+
             <div class="form-inline">
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
-                    <input type="text" name="Call ID" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">TL Name</span><span class="bn-label">টিএল (TL) এর নাম</span></label>
-                     <select name="TL Name" required>
-                        <option value="">Select TL Name / TL নাম নির্বাচন করুন</option>
-                        <option value="Dipankar Mondal">Dipankar Mondal</option>
-                    </select>
-                </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
                     <select name="Language" required>
@@ -394,15 +412,9 @@ function scrollToBottom() {
                         <option value="English">English / ইংরেজি</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-inline">
                 <div class="form-group">
-                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
+                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
                     <input type="text" name="Call Duration" placeholder="e.g. 02:30" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
-                    <input type="text" name="Call Link" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
@@ -796,6 +808,50 @@ function scrollToBottom() {
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
 </div>
 
+<script>
+    // ---- Emp ID -> Agent Name auto-select (manual select still possible) ----
+    const EMP_MAP = {
+        "SC954":  "Jui Mondal",
+        "SC999":  "Priyanka Dolui",
+        "SC1303": "Moumita Roy(2)",
+        "SC1194": "Titli Goswami",
+        "2288":   "Priyanka Ghosh"
+    };
+    document.getElementById('empId').addEventListener('input', function () {
+        const key = this.value.replace(/\s+/g, '').toUpperCase();
+        if (EMP_MAP[key]) {
+            document.getElementById('agentName').value = EMP_MAP[key];
+        }
+    });
+
+    // ---- Call Link -> Calling Number / Call Date / Call Time / Call ID ----
+    // Example: .../20261022-083612_6289205138_IN_BB_souvikm-all.mp3
+    document.getElementById('callLink').addEventListener('input', function () {
+        const num = document.getElementById('callingNumber');
+        const dt  = document.getElementById('callDate');
+        const tm  = document.getElementById('callTime');
+        const cid = document.getElementById('callId');
+        const m = this.value.match(/(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})_(\d+)/);
+        if (m) {
+            num.value = m[7];
+            dt.value  = m[1] + '-' + m[2] + '-' + m[3];            // yyyy-mm-dd (same format as before)
+            tm.value  = m[4] + ':' + m[5] + ':' + m[6];
+            cid.value = m[1] + m[2] + m[3] + '-' + m[4] + m[5] + m[6] + '_' + m[7];
+        } else {
+            num.value = dt.value = tm.value = cid.value = '';
+        }
+    });
+
+    // Link theke data na ashle submit atkano
+    document.getElementById('auditForm').addEventListener('submit', function (e) {
+        if (!document.getElementById('callId').value) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            alert('Call Link ti thik noy. Poro recording link paste korun. / সঠিক কল রেকর্ডিং লিঙ্ক দিন।');
+            document.getElementById('callLink').focus();
+        }
+    });
+</script>
 <script>
     // টাইমার কন্ট্রোল ভ্যারিয়েবলস
     let timerInterval;

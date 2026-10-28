@@ -411,7 +411,7 @@ function scrollToBottom() {
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
-                    <input type="text" name="Call Duration" placeholder="e.g. 02:30" required>
+                    <input type="text" name="Call Duration" id="callDuration" placeholder="e.g. 02:30" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
@@ -1139,6 +1139,60 @@ function scrollToBottom() {
     setInterval(updateNetwork, 3000);
     setInterval(measurePing, 10000);
     setInterval(fetchPublicIp, 300000);
+</script>
+
+<script>
+    // ---- Call Duration: Call Link er audio theke auto ber hobe (manual change/add kora jabe) ----
+    (function () {
+        const linkEl = document.getElementById('callLink');
+        const durEl  = document.getElementById('callDuration');
+        let token = 0, timer = null, manual = false, probe = null;
+
+        durEl.addEventListener('input', () => { manual = true; });   // user nijer haate likhle auto bondho
+
+        function fmt(sec) {
+            sec = Math.round(sec);
+            const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+            const mm = String(m).padStart(2, '0'), ss = String(s).padStart(2, '0');
+            return h > 0 ? String(h).padStart(2, '0') + ':' + mm + ':' + ss : mm + ':' + ss;
+        }
+
+        function stopProbe() {
+            if (probe) { probe.onloadedmetadata = probe.onerror = null; probe.removeAttribute('src'); probe.load(); probe = null; }
+        }
+
+        function fetchDuration(url, myToken) {
+            stopProbe();
+            const a = new Audio();
+            probe = a;
+            a.preload = 'metadata';
+            const giveUp = setTimeout(() => { if (myToken === token) stopProbe(); }, 10000);   // error/timeout hole faka thakbe
+            a.onloadedmetadata = () => {
+                clearTimeout(giveUp);
+                if (myToken === token && !manual && isFinite(a.duration) && a.duration > 0) {
+                    durEl.value = fmt(a.duration);
+                }
+                stopProbe();
+            };
+            a.onerror = () => { clearTimeout(giveUp); if (myToken === token) stopProbe(); };
+            a.src = url;
+        }
+
+        linkEl.addEventListener('input', function () {
+            clearTimeout(timer);
+            token++;
+            manual = false;
+            durEl.value = '';                               // notun link e ager duration muche jabe
+            const url = this.value.trim();
+            if (!/^https?:\/\//i.test(url)) return;
+            const myToken = token;
+            timer = setTimeout(() => fetchDuration(url, myToken), 400);
+        });
+
+        document.getElementById('auditForm').addEventListener('reset', () => {
+            clearTimeout(timer); token++; manual = false; stopProbe();
+        });
+    })();
 </script>
 </body>
 </html>

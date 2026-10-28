@@ -404,7 +404,7 @@ function loadAudio(){
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
-                    <input type="text" name="Call Duration" id="callDurationInput" placeholder="--:--:--" maxlength="8" pattern="^\d{2}:\d{2}:\d{2}$" title="Format: HH:MM:SS" oninput="formatCallDuration(this)" required>
+                    <input type="text" name="Call Duration" id="callDurationInput" placeholder="--:--:--" maxlength="8" pattern="^\d{2}:\d{2}:\d{2}$" title="Format: HH:MM:SS" inputmode="numeric" oninput="formatCallDuration(this); this.dataset.manual='1'" onblur="normalizeCallDuration(this)" required>
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
@@ -1091,12 +1091,79 @@ function loadAudio(){
     //   -> Calling Number: 9733275695 | Call ID: 20260921-172342_9733275695 | Call Date: 2026-09-21 | Call time: 17:23
     // Call Duration ফিল্ড HH:MM:SS ফরম্যাটে অটো-মাস্ক করা (--:--:-- এর মতো দেখাবে)
     function formatCallDuration(el) {
+        // টাইপ করার সময়: শুধু সংখ্যা রাখা, ২ ঘর পরপর ":" বসানো
         let digits = el.value.replace(/\D/g, '').slice(0, 6);
         let parts = [];
         if (digits.length > 0) parts.push(digits.slice(0, 2));
         if (digits.length > 2) parts.push(digits.slice(2, 4));
         if (digits.length > 4) parts.push(digits.slice(4, 6));
         el.value = parts.join(':');
+    }
+
+    // ফিল্ড থেকে বেরোলে (blur): 02:30 (MM:SS) -> 00:02:30, 45 (SS) -> 00:00:45
+    function normalizeCallDuration(el) {
+        const v = el.value.trim();
+        if (!v) return;
+        const parts = v.split(':').filter(function (x) { return x !== ''; });
+        if (!parts.length) { el.value = ''; return; }
+        while (parts.length < 3) parts.unshift('0');   // বাঁ দিকে 00 বসানো
+        el.value = parts.slice(0, 3).map(function (x) { return ('0' + x).slice(-2); }).join(':');
+    }
+
+    // সেকেন্ড -> HH:MM:SS
+    function secondsToHMS(total) {
+        total = Math.round(total);
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total % 60;
+        return [h, m, s].map(function (n) { return String(n).padStart(2, '0'); }).join(':');
+    }
+
+    // Call Link থেকে অডিওর দৈর্ঘ্য বের করে Call Duration-এ বসানো।
+    // কোনো এরর/টাইমআউট/অসম্পূর্ণ তথ্য হলে ফিল্ড ফাঁকাই থাকবে, ইউজার ম্যানুয়ালি দিতে পারবে।
+    let _durationProbe = null;
+    let _durationToken = 0;
+    function fetchCallDuration(url) {
+        const el = document.getElementById('callDurationInput');
+        if (!el) return;
+        const token = ++_durationToken;
+
+        if (_durationProbe) {
+            try { _durationProbe.onloadedmetadata = _durationProbe.onerror = null; _durationProbe.src = ''; } catch (e) {}
+            _durationProbe = null;
+        }
+
+        // নতুন লিংক বসালে আগের অটো-ফিল ভ্যালু মুছে ফেলা (ইউজার নিজে টাইপ করে থাকলে সেটা রেখে দেওয়া)
+        if (el.dataset.manual !== '1') el.value = '';
+
+        let audio;
+        try {
+            audio = new Audio();
+            audio.preload = 'metadata';
+            _durationProbe = audio;
+        } catch (e) { return; }
+
+        let done = false;
+        const finish = function () {
+            done = true;
+            clearTimeout(timer);
+            audio.onloadedmetadata = audio.onerror = null;
+            try { audio.src = ''; } catch (e) {}
+            if (_durationProbe === audio) _durationProbe = null;
+        };
+        const timer = setTimeout(function () { if (!done) finish(); }, 15000);
+
+        audio.onloadedmetadata = function () {
+            if (done || token !== _durationToken) return;
+            const d = audio.duration;
+            if (isFinite(d) && d > 0 && el.dataset.manual !== '1') {
+                el.value = secondsToHMS(d);
+            }
+            finish();
+        };
+        audio.onerror = function () { if (!done) finish(); };   // এরর হলে ফাঁকা থাকবে
+
+        try { audio.src = url; } catch (e) { finish(); }
     }
 
     function parseCallLink() {
@@ -1136,9 +1203,26 @@ function loadAudio(){
         if (callDateEl) callDateEl.value = year + '-' + month + '-' + day;
         if (callTimeEl) callTimeEl.value = hh + ':' + mm;
 
+        // লিংক বদলালে নতুন করে ডিউরেশন আনা (লিংক পুরো হলে)
+        if (linkInput.dataset.lastUrl !== url) {
+            linkInput.dataset.lastUrl = url;
+            const durEl = document.getElementById('callDurationInput');
+            if (durEl) durEl.dataset.manual = '';
+            if (/^https?:\/\/.+\.[a-zA-Z0-9]{2,5}(\?.*)?$/.test(url)) fetchCallDuration(url);
+        }
+
         // স্কোর/অন্যান্য লাইভ ক্যালকুলেশন থাকলে রিফ্রেশ করা (থাকলে ক্ষতি নেই, না থাকলেও সমস্যা নেই)
         if (typeof calculateLiveScore === 'function') { calculateLiveScore(); }
     }
+
+    // ফর্ম রিসেট হলে ডিউরেশনের ম্যানুয়াল/অটো স্টেটও রিসেট
+    document.getElementById('auditForm').addEventListener('reset', function () {
+        const d = document.getElementById('callDurationInput');
+        const l = document.getElementById('callLinkInput');
+        if (d) d.dataset.manual = '';
+        if (l) l.dataset.lastUrl = '';
+        _durationToken++;
+    });
 
     // ইন্টারনেট স্ট্যাটাস (Online = সবুজ / Offline = লাল) + লাইভ স্পিড টেস্ট
     function updateNetStatus() {
@@ -1340,6 +1424,7 @@ function loadAudio(){
         ];
         let totalScore = 0;
         let isFatal = false;
+        let hasZero = false;   // কোনো প্যারামিটারে সত্যিকারের 0 (ফেইল) পড়েছে কিনা ("0 (No Error)" ধরা হবে না)
         const allSelects = document.querySelectorAll('select');
         allSelects.forEach(select => {
             const fieldName = select.name;
@@ -1350,6 +1435,9 @@ function loadAudio(){
                 } else {
                     let score = parseFloat(fieldValue) || 0;
                     totalScore += score;
+                    const opt = select.options[select.selectedIndex];
+                    const optText = opt ? opt.textContent : '';
+                    if (fieldValue === '0' && !/no error/i.test(optText)) hasZero = true;
                 }
             }
         });
@@ -1357,9 +1445,17 @@ function loadAudio(){
         const statusDisplay = document.getElementById('live-status');
         if (scoreDisplay && statusDisplay) {
             if (isFatal) {
+                // FATAL হলে স্কোর 0 (আগের মতোই) + অডিট ফেইল
                 scoreDisplay.innerText = "0";
                 scoreDisplay.style.color = "#ef4444";
-                statusDisplay.innerText = "Status: Auto Fail";
+                statusDisplay.innerText = "Status: Audit Fail (Fatal)";
+                statusDisplay.style.color = "#ef4444";
+                statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
+            } else if (hasZero) {
+                // কোনো প্যারামিটারে 0 হলে স্কোর আগের মতোই যোগ হবে, কিন্তু অডিট ফেইল দেখাবে
+                scoreDisplay.innerText = totalScore;
+                scoreDisplay.style.color = "#ef4444";
+                statusDisplay.innerText = "Status: Audit Fail";
                 statusDisplay.style.color = "#ef4444";
                 statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
             } else {

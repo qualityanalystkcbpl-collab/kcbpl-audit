@@ -259,9 +259,44 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
 }
 </script>
 <div id="mainContent">
-<div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
+<style>
+    .agent-box {
+        position: absolute; top: 0; right: 0; width: 250px; text-align: left;
+        background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 100%);
+        border: 1px solid rgba(96,165,250,0.45); border-radius: 14px; padding: 11px 13px 10px;
+        box-shadow: 0 6px 18px rgba(30,58,138,0.30); color: #e2e8f0; font-family: inherit;
+    }
+    .agent-box-title { display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:700; letter-spacing:.3px; color:#93c5fd; margin-bottom:8px; }
+    .agent-box-title .agent-count { background:rgba(255,255,255,0.12); color:#fff; border-radius:20px; padding:1px 9px; font-size:11px; font-weight:700; }
+    .agent-btn-row { display:flex; gap:8px; }
+    .agent-btn {
+        flex:1; text-align:center; text-decoration:none; font-size:12.5px; font-weight:700; color:#fff !important;
+        padding:8px 6px; border-radius:9px; border:none; cursor:pointer; transition:.2s; box-shadow:0 3px 8px rgba(0,0,0,0.25);
+    }
+    .agent-btn:hover { transform: translateY(-2px); filter: brightness(1.12); }
+    .agent-btn.add { background: linear-gradient(135deg,#10b981,#047857); }
+    .agent-btn.remove { background: linear-gradient(135deg,#f43f5e,#be123c); }
+    .agent-box-foot { display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11px; color:#cbd5e1; }
+    .agent-refresh { background:transparent; border:1px solid rgba(147,197,253,0.5); color:#bfdbfe; border-radius:6px; padding:2px 8px; font-size:11px; cursor:pointer; }
+    .agent-refresh:hover { background:rgba(147,197,253,0.15); }
+    .agent-name-locked { background:#f1f5f9 !important; color:#334155 !important; font-weight:600; cursor:not-allowed; border:1px dashed #94a3b8 !important; }
+    #empHint { display:block; margin-top:4px; font-size:12px; }
+    @media (max-width: 900px) { .agent-box { position: static; margin: 12px auto 0; } }
+</style>
+<div style="position: relative; text-align: center; margin-top: 20px; margin-bottom: 15px;">
     <img src="gtpl_logo.png" alt="GTPL KCBPL Logo"
          style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
+    <div class="agent-box">
+        <div class="agent-box-title"><span>👥 Agent List</span><span class="agent-count" id="agentCount">--</span></div>
+        <div class="agent-btn-row">
+            <a class="agent-btn add" href="https://docs.google.com/spreadsheets/d/1DwC1_zFBrR8DNHYdYhBH8RCE3I7rgqVMoMuDckEnHS4/edit?usp=sharing" target="_blank" rel="noopener" title="শিটে নতুন এজেন্টের সারি যোগ করুন">➕ Add Agent</a>
+            <a class="agent-btn remove" href="https://docs.google.com/spreadsheets/d/1DwC1_zFBrR8DNHYdYhBH8RCE3I7rgqVMoMuDckEnHS4/edit?usp=sharing" target="_blank" rel="noopener" title="শিট থেকে এজেন্টের সারি মুছুন">➖ Remove Agent</a>
+        </div>
+        <div class="agent-box-foot">
+            <span id="agentStatus">লোড হচ্ছে...</span>
+            <button type="button" class="agent-refresh" onclick="loadAgentList(true)">🔄 Refresh</button>
+        </div>
+    </div>
 </div>
 <div style="text-align:right; margin-bottom:15px;">
     <button onclick="location.href='LOGIN.html'"
@@ -383,11 +418,12 @@ function loadAudio(){
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Associate Emp ID</span><span class="bn-label">প্রতিনিধির এমপ্লয়ী আইডি</span></label>
-                    <input type="text" name="Associate Emp ID" required>
+                    <input type="text" name="Associate Emp ID" id="empIdInput" autocomplete="off" placeholder="Emp ID লিখুন (যেমন SC1311)" required oninput="onEmpIdInput()">
                 </div>
                 <div class="form-group">
                     <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
-                    <input type="text" name="Associate Name" required>
+                    <input type="text" name="Associate Name" id="empNameInput" class="agent-name-locked" readonly tabindex="-1" placeholder="🔒 Emp ID দিলে নাম অটো আসবে" required>
+                    <small id="empHint"></small>
                 </div>
             </div>
 
@@ -1076,7 +1112,149 @@ function loadAudio(){
         if (map[process]) {
             tlSelect.value = map[process];
         }
+        if (typeof refreshAgentList === 'function') refreshAgentList();
     }
+
+
+    // =====================================================================
+    //  Associate Emp ID / Name অটো-ফিল
+    //  ১) নিচের AGENT_CSV_URL-এ Google Sheet-এর "Publish to web (CSV)" লিংক বসালে এজেন্ট
+    //     লিস্ট শিট থেকেই লাইভ আসবে — শিটে এজেন্ট যোগ/বাদ দিলে ফর্ম নিজে আপডেট হবে।
+    //  ২) লিংক ফাঁকা থাকলে বা লোড না হলে নিচের BUILT_IN_AGENTS ব্যবহার হবে।
+    //  শিট ট্যাবের কলাম (সারি ১ হেডার): Process | Employee ID | Agent Name
+    // =====================================================================
+    const AGENT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRsLW-l5y_WDj1640xmFhDLCnVKNIITkhcv_GS_KWWEoF5nleBxSZbJdy680BUn0-oToCxm9BKX8kq3/pub?output=csv';
+
+    const BUILT_IN_AGENTS = {
+        "CATV": [
+            ["SC1311","ARIJIT ROY"],["GK0233","ASGAR ALI"],["GK0049","SHAMBHUNATH MONDAL"],["GK0400","RAJU BISWAS"],
+            ["GK0921","SUBHANKAR SARMA"],["GK0235","SUBIR MAJHI"],["SC1316","AKASH MONDAL"],["SC980","BHASKAR KOLEY"],
+            ["SC981","SHUVAM NANDI"],["SC978","SAMRAT DAS"],["SC1277",""],["GK0406","SHAMPA PANJA"],
+            ["GK1077","URMITA PAUL"],["SC1284",""],["SC1078",""],["SC862","PRIYADARSANI PATRA"],["SC1129","PRIYANKA BAKSHI"]
+        ],
+        "BB TECH SUPPORT": [
+            ["2075","SONIA BARMAN DAS"],["2182","SUJIT PAUL"],["2179","PRIYANKA MONDAL"],["2219","CHIRANJIT NASKAR"],
+            ["2224","SUKANTA GHOSH"],["SC794","MRITYUNJOY PAL"],["SC1134","SHREYA DAS"],["SC1211","LOKNATH ADHIKARI"],
+            ["SC1218","PINKY MONDAL"],["SC1231","DEBOJYOTI KUNDU"],["SC1280","SANJIB DAS"],["SC1259","SOUVIK MONDAL"],
+            ["SC1265","TANMOY MAITY"],["SC1267","DIASHA SAMANTA"]
+        ],
+        "BB RENEWAL": [
+            ["2183","RUMA MONDAL"],["2155","PUJA SARKAR"],["SC960","RIJU DUTTA"],["SC1127","ARPITA DHARA"],
+            ["SC1167",""],["SC1175","ANWESHA CHAKRABORTY"],["SC1203","SOUVIK PAUL"],["SC1253","BEAUTY CHAKRABORTY"],["SC1278",""]
+        ]
+    };
+
+    let AGENTS = BUILT_IN_AGENTS;
+
+    function parseCSVLine(line) {
+        const out = []; let cur = '', q = false;
+        for (let i = 0; i < line.length; i++) {
+            const c = line[i];
+            if (q) {
+                if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+                else if (c === '"') q = false;
+                else cur += c;
+            } else if (c === '"') q = true;
+            else if (c === ',') { out.push(cur); cur = ''; }
+            else cur += c;
+        }
+        out.push(cur);
+        return out.map(function (x) { return x.trim(); });
+    }
+
+    function csvToAgents(text) {
+        const res = {};
+        text.split(/\r?\n/).forEach(function (line, idx) {
+            if (!line.trim()) return;
+            const c = parseCSVLine(line);
+            if (idx === 0 && /process|employee|emp/i.test(c.join(' '))) return;   // হেডার বাদ
+            const proc = (c[0] || '').toUpperCase(), id = (c[1] || '').toUpperCase(), name = (c[2] || '').toUpperCase();
+            if (!proc || !id) return;
+            (res[proc] = res[proc] || []).push([id, name]);
+        });
+        return Object.keys(res).length ? res : null;
+    }
+
+    function setAgentStatus(msg, color) {
+        const el = document.getElementById('agentStatus');
+        if (el) { el.textContent = msg; el.style.color = color || '#cbd5e1'; }
+        const c = document.getElementById('agentCount');
+        if (c) {
+            let n = 0; Object.keys(AGENTS).forEach(function (k) { n += AGENTS[k].length; });
+            c.textContent = n + ' জন';
+        }
+    }
+
+    function loadAgentList(manual) {
+        if (!AGENT_CSV_URL) { refreshAgentList(); setAgentStatus('বিল্ট-ইন লিস্ট'); return; }
+        // আগে সেভ করা লিস্ট (অফলাইন/এরর হলে কাজে লাগবে)
+        try {
+            const cached = localStorage.getItem('agentListCache');
+            if (cached && !manual) AGENTS = JSON.parse(cached);
+        } catch (e) {}
+        refreshAgentList();
+        setAgentStatus('শিট থেকে আনা হচ্ছে...', '#fde68a');
+        fetch(AGENT_CSV_URL + (AGENT_CSV_URL.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+            .then(function (t) {
+                const parsed = csvToAgents(t);
+                if (!parsed) throw new Error('empty');
+                AGENTS = parsed;
+                try { localStorage.setItem('agentListCache', JSON.stringify(parsed)); } catch (e) {}
+                refreshAgentList();
+                setAgentStatus('✔ শিটের লাইভ লিস্ট', '#86efac');
+            })
+            .catch(function () {
+                refreshAgentList();
+                setAgentStatus('⚠ শিট লোড হয়নি (সেভ করা লিস্ট চলছে)', '#fca5a5');
+            });
+    }
+
+    function currentAgents() {
+        const p = (document.getElementById('processSelect').value || '').toUpperCase();
+        return AGENTS[p] || [];
+    }
+
+    // Process বদলালে বা লিস্ট আপডেট হলে আবার মিলিয়ে নেওয়া
+    function refreshAgentList() { onEmpIdInput(); }
+
+    function setEmpHint(msg, color) {
+        const h = document.getElementById('empHint');
+        if (h) { h.textContent = msg || ''; h.style.color = color || '#b91c1c'; }
+    }
+
+    // Emp ID ম্যানুয়ালি লিখতে হবে → মিললে নাম অটো বসবে (নাম এডিট করা যাবে না)
+    function onEmpIdInput() {
+        const idEl = document.getElementById('empIdInput');
+        const nmEl = document.getElementById('empNameInput');
+        if (!idEl || !nmEl) return;
+        const proc = document.getElementById('processSelect').value;
+        const val = idEl.value.trim().toUpperCase();
+        nmEl.value = '';
+        if (!val) { setEmpHint(''); return; }
+        if (!proc) { setEmpHint('⚠ আগে Process সিলেক্ট করুন'); return; }
+        const hit = currentAgents().find(function (a) { return a[0].toUpperCase() === val; });
+        if (!hit) { setEmpHint('⚠ এই Emp ID এই প্রসেসের তালিকায় নেই — শিটে যোগ করে 🔄 Refresh চাপুন'); return; }
+        if (!hit[1]) { setEmpHint('⚠ শিটে এই ID-র নাম ফাঁকা — শিটে নাম লিখে 🔄 Refresh চাপুন'); return; }
+        nmEl.value = hit[1];
+        setEmpHint('✔ নাম পাওয়া গেছে', '#059669');
+    }
+
+    // নাম ফাঁকা থাকলে সাবমিট আটকানো (readonly ফিল্ডে ব্রাউজারের required চেক কাজ করে না)
+    document.addEventListener('DOMContentLoaded', loadAgentList);
+    document.getElementById('auditForm').addEventListener('submit', function (e) {
+        const nm = document.getElementById('empNameInput');
+        if (nm && !nm.value.trim()) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const idEl = document.getElementById('empIdInput');
+            if (idEl) { idEl.focus(); idEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            if (!document.getElementById('empHint').textContent) setEmpHint('⚠ সঠিক Emp ID দিন — নাম অটো না এলে সাবমিট হবে না');
+        }
+    });
+    document.getElementById('auditForm').addEventListener('reset', function () {
+        setTimeout(function () { setEmpHint(''); onEmpIdInput(); }, 0);
+    });
 
     // TL Name সিলেক্টটি লক করা হলো - ইউজার মাউস/কিবোর্ড দিয়ে ম্যানুয়ালি চেঞ্জ করতে পারবে না, শুধু autoSelectTLName() দিয়েই ভ্যালু বসবে
     (function lockTLNameSelect() {
@@ -1448,7 +1626,7 @@ function loadAudio(){
                 // FATAL হলে স্কোর 0 (আগের মতোই) + অডিট ফেইল
                 shown = 0;
                 color = '#ef4444';
-                label = 'Status: Fatal';
+                label = 'Status: Audit Fail (Fatal)';
             } else {
                 shown = totalScore;
                 if (totalScore >= 96) {            // 100 – 96

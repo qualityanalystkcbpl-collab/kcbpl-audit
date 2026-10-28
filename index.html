@@ -788,6 +788,12 @@ function scrollToBottom() {
 
 <!-- 🕒 রাইট সাইড ভাসমান লাইভ ক্লক ও টাইমার ড্যাশবোর্ড স্ট্যাক -->
 <div class="audit-tracker-container">
+    <div class="tracker-box" id="netBox">
+        <div class="tracker-label"><span class="net-dot" id="netDot"></span>Network Status</div>
+        <div id="netState" class="net-state">Checking...</div>
+        <div id="netSpeed" class="net-sub">Speed: -- | Ping: --</div>
+        <div id="netIp" class="net-ip">IP: --</div>
+    </div>
     <div class="tracker-box">
         <div class="tracker-label">Live Clock / লাইভ ঘড়ি</div>
         <div id="liveClock" class="tracker-value">00:00:00 AM</div>
@@ -1007,58 +1013,132 @@ function scrollToBottom() {
 <button id="backToTop" onclick="scrollToTop()" title="Back to Top">
     ⬆ Back to Top
 </button>
-    <!-- Updated Portal Status: Left side with Rainbow Text Animation -->
-<div class="portal-status-container">
-    <div class="status-dot"></div>
-    <span class="portal-text">Portal Is Live</span>
-</div>
+
 <style>
-/* কন্টেইনার পজিশন: উপরে বাম দিকে একদম পারফেক্ট পজিশনে */
-.portal-status-container {
-    position: fixed; /* 'fixed' এর বদলে 'absolute' ব্যবহার করলে এটি আপনার ফর্ম লেআউটের সাথে আরও ভালোভাবে আটকে থাকবে */
-    top: 500px; /* এটি আরেকটু নিচে নামিয়ে দিয়েছে */
-    left: 5px; /* এটি বাম দিকে আরও একটু সরিয়ে এনেছে */
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px 20px;
-    border-radius: 50px;
-    border: 2px solid rgba(15, 118, 110, 0.3);
-    z-index: 9999;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}/* ছোট পালস ডট */
-.status-dot {
-    width: 12px;
-    height: 12px;
-    background-color: #10b981;
-    border-radius: 50%;
-    margin-right: 12px;
-    animation: pulse-green 2s infinite;
-}
+/* ---- Network status box ---- */
+.net-dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981; margin-right:8px; vertical-align:middle; box-shadow:0 0 0 3px rgba(16,185,129,.25); }
+.net-dot.offline { background:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.25); }
+.net-state { font-size:17px; font-weight:800; color:#38bdf8; margin-bottom:6px; }
+.net-state.offline { color:#ef4444; }
+.net-sub { font-size:12px; color:#cbd5e1; font-weight:600; font-variant-numeric:tabular-nums; }
+.net-ip { font-size:11.5px; color:#94a3b8; margin-top:3px; }
 
-/* টেক্সট অ্যানিমেশন ও কালার চেঞ্জ */
-.portal-text {
-    font-weight: 800;
-    font-size: 16px;
-    letter-spacing: 1px;
-    animation: rainbow-text 10s linear infinite;
-}
-
-@keyframes rainbow-text {
-    0% { color: #ef4444; transform: scale(1); } /* Red */
-    16% { color: #f97316; } /* Orange */
-    33% { color: #eab308; } /* Yellow */
-    50% { color: #22c55e; } /* Green */
-    66% { color: #3b82f6; } /* Blue */
-    83% { color: #6366f1; } /* Indigo */
-    100% { color: #a855f7; transform: scale(1.05); } /* Violet */
-}
-
-@keyframes pulse-green {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
+/* ---- Fail count card (left side) ---- */
+#failCard { display:none; position:fixed; left:10px; top:120px; width:240px; max-height:300px; overflow-y:auto; box-sizing:border-box; z-index:9000;
+    background:#fff5f5; border:1px solid #fecaca; border-left:5px solid #ef4444; border-radius:14px; padding:12px 14px; box-shadow:0 8px 22px rgba(239,68,68,.15); }
+#failCard .fc-title { display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:#b91c1c; padding-bottom:8px; margin-bottom:8px; border-bottom:1px dashed #f5a3a3; }
+#failCard .fc-count { background:#ef4444; color:#fff; border-radius:20px; padding:1px 8px; font-size:11px; }
+#failCard .fc-item { margin-bottom:9px; }
+#failCard .fc-item:last-child { margin-bottom:0; }
+#failCard .fc-name { font-size:12.5px; font-weight:700; color:#7f1d1d; }
+#failCard .fc-remark { font-size:11.5px; color:#b45353; margin-top:2px; white-space:pre-wrap; word-break:break-word; }
+#failCard .fc-remark.empty { font-style:italic; opacity:.7; }
 </style>
+
+<div id="failCard"></div>
+
+<script>
+    // ---- FAIL COUNT card: kono score field e 0 select korle bam dike pop up ----
+    function updateFailCard() {
+        const card = document.getElementById('failCard');
+        if (!card) return;
+        const fails = [];
+        document.querySelectorAll('#auditForm select').forEach(sel => {
+            if (sel.value !== '0') return;
+            const group = sel.closest('.form-group');
+            const remarkBox = group ? group.querySelector('textarea.remarks-field') : null;
+            if (!remarkBox) return;                       // shudhu score field (Fatal field noy)
+            const enLabel = group.querySelector('.en-label');
+            let name = enLabel ? enLabel.textContent.trim() : sel.name;
+            name = name.replace(/\s*\((\d+)\)\s*$/, ' ($1 Marks)');
+            fails.push({ name: name, remark: remarkBox.value.trim() });
+        });
+
+        card.innerHTML = '';
+        if (!fails.length) { card.style.display = 'none'; return; }
+
+        const title = document.createElement('div');
+        title.className = 'fc-title';
+        const t = document.createElement('span'); t.textContent = 'Fail count in this call';
+        const c = document.createElement('span'); c.className = 'fc-count'; c.textContent = fails.length;
+        title.appendChild(t); title.appendChild(c);
+        card.appendChild(title);
+
+        fails.forEach((f, i) => {
+            const item = document.createElement('div'); item.className = 'fc-item';
+            const n = document.createElement('div'); n.className = 'fc-name'; n.textContent = (i + 1) + ') ' + f.name;
+            const r = document.createElement('div'); r.className = 'fc-remark' + (f.remark ? '' : ' empty');
+            r.textContent = f.remark || 'No remarks added';
+            item.appendChild(n); item.appendChild(r);
+            card.appendChild(item);
+        });
+        card.style.display = 'block';
+    }
+    document.addEventListener('change', updateFailCard);
+    document.addEventListener('input', updateFailCard);
+    document.getElementById('auditForm').addEventListener('reset', () => setTimeout(updateFailCard, 0));
+    updateFailCard();
+
+    // ---- NETWORK STATUS live monitor ----
+    let publicIp = '--';
+    let measuredPing = null;
+
+    function getConn() { return navigator.connection || navigator.mozConnection || navigator.webkitConnection || null; }
+
+    function updateNetwork() {
+        const online = navigator.onLine;
+        const dot = document.getElementById('netDot');
+        const state = document.getElementById('netState');
+        const sp = document.getElementById('netSpeed');
+        const ipEl = document.getElementById('netIp');
+        if (!dot || !state) return;
+
+        dot.classList.toggle('offline', !online);
+        state.classList.toggle('offline', !online);
+        state.textContent = online ? 'Portal Is Live' : 'Portal Is Offline';
+
+        if (!online) {
+            sp.textContent = 'Speed: -- | Ping: --';
+            ipEl.textContent = 'IP: --';
+            return;
+        }
+        const c = getConn();
+        const speed = (c && typeof c.downlink === 'number') ? c.downlink.toFixed(1) + ' Mbps' : 'N/A';
+        let ping = '--';
+        if (c && typeof c.rtt === 'number') ping = c.rtt + ' ms';
+        else if (measuredPing !== null) ping = measuredPing + ' ms';
+        sp.textContent = 'Speed: ' + speed + ' | Ping: ' + ping;
+        ipEl.textContent = 'IP: ' + publicIp;
+    }
+
+    function measurePing() {
+        const c = getConn();
+        if (!navigator.onLine || (c && typeof c.rtt === 'number')) return;   // browser nijei dey
+        const t0 = performance.now();
+        fetch('https://www.google.com/generate_204', { mode: 'no-cors', cache: 'no-store' })
+            .then(() => { measuredPing = Math.round(performance.now() - t0); updateNetwork(); })
+            .catch(() => {});
+    }
+
+    function fetchPublicIp() {
+        if (!navigator.onLine) return;
+        fetch('https://api.ipify.org?format=json', { cache: 'no-store' })
+            .then(r => r.json())
+            .then(d => { publicIp = d.ip || 'N/A'; updateNetwork(); })
+            .catch(() => { publicIp = 'N/A'; updateNetwork(); });
+    }
+
+    window.addEventListener('online',  () => { updateNetwork(); fetchPublicIp(); measurePing(); });
+    window.addEventListener('offline', updateNetwork);
+    const _c = getConn();
+    if (_c && _c.addEventListener) _c.addEventListener('change', updateNetwork);
+
+    updateNetwork();
+    fetchPublicIp();
+    measurePing();
+    setInterval(updateNetwork, 3000);
+    setInterval(measurePing, 10000);
+    setInterval(fetchPublicIp, 300000);
+</script>
 </body>
 </html>

@@ -1426,7 +1426,6 @@ function loadAudio(){
         ];
         let totalScore = 0;
         let isFatal = false;
-        let hasZero = false;   // কোনো প্যারামিটারে সত্যিকারের 0 (ফেইল) পড়েছে কিনা ("0 (No Error)" ধরা হবে না)
         const allSelects = document.querySelectorAll('select');
         allSelects.forEach(select => {
             const fieldName = select.name;
@@ -1437,36 +1436,37 @@ function loadAudio(){
                 } else {
                     let score = parseFloat(fieldValue) || 0;
                     totalScore += score;
-                    const opt = select.options[select.selectedIndex];
-                    const optText = opt ? opt.textContent : '';
-                    if (fieldValue === '0' && !/no error/i.test(optText)) hasZero = true;
                 }
             }
         });
         const scoreDisplay = document.getElementById('live-score');
         const statusDisplay = document.getElementById('live-status');
+        const scoreBox = document.getElementById('score-counter-box');
         if (scoreDisplay && statusDisplay) {
+            let color, label, shown;
             if (isFatal) {
                 // FATAL হলে স্কোর 0 (আগের মতোই) + অডিট ফেইল
-                scoreDisplay.innerText = "0";
-                scoreDisplay.style.color = "#ef4444";
-                statusDisplay.innerText = "Status: Audit Fail (Fatal)";
-                statusDisplay.style.color = "#ef4444";
-                statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
-            } else if (hasZero) {
-                // কোনো প্যারামিটারে 0 হলে স্কোর আগের মতোই যোগ হবে, কিন্তু অডিট ফেইল দেখাবে
-                scoreDisplay.innerText = totalScore;
-                scoreDisplay.style.color = "#ef4444";
-                statusDisplay.innerText = "Status: Audit Fail";
-                statusDisplay.style.color = "#ef4444";
-                statusDisplay.style.background = "rgba(239, 68, 68, 0.1)";
+                shown = 0;
+                color = '#ef4444';
+                label = 'Status: Audit Fail (Fatal)';
             } else {
-                scoreDisplay.innerText = totalScore;
-                scoreDisplay.style.color = "#10b981";
-                statusDisplay.innerText = "Status: Pass";
-                statusDisplay.style.color = "#10b981";
-                statusDisplay.style.background = "rgba(16, 185, 129, 0.1)";
+                shown = totalScore;
+                if (totalScore >= 96) {            // 100 – 96
+                    color = '#10b981'; label = 'Status: Pass (Best)';      // সবুজ
+                } else if (totalScore >= 90) {     // 95 – 90
+                    color = '#d4af37'; label = 'Status: Pass (Better)';    // গোল্ড
+                } else if (totalScore >= 85) {     // 89 – 85
+                    color = '#facc15'; label = 'Status: Pass (Good)';      // হলুদ
+                } else {                           // 84 ও তার নিচে
+                    color = '#f97316'; label = 'Status: Pass';             // হলুদ-লাল মেশানো (কমলা)
+                }
             }
+            scoreDisplay.innerText = shown;
+            scoreDisplay.style.color = color;
+            statusDisplay.innerText = label;
+            statusDisplay.style.color = color;
+            statusDisplay.style.background = color + '1f';   // হালকা ব্যাকগ্রাউন্ড (~12% অপাসিটি)
+            if (scoreBox) scoreBox.style.borderColor = color + '66';
         }
     }
     

@@ -481,9 +481,11 @@ async function init(){
   buildNav(); route();
   $('#content').innerHTML = loaderHtml('ডাটা আনা হচ্ছে'); ldrStart();
   const c = readBoot(); let shown = false;
-  if (c && c.data){ try{ applyBoot(c, true); shown = true; $('#liveTxt').textContent = 'আপডেট হচ্ছে…'; }catch(e){} }
+  const _d = new Date(), nowKey = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0');
+  /* সেভ করা ক্যাশ শুধু তখনই দেখাবে যখন সেটা চলতি মাসের; নইলে পুরনো মাস ফ্ল্যাশ করবে না */
+  if (c && c.data && monthFromName(c.name) === nowKey){ try{ applyBoot(c, true); shown = true; $('#liveTxt').textContent = 'আপডেট হচ্ছে…'; }catch(e){} }
   try{
-    const b = await run('bootstrap', shown ? c.name : '');
+    const b = await run('bootstrap', '');      // খালি = সার্ভার চলতি মাসের ট্যাব বেছে নেবে
     applyBoot(b, !shown); saveBoot(b); setLive(true);
     loadAuto();
     setTimeout(pollLoop, POLL_MS);

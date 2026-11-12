@@ -1883,8 +1883,11 @@ function scrollToBottom() {
     });
 }
 function scrollToTop() {
+    // Back to Top: একদম পেজের মাথায় না গিয়ে অডিট ফর্মের শুরুতে (ফর্ম টাইটেল) এসে থামবে
+    const form = document.querySelector('.form-container');
+    const top = form ? Math.max(form.getBoundingClientRect().top + window.pageYOffset - 50, 0) : 0;
     window.scrollTo({
-        top: 0,
+        top: top,
         behavior: "smooth"
     });
 }

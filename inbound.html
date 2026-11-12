@@ -453,9 +453,10 @@ function loadAudio(){
                     <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
                     <input type="text" name="Associate Name" id="empNameInput" class="agent-name-locked" readonly tabindex="-1" placeholder="🔒 Emp ID দিলে নাম অটো আসবে" required>
                     <small id="empHint"></small>
-                    <div id="empScore"></div>
                 </div>
             </div>
+
+            <div id="empScore"></div>
 
             <div class="form-inline">
                 <div class="form-group">
@@ -1126,7 +1127,8 @@ function loadAudio(){
 @media (max-width: 1250px) { .stats-box { position: static; margin: 0 auto 12px; width: 100%; max-width: 440px; } }
 </style>
 <style>
-#empScore { margin-top: 6px; font-size: 12px; font-weight: 700; color: #334155; line-height: 1.5; }
+#empScore { width: 100%; margin: -4px 0 16px; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-left: 4px solid #10b981; border-radius: 8px; font-size: 13px; font-weight: 700; color: #334155; line-height: 1.5; white-space: nowrap; overflow-x: auto; }
+@media (max-width: 700px) { #empScore { white-space: normal; } }
 #empScore:empty { display: none; }
 .emp-score-badge { display: inline-block; padding: 1px 11px; border-radius: 20px; color: #fff; font-weight: 800; font-size: 13px; margin: 0 3px; }
 .emp-score-badge.g { background: #10b981; }

@@ -108,7 +108,7 @@
             margin-bottom: 6px;
         }
         .auto-fields-box .form-inline {
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
             gap: 8px 14px;
             margin-bottom: 0;
         }
@@ -458,27 +458,6 @@ function loadAudio(){
 
             <div id="empScore"></div>
 
-            <div class="form-inline">
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
-                    <select name="Language" required>
-                        <option value="">Select Language</option>
-                        <option value="BENGALI">BENGALI</option>
-                        <option value="ENGLISH">ENGLISH</option>
-                        <option value="HINDI">HINDI</option>
-                        <option value="OTHERS">OTHERS</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
-                    <input type="text" name="Call Duration" id="callDurationInput" placeholder="--:--:--" maxlength="8" pattern="^\d{2}:\d{2}:\d{2}$" title="Format: HH:MM:SS" inputmode="numeric" oninput="formatCallDuration(this); this.dataset.manual='1'" onblur="normalizeCallDuration(this)" required>
-                </div>
-                <div class="form-group">
-                    <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
-                    <input type="text" name="Disposition" required>
-                </div>
-            </div>
-
             <div class="form-group full-width-field">
                 <label class="required"><span class="en-label">Call Link</span><span class="bn-label">কল রেকর্ডিং লিঙ্ক</span></label>
                 <input type="text" name="Call Link" id="callLinkInput" oninput="parseCallLink()" placeholder="Paste the full recording link here..." required>
@@ -501,6 +480,11 @@ function loadAudio(){
                         <input type="time" name="Call time" id="callTimeInput" class="locked-field" readonly required>
                     </div>
                     <div class="form-group">
+                        <label class="required"><span class="en-label">Call Duration</span><span class="bn-label">কলের সময়সীমা</span></label>
+                        <input type="text" name="Call Duration" id="callDurationInput" class="locked-field" placeholder="--:--:--" readonly tabindex="-1" required>
+                        <small id="callDurHint" style="display:none; color:#b91c1c; font-size:10px; font-weight:700; margin-top:3px;">⚠ Call Duration আসেনি — Call Link ঠিক আছে কিনা দেখুন</small>
+                    </div>
+                    <div class="form-group">
                         <label class="required"><span class="en-label">Call ID</span><span class="bn-label">কল আইডি</span></label>
                         <input type="text" name="Call ID" id="callIdInput" class="locked-field" readonly required>
                     </div>
@@ -515,6 +499,25 @@ function loadAudio(){
                     </div>
                 </div>
             </div>
+
+            <!-- Language ও Disposition: অটো-ফিল বক্সের নিচে -->
+            <div class="form-inline" style="margin-top: 18px; margin-bottom: 0;">
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Language</span><span class="bn-label">ভাষা</span></label>
+                    <select name="Language" required>
+                        <option value="">Select Language</option>
+                        <option value="BENGALI">BENGALI</option>
+                        <option value="ENGLISH">ENGLISH</option>
+                        <option value="HINDI">HINDI</option>
+                        <option value="OTHERS">OTHERS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required"><span class="en-label">Disposition</span><span class="bn-label">ডিসপোজিশন</span></label>
+                    <input type="text" name="Disposition" required>
+                </div>
+            </div>
+
         </fieldset>
         <!-- Section 2: Core Parameter Checklist -->
         <fieldset>
@@ -1403,6 +1406,26 @@ function loadAudio(){
             if (idEl) { idEl.focus(); idEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
             if (!document.getElementById('empHint').textContent) setEmpHint('⚠ সঠিক Emp ID দিন — নাম অটো না এলে সাবমিট হবে না');
         }
+    });
+    // Call Duration মাস্ট (লক করা ফিল্ডে ব্রাউজারের required চেক কাজ করে না) - ফাঁকা থাকলে সাবমিট আটকানো
+    document.getElementById('auditForm').addEventListener('submit', function (e) {
+        const du = document.getElementById('callDurationInput');
+        const hint = document.getElementById('callDurHint');
+        if (du && !du.value.trim()) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (hint) hint.style.display = 'block';
+            const lk = document.getElementById('callLinkInput');
+            const target = lk || du;
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (lk) lk.focus();
+        } else if (hint) {
+            hint.style.display = 'none';
+        }
+    });
+    // লিংক বদলালে/ডিউরেশন এলে সতর্কবার্তা সরিয়ে দেওয়া
+    document.getElementById('callLinkInput').addEventListener('input', function () {
+        const hint = document.getElementById('callDurHint'); if (hint) hint.style.display = 'none';
     });
     document.getElementById('auditForm').addEventListener('reset', function () {
         setTimeout(function () { setEmpHint(''); onEmpIdInput(); }, 0);

@@ -290,7 +290,7 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     <div class="stats-box" id="statsBox">
         <div class="stat-card sc-today"><div class="sc-title">আজকের অডিট</div><div class="sc-num" id="stToday">--</div><div class="sc-sub" id="stTodaySub">&nbsp;</div></div>
         <div class="stat-card sc-yest"><div class="sc-title">গতকালের অডিট</div><div class="sc-num" id="stYest">--</div><div class="sc-sub">আগের দিন</div></div>
-        <div class="stat-card sc-week"><div class="sc-title">শেষ 7 দিনে মোট</div><div class="sc-num" id="stWeek">--</div><div class="sc-sub" id="stWeekSub">&nbsp;</div></div>
+        <div class="stat-card sc-week"><div class="sc-title" id="stWeekTitle">শেষ 7 দিনে মোট</div><div class="sc-num" id="stWeek">--</div><div class="sc-sub" id="stWeekSub">&nbsp;</div></div>
         <div class="stat-card sc-month"><div class="sc-title">এই মাসে Completed</div><div class="sc-num" id="stMonth">--</div><div class="sc-sub" id="stMonthSub">&nbsp;</div></div>
         <div class="stat-card sc-prog">
             <div class="sc-ring" id="stRing"><span id="stRingTxt"></span></div>
@@ -2020,13 +2020,26 @@ function renderAuditStats(out) {
     if (!dash || !dash.total) { _stMsg('⚠ ডাটা পাওয়া যায়নি'); return; }
     const t = dash.total, n = t.length;
     const today = t[n - 1] || 0, yest = n > 1 ? (t[n - 2] || 0) : 0;
-    const week = t.reduce(function (a, b) { return a + b; }, 0);
+    // শেষ 7 দিন = যেসব দিনে অন্তত 1টা অডিট হয়েছে শুধু সেই দিনগুলো (অডিট 0 হলে সেই দিন বাদ), আর শুধু চলতি মাসের 1 তারিখ থেকে।
+    // মাসের শুরুতে 7 দিন না হলে যতগুলো আছে (যেমন 2 বা 5 দিন) ততগুলোই গোনা হবে।
+    let week = 0, weekDays = 0;
+    (function () {
+        const md = month && month.days, mt = month && month.total;
+        if (!md || !mt) { week = t.reduce(function (a, b) { return a + b; }, 0); weekDays = n; return; }
+        const todayKey = month.today || dash.today || '';
+        const act = [];
+        for (let i = 0; i < md.length; i++) { if ((!todayKey || md[i] <= todayKey) && mt[i] > 0) act.push(mt[i]); }
+        const last = act.slice(-7);
+        weekDays = last.length;
+        week = last.reduce(function (a, b) { return a + b; }, 0);
+    })();
     const diff = today - yest;
     _stSet('stToday', today);
     _stSet('stTodaySub', diff === 0 ? 'গতকালের সমান' : (diff > 0 ? 'গতকালের চেয়ে +' + diff : 'গতকালের চেয়ে ' + diff));
     _stSet('stYest', yest);
     _stSet('stWeek', week);
-    _stSet('stWeekSub', 'গড় ' + (week / n).toFixed(1) + 'টি / দিন');
+    _stSet('stWeekTitle', 'শেষ ' + (weekDays || 0) + ' দিনে মোট');
+    _stSet('stWeekSub', 'গড় ' + (weekDays ? (week / weekDays).toFixed(1) : '0.0') + 'টি / দিন');
 
     // শুধু CATV + BB TECH + BB RENEWAL (Outbound Retention বাদ) - প্রসেস কার্ডের যোগফল
     const msecs = (month && month.sections) || [];

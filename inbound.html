@@ -1136,6 +1136,10 @@ function loadAudio(){
 .emp-score-badge.b { background: #0ea5e9; }
 .emp-score-badge.o { background: #f59e0b; }
 .emp-score-n { font-weight: 500; font-size: 9.5px; color: #64748b; }
+.emp-cnt { font-weight: 800; font-size: 11px; }
+.emp-cnt.cr { color: #dc2626; }
+.emp-cnt.cb { color: #1e3a8a; }
+.emp-cnt.cg { color: #15803d; }
 </style>
 <div id="flowerRain"></div>
 <div id="submitFlash">
@@ -1346,7 +1350,9 @@ function loadAudio(){
         if (!hit) { setEmpScore('📊 এই মাসে এই এজেন্টের এখনো কোনো অডিট স্কোর নেই'); return; }
         const a = hit.a;
         const cls = a >= 90 ? 'g' : (a >= 80 ? 'b' : 'o');
-        setEmpScore('📊 এই এজেন্টের আগের করা অডিট পর্যন্ত Average Score ছিল <span class="emp-score-badge ' + cls + '">' + a + '</span><span class="emp-score-n">(' + hit.n + 'টি অডিট)</span>');
+        // অডিট সংখ্যার রং (মাসের Target 16): 1-8 লাল, 9-14 গাঢ় নীল, 15+ গাঢ় সবুজ
+        const ccls = hit.n >= 15 ? 'cg' : (hit.n >= 9 ? 'cb' : 'cr');
+        setEmpScore('📊 এই এজেন্টের আগের করা অডিট পর্যন্ত Average Score ছিল <span class="emp-score-badge ' + cls + '">' + a + '</span><span class="emp-score-n">(<b class="emp-cnt ' + ccls + '">' + hit.n + '</b>টি অডিট)</span>');
     }
 
     // Emp ID ম্যানুয়ালি লিখতে হবে → মিললে নাম অটো বসবে (নাম এডিট করা যাবে না)

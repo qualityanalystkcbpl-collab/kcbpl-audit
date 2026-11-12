@@ -2028,15 +2028,20 @@ function renderAuditStats(out) {
     _stSet('stWeek', week);
     _stSet('stWeekSub', 'গড় ' + (week / n).toFixed(1) + 'টি / দিন');
 
-    const done = month && month.total ? month.total.reduce(function (a, b) { return a + b; }, 0) : 0;
-    let target = 0, agents = 0, met = 0;
-    ((out.data && out.data.sections) || []).forEach(function (sec) {
+    // শুধু CATV + BB TECH + BB RENEWAL (Outbound Retention বাদ) - প্রসেস কার্ডের যোগফল
+    const msecs = (month && month.sections) || [];
+    let done = 0, target = 0, remain = 0, extra = 0, agents = 0, met = 0;
+    ((out.data && out.data.sections) || []).forEach(function (sec, i) {
+        if (!sec.agents.length || /outbound|retention/i.test(sec.name)) return;
+        let t = 0;
         sec.agents.forEach(function (a) {
-            agents++; target += a.target || 0;
+            agents++; t += a.target || 0;
             if (a.ticks.filter(Boolean).length >= (a.target || 16)) met++;
         });
+        const d = (msecs[i] && msecs[i].counts) ? msecs[i].counts.reduce(function (x, y) { return x + y; }, 0) : 0;
+        target += t; done += d;
+        remain += Math.max(t - d, 0); extra += Math.max(d - t, 0);
     });
-    const remain = Math.max(target - done, 0), extra = Math.max(done - target, 0);
     const pct = target > 0 ? Math.min(done / target * 100, 100) : 0;
     _stSet('stMonth', done);
     _stSet('stMonthSub', 'Target ' + target + ' · বাকি ' + remain + ' · Extra ' + extra);

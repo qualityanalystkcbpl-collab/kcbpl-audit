@@ -283,9 +283,21 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     #empHint { display:block; margin-top:4px; font-size:12px; }
     @media (max-width: 900px) { .agent-box { position: static; margin: 12px auto 0; } }
 </style>
-<div style="position: relative; text-align: center; margin-top: 20px; margin-bottom: 15px;">
+<div style="position: relative; text-align: center; margin-top: 20px; margin-bottom: 15px; min-height: 178px;">
     <img src="gtpl_logo.png" alt="GTPL KCBPL Logo"
          style="max-width: 400px; max-height: 150px; width: 100%; height: auto; object-fit: contain;">
+    <!-- 📊 লাইভ অডিট স্ট্যাটস (আজ / গতকাল / শেষ 7 দিন / এই মাস / অগ্রগতি) - Tracker Apps Script থেকে আসে -->
+    <div class="stats-box" id="statsBox">
+        <div class="stat-card sc-today"><div class="sc-title">আজকের অডিট</div><div class="sc-num" id="stToday">--</div><div class="sc-sub" id="stTodaySub">&nbsp;</div></div>
+        <div class="stat-card sc-yest"><div class="sc-title">গতকালের অডিট</div><div class="sc-num" id="stYest">--</div><div class="sc-sub">আগের দিন</div></div>
+        <div class="stat-card sc-week"><div class="sc-title">শেষ 7 দিনে মোট</div><div class="sc-num" id="stWeek">--</div><div class="sc-sub" id="stWeekSub">&nbsp;</div></div>
+        <div class="stat-card sc-month"><div class="sc-title">এই মাসে Completed</div><div class="sc-num" id="stMonth">--</div><div class="sc-sub" id="stMonthSub">&nbsp;</div></div>
+        <div class="stat-card sc-prog">
+            <div class="sc-ring" id="stRing"><span id="stRingTxt"></span></div>
+            <div class="sc-prog-txt"><div class="sc-prog-title">মাসের অগ্রগতি</div><div class="sc-prog-pct" id="stPct">--%</div><div class="sc-sub" id="stPctSub" style="color:#64748b">&nbsp;</div></div>
+        </div>
+        <div class="stats-msg" id="statsMsg"></div>
+    </div>
     <div class="agent-box">
         <div class="agent-box-title"><span>👥 Agent List</span><span class="agent-count" id="agentCount">--</span></div>
         <div class="agent-btn-row">
@@ -298,6 +310,23 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
         </div>
     </div>
 </div>
+<!-- 📋 প্রসেস অনুযায়ী Target / Completed / Remaining (CATV, BB TECH, BB RENEWAL ...) -->
+<div class="sec-row" id="secRow"></div>
+<style>
+.sec-row { max-width: 850px; margin: 0 auto 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.sec-row:empty { display: none; }
+.sec-card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.10); background: rgba(255,255,255,0.55); }
+.sec-head { display: flex; align-items: center; gap: 9px; padding: 8px 12px; color: #fff; }
+.sec-ico { font-size: 22px; line-height: 1; }
+.sec-name { font-size: 14px; font-weight: 800; letter-spacing: .3px; line-height: 1.15; }
+.sec-meta { font-size: 9.5px; font-weight: 600; opacity: .92; line-height: 1.25; }
+.sec-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 7px; }
+.sec-mini { background: #fff; border-radius: 8px; padding: 5px 8px 4px; border-left: 3px solid #6366f1; }
+.sec-mini.c { border-left-color: #14b8a6; }
+.sec-mini.r { border-left-color: #fb7185; }
+.sec-mini-l { font-size: 9.5px; font-weight: 700; color: #64748b; }
+.sec-mini-n { font-size: 19px; font-weight: 800; color: #1e1b4b; line-height: 1.15; }
+</style>
 <div style="text-align:right; margin-bottom:15px;">
     <button onclick="location.href='LOGIN.html'"
     style="
@@ -1029,6 +1058,72 @@ function loadAudio(){
 </div>
 
 <!-- অডিট সাবমিট সাকসেস ফ্ল্যাশ মেসেজ (১০ সেকেন্ড দেখাবে + OK বাটন, সাথে ২ সেকেন্ডের ফুল ঝরে পড়া অ্যানিমেশন) -->
+<!-- ❓ Pass/No Error সিলেক্ট করলে Remarks লিখবেন কিনা জিজ্ঞেস করার পপ-আপ -->
+<div id="passRemarksOverlay">
+    <div id="passRemarksBox">
+        <div id="passRemarksParam"></div>
+        <div id="passRemarksMsg">আপনি কি Remarks লিখতে চান?<br><span>কারণ এই প্যারামিটারে এজেন্ট পাস করেছে।</span></div>
+        <div id="passRemarksMsgEn">Do you want to write remarks? The agent has passed this parameter.</div>
+        <div class="pass-remarks-btns">
+            <button type="button" id="passRemarksYes">YES</button>
+            <button type="button" id="passRemarksNo">NO</button>
+        </div>
+    </div>
+</div>
+<style>
+#passRemarksOverlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    z-index: 100000;
+    align-items: center; justify-content: center;
+}
+#passRemarksOverlay.show { display: flex; }
+#passRemarksBox {
+    background: #fff; width: 92%; max-width: 420px;
+    border-radius: 14px; padding: 24px 26px 22px; text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+    border-top: 5px solid #10b981;
+}
+#passRemarksParam { font-size: 12px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+#passRemarksMsg { font-size: 17px; font-weight: 700; color: #1a365d; line-height: 1.5; }
+#passRemarksMsg span { font-size: 14px; font-weight: 600; color: #6b7280; }
+#passRemarksMsgEn { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+.pass-remarks-btns { display: flex; gap: 12px; margin-top: 20px; }
+.pass-remarks-btns button { flex: 1; border: none; border-radius: 8px; padding: 11px 0; font-size: 15px; font-weight: 800; cursor: pointer; color: #fff; transition: .2s; }
+.pass-remarks-btns button:hover { transform: translateY(-2px); filter: brightness(1.1); }
+#passRemarksYes { background: linear-gradient(135deg,#10b981,#047857); }
+#passRemarksNo { background: linear-gradient(135deg,#64748b,#334155); }
+</style>
+
+<style>
+/* ─── লাইভ অডিট স্ট্যাটস কার্ড (লোগোর বাম পাশে) ─── */
+.stats-box {
+    position: absolute; top: 0; left: 0; width: 440px; text-align: left;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.stat-card {
+    border-radius: 12px; padding: 9px 11px 8px; color: #fff; position: relative; overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); min-height: 78px;
+}
+.stat-card::after { content:""; position:absolute; right:-18px; top:-18px; width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,0.18); }
+.sc-today { background: linear-gradient(135deg,#ff6b8b,#ffa63d); }
+.sc-yest  { background: linear-gradient(135deg,#6a5cff,#35b0f5); }
+.sc-week  { background: linear-gradient(135deg,#10b981,#06a3c4); }
+.sc-month { background: linear-gradient(135deg,#ff7a45,#e91e63); }
+.sc-title { font-size: 11px; font-weight: 700; line-height: 1.2; }
+.sc-num { font-size: 28px; font-weight: 800; line-height: 1.15; margin-top: 2px; }
+.sc-sub { font-size: 9.5px; font-weight: 600; opacity: .92; line-height: 1.25; }
+.sc-prog { grid-column: span 2; background: #fff; color: #1e293b; display: flex; align-items: center; gap: 12px; border: 1px solid #e2e8f0; }
+.sc-prog::after { display: none; }
+.sc-ring { width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0; position: relative; background: conic-gradient(#10b981 0%, #e5e7eb 0); }
+.sc-ring::before { content:""; position:absolute; inset:7px; background:#fff; border-radius:50%; }
+.sc-prog-title { font-size: 11px; font-weight: 700; color: #475569; }
+.sc-prog-pct { font-size: 24px; font-weight: 800; color: #1e1b4b; line-height: 1.15; }
+.stats-msg { grid-column: 1 / -1; font-size: 10px; font-weight: 700; color: #b91c1c; }
+.stats-msg:empty { display: none; }
+@media (max-width: 1250px) { .stats-box { position: static; margin: 0 auto 12px; width: 100%; max-width: 440px; } }
+</style>
 <div id="flowerRain"></div>
 <div id="submitFlash">
     <div id="submitFlashText">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>
@@ -1517,6 +1612,80 @@ function loadAudio(){
     // পেজ খোলার সাথে সাথেই ডিফল্ট (সর্বোচ্চ) নম্বর অনুযায়ী স্কোর ১০০ দেখানো
     calculateLiveScore();
     document.addEventListener('input', calculateLiveScore);
+
+    // ❓ Section 2 তে কোনো প্যারামিটার Pass (মার্ক দেওয়া) বা "0 (No Error)" থাকা অবস্থায় তার Remarks বক্স/ড্রপডাউনে লিখতে গেলেই পপ-আপ আসবে:
+    //    "আপনি কি Remarks লিখতে চান? কারণ এই প্যারামিটারে এজেন্ট পাস করেছে।"  YES / NO
+    //    YES -> লেখার অনুমতি (ওই প্যারামিটার আবার চেঞ্জ না করা পর্যন্ত আর জিজ্ঞেস করবে না) | NO -> পপ-আপ বন্ধ, লেখা যাবে না
+    //    ফেইল (0 / FATAL) হলে পপ-আপ আসবে না, আগের মতোই Remarks মাস্ট
+    (function passRemarksPopup() {
+        const overlay = document.getElementById('passRemarksOverlay');
+        const paramEl = document.getElementById('passRemarksParam');
+        const yesBtn = document.getElementById('passRemarksYes');
+        const noBtn = document.getElementById('passRemarksNo');
+        const evalGrid = document.querySelector('.eval-grid');
+        if (!overlay || !evalGrid) return;
+
+        let pending = null; // { group, el }
+
+        function isPassState(select) {
+            if (!select || !select.value || select.value === 'FATAL') return false;
+            const opt = select.options[select.selectedIndex];
+            const isNoError = /no error/i.test(opt ? opt.textContent : '');
+            return !(select.value === '0' && !isNoError);
+        }
+
+        function closePopup() { overlay.classList.remove('show'); pending = null; }
+
+        // Remarks বক্স বা Predefined Remark ড্রপডাউনে ঢুকতে গেলে চেক
+        function guard(e) {
+            const el = e.target;
+            if (!el || !el.closest) return;
+            const isRemarksField = el.tagName === 'TEXTAREA' || (el.tagName === 'SELECT' && el.classList.contains('remarks-select'));
+            if (!isRemarksField) return;
+            const group = el.closest('.form-group');
+            if (!group) return;
+            const mainSelect = group.querySelector('select:not(.remarks-select)');
+            if (!isPassState(mainSelect)) return;          // ফেইল হলে সরাসরি লেখা যাবে
+            if (group.dataset.passConfirmed === '1') return; // আগেই YES দেওয়া হয়েছে
+            if (overlay.classList.contains('show')) { e.preventDefault(); return; }
+
+            e.preventDefault();
+            if (e.type === 'focusin') el.blur();
+            const labelEl = group.querySelector('.en-label');
+            paramEl.textContent = labelEl ? labelEl.textContent : mainSelect.name;
+            pending = { group: group, el: el };
+            overlay.classList.add('show');
+        }
+        evalGrid.addEventListener('mousedown', guard, true);
+        evalGrid.addEventListener('focusin', guard, true);
+
+        // মার্ক/স্কোর বদলালে আবার নতুন করে জিজ্ঞেস করবে
+        evalGrid.addEventListener('change', function (e) {
+            const t = e.target;
+            if (t && t.tagName === 'SELECT' && !t.classList.contains('remarks-select')) {
+                const g = t.closest('.form-group');
+                if (g) delete g.dataset.passConfirmed;
+            }
+        });
+        document.getElementById('auditForm').addEventListener('reset', function () {
+            evalGrid.querySelectorAll('.form-group').forEach(function (g) { delete g.dataset.passConfirmed; });
+        });
+
+        yesBtn.addEventListener('click', function () {
+            const p = pending;
+            closePopup();
+            if (p) {
+                p.group.dataset.passConfirmed = '1';
+                const ta = p.group.querySelector('textarea');
+                const target = ta || p.el;
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(function () { target.focus(); }, 250);
+            }
+        });
+        noBtn.addEventListener('click', closePopup);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) closePopup(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('show')) closePopup(); });
+    })();
     
     // ⬅️ Section 2 তে যেসব প্যারামিটারে "0" সিলেক্ট করা আছে, সেগুলো লাইভ লিস্ট করে বাম দিকের বক্সে দেখানো হয় (রি-চেকের সুবিধার জন্য, স্কোরিং লজিকে কোনো প্রভাব নেই)
     function escapeHTML(str) {
@@ -1732,6 +1901,8 @@ function showSubmitFlash() {
     flash.style.display = 'block';
     flash.classList.add('show');
     spawnFlowerRain();
+    // অডিট সেভ হওয়ার একটু পরে স্ট্যাটস রিফ্রেশ (শিটে টিক বসার সময় দিয়ে)
+    if (typeof refreshAuditStats === 'function') { setTimeout(refreshAuditStats, 6000); setTimeout(refreshAuditStats, 20000); }
     // ১০ সেকেন্ড পর অটো বন্ধ হবে (মাঝে OK চাপলে আগেই বন্ধ হয়ে যাবে)
     submitFlashTimer = setTimeout(closeSubmitFlash, 10000);
 }
@@ -1771,6 +1942,104 @@ function spawnFlowerRain() {
 }
 </script>
 </div>
+<script>
+/* =====================================================================
+   📊 লাইভ অডিট স্ট্যাটস
+   নিচের TRACKER_API_URL-এ Tracker-এর Apps Script Web App URL (…/exec) বসান।
+   (এটা অডিট ফর্মের action URL নয়, Code.gs (QA AUDIT TRACKER) যেখানে Deploy করেছেন সেই URL)
+   ===================================================================== */
+const TRACKER_API_URL = 'https://script.google.com/macros/s/AKfycbzVZ2A42rIxh5UgpBPuHSlb2tJnwyp2eunQc3kcNeZ495bqUJTeMwT8ir6cMA_3HBHESw/exec';          // ← এখানে Tracker Web App URL বসান
+const TRACKER_API_KEY = 'BARSHA';    // Code.gs-এর API_KEY
+const STATS_REFRESH_MS = 60000;      // প্রতি 1 মিনিটে রিফ্রেশ
+
+function _stSet(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+function _stMsg(m) { _stSet('statsMsg', m || ''); }
+
+function renderAuditStats(out) {
+    const dash = out.dash, month = out.month;
+    if (!dash || !dash.total) { _stMsg('⚠ ডাটা পাওয়া যায়নি'); return; }
+    const t = dash.total, n = t.length;
+    const today = t[n - 1] || 0, yest = n > 1 ? (t[n - 2] || 0) : 0;
+    const week = t.reduce(function (a, b) { return a + b; }, 0);
+    const diff = today - yest;
+    _stSet('stToday', today);
+    _stSet('stTodaySub', diff === 0 ? 'গতকালের সমান' : (diff > 0 ? 'গতকালের চেয়ে +' + diff : 'গতকালের চেয়ে ' + diff));
+    _stSet('stYest', yest);
+    _stSet('stWeek', week);
+    _stSet('stWeekSub', 'গড় ' + (week / n).toFixed(1) + 'টি / দিন');
+
+    const done = month && month.total ? month.total.reduce(function (a, b) { return a + b; }, 0) : 0;
+    let target = 0, agents = 0, met = 0;
+    ((out.data && out.data.sections) || []).forEach(function (sec) {
+        sec.agents.forEach(function (a) {
+            agents++; target += a.target || 0;
+            if (a.ticks.filter(Boolean).length >= (a.target || 16)) met++;
+        });
+    });
+    const remain = Math.max(target - done, 0), extra = Math.max(done - target, 0);
+    const pct = target > 0 ? Math.min(done / target * 100, 100) : 0;
+    _stSet('stMonth', done);
+    _stSet('stMonthSub', 'Target ' + target + ' · বাকি ' + remain + ' · Extra ' + extra);
+    _stSet('stPct', pct.toFixed(1) + '%');
+    _stSet('stPctSub', met + '/' + agents + ' জন Target পূর্ণ');
+    const ring = document.getElementById('stRing');
+    if (ring) ring.style.background = 'conic-gradient(#10b981 0%, #6366f1 ' + pct + '%, #e5e7eb ' + pct + '%)';
+    renderSecCards(out);
+    _stMsg('');
+}
+
+// প্রসেস-ওয়াইজ ছোট কার্ড: Total Target / Completed / Remaining
+function renderSecCards(out) {
+    const box = document.getElementById('secRow');
+    if (!box || !out.data || !out.data.sections) return;
+    const msecs = (out.month && out.month.sections) || [];
+    const THEMES = [
+        ['📺', 'linear-gradient(135deg,#7c3aed,#3b82f6)', /catv/i],
+        ['🛠️', 'linear-gradient(135deg,#06b6d4,#10b981)', /tech/i],
+        ['🔄', 'linear-gradient(135deg,#ff4d94,#ff7a59)', /renew/i]
+    ];
+    const FALLBACK = ['📞', 'linear-gradient(135deg,#64748b,#334155)'];
+    const esc = function (x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+    let html = '';
+    out.data.sections.forEach(function (sec, i) {
+        if (!sec.agents.length) return;
+        let target = 0, ticks = 0;
+        sec.agents.forEach(function (a) { target += a.target || 0; ticks += a.ticks.filter(Boolean).length; });
+        const manual = /outbound|retention/i.test(sec.name);
+        let done = manual ? ticks : ((msecs[i] && msecs[i].counts) ? msecs[i].counts.reduce(function (x, y) { return x + y; }, 0) : ticks);
+        const remain = Math.max(target - done, 0);
+        let th = FALLBACK;
+        for (let k = 0; k < THEMES.length; k++) { if (THEMES[k][2].test(sec.name)) { th = THEMES[k]; break; } }
+        html += '<div class="sec-card"><div class="sec-head" style="background:' + th[1] + '">' +
+            '<span class="sec-ico">' + th[0] + '</span><div><div class="sec-name">' + esc(sec.name) + '</div>' +
+            '<div class="sec-meta">' + sec.agents.length + ' জন এজেন্ট · ' + esc(out.name || '') + '</div></div></div>' +
+            '<div class="sec-stats">' +
+            '<div class="sec-mini"><div class="sec-mini-l">Total Target</div><div class="sec-mini-n">' + target + '</div></div>' +
+            '<div class="sec-mini c"><div class="sec-mini-l">Completed</div><div class="sec-mini-n">' + done + '</div></div>' +
+            '<div class="sec-mini r"><div class="sec-mini-l">Remaining</div><div class="sec-mini-n">' + remain + '</div></div>' +
+            '</div></div>';
+    });
+    box.innerHTML = html;
+}
+
+function refreshAuditStats() {
+    if (!TRACKER_API_URL) { _stMsg('⚠ TRACKER_API_URL বসানো হয়নি'); return; }
+    if (!navigator.onLine) return;
+    fetch(TRACKER_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // preflight এড়াতে
+        body: JSON.stringify({ key: TRACKER_API_KEY, fn: 'bootstrap', args: [''] })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+        if (!res.ok) throw new Error(res.error || 'error');
+        renderAuditStats(res.data);
+    })
+    .catch(function () { _stMsg('⚠ স্ট্যাটস লোড হয়নি'); });
+}
+document.addEventListener('DOMContentLoaded', refreshAuditStats);
+setInterval(refreshAuditStats, STATS_REFRESH_MS);
+</script>
 <button id="goToBottom" onclick="scrollToBottom()">
     ⬇ Go to Bottom
 </button>

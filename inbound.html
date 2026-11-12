@@ -1141,6 +1141,23 @@ function loadAudio(){
 .emp-cnt.cb { color: #1e3a8a; }
 .emp-cnt.cg { color: #15803d; }
 </style>
+<style>
+/* 🪷 সাবমিট বাটনের ভেতরে হালকা আলপনা অ্যানিমেশন (শুধু CSS, হালকা) */
+.submit-btn { position: relative; overflow: hidden; isolation: isolate; }
+.submit-btn::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='44' viewBox='0 0 64 44'><g fill='none' stroke='white' stroke-width='1' stroke-linecap='round'><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(0 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(45 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(90 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(135 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(180 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(225 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(270 32 22)'/><ellipse cx='32' cy='12' rx='2.6' ry='6' transform='rotate(315 32 22)'/><circle cx='32' cy='22' r='3'/><circle cx='32' cy='22' r='9' stroke-dasharray='1.5 3'/><path d='M0 22 Q8 14 16 22 Q8 30 0 22 M64 22 Q56 14 48 22 Q56 30 64 22'/><circle cx='0' cy='0' r='2'/><circle cx='64' cy='0' r='2'/><circle cx='0' cy='44' r='2'/><circle cx='64' cy='44' r='2'/><path d='M32 0 l3 3 l-3 3 l-3 -3z M32 38 l3 3 l-3 3 l-3 -3z'/></g></svg>");
+    background-size: 64px 44px; background-repeat: repeat-x; background-position: 0 center;
+    opacity: .30;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    animation: alponaDrift 9s linear infinite;
+}
+.submit-btn:hover::before { opacity: .42; animation-duration: 5s; }
+.submit-btn:disabled::before { opacity: .12; animation-play-state: paused; }
+@keyframes alponaDrift { from { background-position: 0 center; } to { background-position: 64px center; } }
+@media (prefers-reduced-motion: reduce) { .submit-btn::before { animation: none; } }
+</style>
 <div id="flowerRain"></div>
 <div id="submitFlash">
     <div id="submitFlashText">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>

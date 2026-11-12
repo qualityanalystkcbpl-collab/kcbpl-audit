@@ -1347,12 +1347,13 @@ function loadAudio(){
         const id = idEl.value.trim().toUpperCase();
         const nm = nmEl.value.trim().toUpperCase().replace(/\s+/g, ' ');
         const hit = (sc.byId && sc.byId[id]) || (sc.byName && sc.byName[nm]);
-        if (!hit) { setEmpScore('📊 এই মাসে এই এজেন্টের এখনো কোনো অডিট স্কোর নেই'); return; }
+        if (!hit) { setEmpScore('📊 ' + (window._auditMonthLabel ? window._auditMonthLabel + ' · ' : '') + 'এই মাসে এই এজেন্টের এখনো কোনো অডিট স্কোর নেই'); return; }
         const a = hit.a;
+        const mlabel = window._auditMonthLabel ? '<span style="color:#6366f1;font-weight:800">' + window._auditMonthLabel + '</span> · ' : '';
         const cls = a >= 90 ? 'g' : (a >= 80 ? 'b' : 'o');
         // অডিট সংখ্যার রং (মাসের Target 16): 1-8 লাল, 9-14 গাঢ় নীল, 15+ গাঢ় সবুজ
         const ccls = hit.n >= 15 ? 'cg' : (hit.n >= 9 ? 'cb' : 'cr');
-        setEmpScore('📊 এই এজেন্টের আগের করা অডিট পর্যন্ত Average Score ছিল <span class="emp-score-badge ' + cls + '">' + a + '</span><span class="emp-score-n">(<b class="emp-cnt ' + ccls + '">' + hit.n + '</b>টি অডিট)</span>');
+        setEmpScore('📊 ' + mlabel + 'এই এজেন্টের আগের করা অডিট পর্যন্ত Average Score ছিল <span class="emp-score-badge ' + cls + '">' + a + '</span><span class="emp-score-n">(<b class="emp-cnt ' + ccls + '">' + hit.n + '</b>টি অডিট)</span>');
     }
 
     // Emp ID ম্যানুয়ালি লিখতে হবে → মিললে নাম অটো বসবে (নাম এডিট করা যাবে না)
@@ -2027,7 +2028,7 @@ function renderAuditStats(out) {
     const ring = document.getElementById('stRing');
     if (ring) ring.style.background = 'conic-gradient(#10b981 0%, #6366f1 ' + pct + '%, #e5e7eb ' + pct + '%)';
     renderSecCards(out);
-    if (out.scores) { window._auditScores = out.scores; if (typeof updateEmpScore === 'function') updateEmpScore(); }
+    if (out.scores) { window._auditScores = out.scores; window._auditMonthLabel = (function (n) { const m = String(n || '').match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s*(20\d{2})/i); return m ? (m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase() + ' ' + m[2]) : String(n || ''); })(out.name); if (typeof updateEmpScore === 'function') updateEmpScore(); }
     _stMsg('');
 }
 

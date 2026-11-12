@@ -453,6 +453,7 @@ function loadAudio(){
                     <label class="required"><span class="en-label">Associate Name</span><span class="bn-label">প্রতিনিধির নাম</span></label>
                     <input type="text" name="Associate Name" id="empNameInput" class="agent-name-locked" readonly tabindex="-1" placeholder="🔒 Emp ID দিলে নাম অটো আসবে" required>
                     <small id="empHint"></small>
+                    <div id="empScore"></div>
                 </div>
             </div>
 
@@ -1124,6 +1125,15 @@ function loadAudio(){
 .stats-msg:empty { display: none; }
 @media (max-width: 1250px) { .stats-box { position: static; margin: 0 auto 12px; width: 100%; max-width: 440px; } }
 </style>
+<style>
+#empScore { margin-top: 6px; font-size: 12px; font-weight: 700; color: #334155; line-height: 1.5; }
+#empScore:empty { display: none; }
+.emp-score-badge { display: inline-block; padding: 1px 11px; border-radius: 20px; color: #fff; font-weight: 800; font-size: 13px; margin: 0 3px; }
+.emp-score-badge.g { background: #10b981; }
+.emp-score-badge.b { background: #0ea5e9; }
+.emp-score-badge.o { background: #f59e0b; }
+.emp-score-n { font-weight: 600; color: #64748b; }
+</style>
 <div id="flowerRain"></div>
 <div id="submitFlash">
     <div id="submitFlashText">✅ Audit Submitted Successfully! / অডিট সফলভাবে জমা হয়েছে!</div>
@@ -1318,6 +1328,24 @@ function loadAudio(){
         if (h) { h.textContent = msg || ''; h.style.color = color || '#b91c1c'; }
     }
 
+    // 📊 Emp ID দিলে ওই এজেন্টের এখন পর্যন্ত (চলতি মাসের) Average Score দেখানো - ডাটা Tracker-এর getScores থেকে আসে
+    window._auditScores = null;
+    function setEmpScore(html) { const el = document.getElementById('empScore'); if (el) el.innerHTML = html || ''; }
+    function updateEmpScore() {
+        const idEl = document.getElementById('empIdInput');
+        const nmEl = document.getElementById('empNameInput');
+        if (!idEl || !nmEl || !nmEl.value.trim()) { setEmpScore(''); return; }
+        const sc = window._auditScores;
+        if (!sc) { setEmpScore(typeof TRACKER_API_URL !== 'undefined' && TRACKER_API_URL ? '⏳ স্কোর লোড হচ্ছে...' : ''); return; }
+        const id = idEl.value.trim().toUpperCase();
+        const nm = nmEl.value.trim().toUpperCase().replace(/\s+/g, ' ');
+        const hit = (sc.byId && sc.byId[id]) || (sc.byName && sc.byName[nm]);
+        if (!hit) { setEmpScore('📊 এই মাসে এই এজেন্টের এখনো কোনো অডিট স্কোর নেই'); return; }
+        const a = hit.a;
+        const cls = a >= 90 ? 'g' : (a >= 80 ? 'b' : 'o');
+        setEmpScore('📊 এই এজেন্টের আগের করা অডিট পর্যন্ত Average Score ছিল <span class="emp-score-badge ' + cls + '">' + a + '</span><span class="emp-score-n">(' + hit.n + 'টি অডিট)</span>');
+    }
+
     // Emp ID ম্যানুয়ালি লিখতে হবে → মিললে নাম অটো বসবে (নাম এডিট করা যাবে না)
     function onEmpIdInput() {
         const idEl = document.getElementById('empIdInput');
@@ -1326,6 +1354,7 @@ function loadAudio(){
         const proc = document.getElementById('processSelect').value;
         const val = idEl.value.trim().toUpperCase();
         nmEl.value = '';
+        setEmpScore('');
         if (!val) { setEmpHint(''); return; }
         if (!proc) { setEmpHint('⚠ আগে Process সিলেক্ট করুন'); return; }
         const hit = currentAgents().find(function (a) { return a[0].toUpperCase() === val; });
@@ -1333,6 +1362,7 @@ function loadAudio(){
         if (!hit[1]) { setEmpHint('⚠ শিটে এই ID-র নাম ফাঁকা — শিটে নাম লিখে 🔄 Refresh চাপুন'); return; }
         nmEl.value = hit[1];
         setEmpHint('✔ নাম পাওয়া গেছে', '#059669');
+        updateEmpScore();
     }
 
     // নাম ফাঁকা থাকলে সাবমিট আটকানো (readonly ফিল্ডে ব্রাউজারের required চেক কাজ করে না)
@@ -1988,6 +2018,7 @@ function renderAuditStats(out) {
     const ring = document.getElementById('stRing');
     if (ring) ring.style.background = 'conic-gradient(#10b981 0%, #6366f1 ' + pct + '%, #e5e7eb ' + pct + '%)';
     renderSecCards(out);
+    if (out.scores) { window._auditScores = out.scores; if (typeof updateEmpScore === 'function') updateEmpScore(); }
     _stMsg('');
 }
 

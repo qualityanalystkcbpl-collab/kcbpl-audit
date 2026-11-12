@@ -2003,6 +2003,7 @@ function renderSecCards(out) {
     let html = '';
     out.data.sections.forEach(function (sec, i) {
         if (!sec.agents.length) return;
+        if (/outbound|retention/i.test(sec.name)) return;   // Outbound Retention কার্ড দেখানো হবে না
         let target = 0, ticks = 0;
         sec.agents.forEach(function (a) { target += a.target || 0; ticks += a.ticks.filter(Boolean).length; });
         const manual = /outbound|retention/i.test(sec.name);

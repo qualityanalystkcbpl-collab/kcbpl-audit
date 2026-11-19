@@ -2651,15 +2651,17 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 
 /* ===== Live audit banner (Process + Emp ID সিলেক্ট হলেই দেখা যাবে, নিচে নামলেও উপরে ফিক্সড থাকবে) ===== */
 #auditBanner.scroll-title{
+    justify-content:center;
     position:relative; /* fixed/sticky বন্ধ — পেজের সাথে স্ক্রোল হয়ে উপরে ঢুকে যাবে */
     height:54px; margin-bottom:15px;
 }
 #auditBanner .scroll-text{
     font-size:24px; font-weight:900; letter-spacing:.3px;
     text-shadow:0 1px 3px rgba(0,0,0,.35);
-    animation:none; /* স্পিড JS থেকে সেট হবে */
+    animation:none; padding-left:0; width:100%; text-align:center;  /* static, centered */
 }
 #auditBanner.scroll-title::before{display:none;animation:none;} /* no shine animation */
+@media (max-width:700px){ #auditBanner .scroll-text{font-size:13px;} }
 #auditBanner .ab-live{color:#fff;}
 #auditBanner .ab-dot{color:#fff; animation:abBlink 1s steps(1,end) infinite;}
 @keyframes abBlink{0%{opacity:1;}50%{opacity:0;}100%{opacity:1;}}
@@ -2892,15 +2894,7 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
                    '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; EMP ID: <span class="ab-val ab-id">' + esc(id) + '</span>';
         txt.innerHTML = item;
         box.style.display = 'flex';
-        // element width = banner width + text width, so -50% = text exactly in the middle of the banner
-        var moveSec = txt.offsetWidth / SPEED_PX_PER_SEC;
-        var half = moveSec / 2, total = moveSec + PAUSE_SEC;
-        anim = txt.animate([
-            { transform: 'translateX(0)', offset: 0 },
-            { transform: 'translateX(-50%)', offset: half / total },
-            { transform: 'translateX(-50%)', offset: (half + PAUSE_SEC) / total },
-            { transform: 'translateX(-100%)', offset: 1 }
-        ], { duration: total * 1000, iterations: Infinity, easing: 'linear' });
+        // স্ক্রোলিং বন্ধ — লেখা ব্যানারের ঠিক মাঝখানে স্থির থাকবে
     };
     document.addEventListener('DOMContentLoaded', function () {
         ['processSelect','empIdInput'].forEach(function (id) {

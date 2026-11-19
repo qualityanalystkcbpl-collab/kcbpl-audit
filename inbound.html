@@ -395,6 +395,57 @@ h3 {
 #auditForm .submit-btn:not(:disabled):hover::after { left: 130%; transition: left .7s ease; }
 #auditForm .submit-btn:disabled { background: #cbd5e0 !important; box-shadow: none !important; transform: none !important; }
 
+/* ══════ AUTO-FILLED DETAILS বক্স - আলাদা (টিল/সবুজ) রঙ, ৬টা ফিল্ড এক লাইনে, সব লেখা পুরো দেখা যাবে ══════ */
+#auditForm .auto-fields-box {
+    background: linear-gradient(135deg, #ecfeff 0%, #f0fdfa 55%, #f7fee7 100%);
+    border: 1.5px dashed #14b8a6;
+    border-left: 5px solid #0d9488;
+    border-radius: 12px;
+    padding: 10px 10px 6px;
+    box-shadow: 0 3px 10px rgba(13,148,136,.10);
+}
+#auditForm .auto-fields-heading {
+    display: inline-block;
+    background: linear-gradient(90deg, #0d9488, #0891b2);
+    color: #fff;
+    font-size: 10.5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    letter-spacing: .5px;
+}
+#auditForm .auto-fields-box .form-inline {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr .95fr .9fr 2.3fr 2.1fr;   /* এক লাইনে ৬টা: নম্বর | তারিখ | সময় | সময়সীমা | Call ID | TL */
+    gap: 6px 8px;
+    margin-bottom: 0;
+}
+#auditForm .auto-fields-box .form-group { min-width: 0; margin-bottom: 6px; }
+#auditForm .auto-fields-box label { font-size: 11px; white-space: nowrap; color: #134e4a; }
+#auditForm .auto-fields-box label .en-label { color: #134e4a; }
+#auditForm .auto-fields-box label .bn-label { color: #0f766e; font-size: 10px; opacity: 1; }
+/* লেখাগুলো গাঢ় ও স্পষ্ট - হালকা টিল চিপে (বক্স/বর্ডার নেই, তাই এডিটযোগ্য মনে হবে না) */
+#auditForm .auto-fields-box .locked-field {
+    background: rgba(20,184,166,.12) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: #0f172a !important;
+    font-weight: 700;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    padding: 7px 5px !important;
+    text-overflow: clip;
+    overflow: visible;
+    white-space: nowrap;
+    min-width: 0;
+}
+#auditForm .auto-fields-box input[type="date"]::-webkit-calendar-picker-indicator,
+#auditForm .auto-fields-box input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
+/* ছোট স্ক্রিনে জায়গা না হলে আপনা-আপনি নিচে নামবে */
+@media (max-width: 760px) {
+    #auditForm .auto-fields-box .form-inline { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+
 /* যাদের ডিভাইসে অ্যানিমেশন বন্ধ করা আছে তাদের জন্য */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }

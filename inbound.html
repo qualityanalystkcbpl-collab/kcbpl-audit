@@ -2057,6 +2057,19 @@ function loadAudio(){
 
         function closePopup() { overlay.classList.remove('show'); pending = null; }
 
+        // দুই ধরনের বার্তা: (১) Remarks বক্সে ঢুকতে গেলে  (২) ফেইল(0) থেকে আবার মার্ক দিলে, যখন Remarks আগে থেকেই লেখা আছে
+        const msgEl = document.getElementById('passRemarksMsg');
+        const msgEnEl = document.getElementById('passRemarksMsgEn');
+        const defMsg = msgEl.innerHTML, defMsgEn = msgEnEl.innerHTML;
+        function setPopupMode(keepMode) {
+            if (keepMode) {
+                msgEl.innerHTML = 'এই প্যারামিটারে আগে থেকেই Remarks লেখা আছে — রাখতে চান?<br><span>কারণ এখন এজেন্ট এই প্যারামিটারে পাস করেছে। NO দিলে Remarks মুছে যাবে।</span>';
+                msgEnEl.textContent = 'Remarks already written. Keep them? The agent has passed this parameter. NO will clear the remarks.';
+            } else {
+                msgEl.innerHTML = defMsg; msgEnEl.innerHTML = defMsgEn;
+            }
+        }
+
         // Remarks বক্স বা Predefined Remark ড্রপডাউনে ঢুকতে গেলে চেক
         function guard(e) {
             const el = e.target;
@@ -2075,6 +2088,7 @@ function loadAudio(){
             const labelEl = group.querySelector('.en-label');
             paramEl.textContent = labelEl ? labelEl.textContent : mainSelect.name;
             pending = { group: group, el: el };
+            setPopupMode(false);
             overlay.classList.add('show');
         }
         evalGrid.addEventListener('mousedown', guard, true);
@@ -2086,6 +2100,17 @@ function loadAudio(){
             if (t && t.tagName === 'SELECT' && !t.classList.contains('remarks-select')) {
                 const g = t.closest('.form-group');
                 if (g) delete g.dataset.passConfirmed;
+                // ফেইল (0/FATAL) থেকে আবার মার্ক দিলে, আর Remarks আগে থেকেই লেখা থাকলে সঙ্গে সঙ্গে পপ-আপ
+                if (g && isPassState(t)) {
+                    const ta = g.querySelector('textarea');
+                    if (ta && ta.value.trim() && !overlay.classList.contains('show')) {
+                        const labelEl = g.querySelector('.en-label');
+                        paramEl.textContent = labelEl ? labelEl.textContent : t.name;
+                        pending = { group: g, el: ta, keepMode: true };
+                        setPopupMode(true);
+                        overlay.classList.add('show');
+                    }
+                }
             }
         });
         document.getElementById('auditForm').addEventListener('reset', function () {
@@ -2095,6 +2120,7 @@ function loadAudio(){
         yesBtn.addEventListener('click', function () {
             const p = pending;
             closePopup();
+            if (p && p.keepMode) { p.group.dataset.passConfirmed = '1'; return; }   // Remarks রেখে দেওয়া হলো
             if (p) {
                 p.group.dataset.passConfirmed = '1';
                 const ta = p.group.querySelector('textarea');
@@ -2103,9 +2129,18 @@ function loadAudio(){
                 setTimeout(function () { target.focus(); }, 250);
             }
         });
-        noBtn.addEventListener('click', closePopup);
-        overlay.addEventListener('click', function (e) { if (e.target === overlay) closePopup(); });
-        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('show')) closePopup(); });
+        noBtn.addEventListener('click', function () {
+            const p = pending;
+            closePopup();
+            if (p && p.keepMode) {   // আগের লেখা Remarks মুছে দেওয়া (পাস প্যারামিটারে ফেইলের Remarks থাকবে না)
+                const ta = p.group.querySelector('textarea');
+                const pre = p.group.querySelector('select.remarks-select');
+                if (pre) pre.value = '';
+                if (ta) { ta.value = ''; ta.dispatchEvent(new Event('input', { bubbles: true })); }
+            }
+        });
+        // পপ-আপের বাইরে ক্লিক বা Escape চাপলে বন্ধ হবে না — শুধু YES / NO দিয়েই বন্ধ হবে
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('show')) e.preventDefault(); }, true);
     })();
     
     // ⬅️ Section 2 তে যেসব প্যারামিটারে "0" সিলেক্ট করা আছে, সেগুলো লাইভ লিস্ট করে বাম দিকের বক্সে দেখানো হয় (রি-চেকের সুবিধার জন্য, স্কোরিং লজিকে কোনো প্রভাব নেই)

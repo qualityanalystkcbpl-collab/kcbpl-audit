@@ -2650,7 +2650,7 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 
 /* ===== Live audit banner (Process + Emp ID সিলেক্ট হলেই দেখা যাবে, নিচে নামলেও উপরে ফিক্সড থাকবে) ===== */
 #auditBanner.scroll-title{
-    position:sticky; top:0; z-index:1200;
+    position:relative; /* fixed/sticky বন্ধ — পেজের সাথে স্ক্রোল হয়ে উপরে ঢুকে যাবে */
     height:54px; margin-bottom:15px;
 }
 #auditBanner .scroll-text{

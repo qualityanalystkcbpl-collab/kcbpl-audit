@@ -1292,11 +1292,10 @@ function loadAudio(){
         </fieldset>
         <button type="submit" class="submit-btn" id="submitBtn">Submit Audit Report / অডিট রিপোর্ট জমা দিন</button>
     </form>
-</div>
-
-<!-- 📍 FOOTER: কোন এজেন্টের কল অডিট হচ্ছে (স্ক্রিনের নিচে সবসময় ফিক্সড) -->
+<!-- 📍 FOOTER: কোন এজেন্টের কল অডিট হচ্ছে (পেজের একদম নিচে, ফিক্সড নয়) -->
 <div id="auditBanner" class="scroll-title" style="display:none;">
     <div class="scroll-text" id="auditBannerText"></div>
+</div>
 </div>
 
 <!-- ⬅️ বাম দিকে ভাসমান "FAIL COUNT IN THIS CALL" বক্স - Section 2 তে যেসব প্যারামিটারে 0 সিলেক্ট করা হয়েছে সেগুলো লাইভ দেখাবে, রি-চেকের সুবিধার জন্য -->
@@ -2653,26 +2652,20 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 /* ===== Live audit banner (Process + Emp ID সিলেক্ট হলেই দেখা যাবে, নিচে নামলেও উপরে ফিক্সড থাকবে) ===== */
 #auditBanner.scroll-title{
     justify-content:center;
-    position:fixed; left:0; right:0; bottom:0; width:auto; box-sizing:border-box; z-index:1500;
-    height:auto; min-height:54px; margin:0; border-radius:0;
+    position:relative; width:100%; box-sizing:border-box;
+    height:auto; min-height:54px; margin:20px 0 0;
 }
 #auditBanner .scroll-text{
-    font-size:20px; font-weight:900; letter-spacing:.3px; white-space:normal; line-height:1.9; padding:6px 14px;
+    font-size:16px; font-weight:900; letter-spacing:0; white-space:normal; line-height:1.9; padding:6px 10px;
     text-shadow:0 1px 3px rgba(0,0,0,.35);
     animation:none; padding-left:0; width:100%; text-align:center;  /* static, centered */
 }
 #auditBanner.scroll-title::before{display:none;animation:none;} /* no shine animation */
 @media (max-width:700px){ #auditBanner .scroll-text{font-size:13px;} }
-/* ফিক্সড ফুটারের উচ্চতা (--abH) অনুযায়ী ভাসমান বাটন/বক্স উপরে উঠে থাকবে, আর পেজের শেষে প্যাডিং থাকবে — কোনো লেখা ঢাকা পড়বে না */
-body{padding-bottom:var(--abH,0px);}
-#backToTop{bottom:calc(30px + var(--abH,0px)) !important;}
-#goToBottom{bottom:calc(150px + var(--abH,0px)) !important;}
-#score-counter-box{bottom:calc(25px + var(--abH,0px)) !important;}
-@media (max-width:700px){ #backToTop{bottom:calc(20px + var(--abH,0px)) !important;} }
 #auditBanner .ab-live{color:#fff;}
 #auditBanner .ab-dot{color:#fff; animation:abBlink 1s steps(1,end) infinite;}
 @keyframes abBlink{0%{opacity:1;}50%{opacity:0;}100%{opacity:1;}}
-#auditBanner .ab-val{white-space:nowrap; padding:2px 12px; border-radius:8px; text-shadow:none; color:#0f172a;}
+#auditBanner .ab-val{white-space:nowrap; padding:2px 9px; border-radius:8px; text-shadow:none; color:#0f172a;}
 #auditBanner .ab-agent{background:#fde047;}   /* yellow */
 #auditBanner .ab-proc{background:#86efac;}    /* green  */
 #auditBanner .ab-id{background:#fdba74;}      /* orange */
@@ -2878,7 +2871,6 @@ body{padding-bottom:var(--abH,0px);}
         var iEl = document.getElementById('empIdInput');
         var nEl = document.getElementById('empNameInput');
         if (!box || !txt || !pEl || !iEl || !nEl) return;
-        document.documentElement.style.setProperty('--abH', (box.style.display !== 'none' ? box.offsetHeight : 0) + 'px');
         // Network/Clock/Timer stack সবসময় স্কোর বক্সের ঠিক উপরে ১২px গ্যাপ রেখে থাকবে (স্কোর বক্স লম্বা হলেও ওভারল্যাপ হবে না)
         var sb = document.getElementById('score-counter-box'), stack = document.querySelector('.audit-tracker-container');
         if (sb && stack && getComputedStyle(stack).position === 'fixed') {
@@ -2896,7 +2888,6 @@ body{padding-bottom:var(--abH,0px);}
                    '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; EMP ID: <span class="ab-val ab-id">' + esc(id) + '</span>';
         txt.innerHTML = item;
         box.style.display = 'flex';
-        document.documentElement.style.setProperty('--abH', box.offsetHeight + 'px');
         // স্ক্রোলিং বন্ধ — লেখা ব্যানারের ঠিক মাঝখানে স্থির থাকবে
     };
     document.addEventListener('DOMContentLoaded', function () {

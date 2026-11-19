@@ -251,6 +251,155 @@
     transform: translateY(-3px);
 }
     </style>
+<style id="ui-polish">
+/* ══════ সুন্দর রঙ + হালকা অ্যানিমেশন (শুধু CSS - কোনো ইমেজ/ফন্ট/লাইব্রেরি নেই, তাই পেজ ভারী হবে না) ══════ */
+html { scrollbar-color: #8b5cf6 #ede9fe; }
+body {
+    background: linear-gradient(160deg, #e0e7ff 0%, #f5f3ff 45%, #ecfeff 100%) fixed !important;
+    animation: none !important;   /* আগের ভারী ব্যাকগ্রাউন্ড অ্যানিমেশন বন্ধ - পেজ লোড/স্ক্রল হালকা থাকবে */
+}
+/* ভাসমান রঙিন আভা - শুধু transform দিয়ে চলে, GPU তে হয়, CPU চাপ নেই */
+body::before {
+    content: ""; position: fixed; inset: -10%; z-index: -1; pointer-events: none;
+    background:
+        radial-gradient(38% 34% at 12% 18%, rgba(99,102,241,.28), transparent 70%),
+        radial-gradient(34% 32% at 88% 14%, rgba(236,72,153,.22), transparent 70%),
+        radial-gradient(40% 36% at 80% 88%, rgba(20,184,166,.24), transparent 70%),
+        radial-gradient(32% 30% at 10% 84%, rgba(245,158,11,.20), transparent 70%);
+    animation: auroraDrift 28s ease-in-out infinite alternate;
+    will-change: transform;
+}
+@keyframes auroraDrift {
+    from { transform: translate3d(0,0,0) scale(1); }
+    to   { transform: translate3d(2.5%,-2%,0) scale(1.08); }
+}
+
+/* মূল ফর্ম কার্ড */
+.form-container {
+    position: relative;
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(129,140,248,.25);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(79,70,229,.14), 0 2px 8px rgba(15,23,42,.05);
+    animation: cardRise .7s cubic-bezier(.2,.8,.2,1) backwards;
+}
+.form-container::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(90deg,#4f46e5,#7c3aed,#db2777,#f59e0b,#10b981,#4f46e5);
+    background-size: 200% 100%;
+    animation: barFlow 10s linear infinite;
+}
+@keyframes barFlow { to { background-position: -200% 0; } }
+@keyframes cardRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* হেডিং */
+h1 {
+    background: linear-gradient(90deg,#4338ca,#7c3aed,#db2777,#ea580c,#4338ca);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: #4338ca;
+    animation: titleShimmer 9s linear infinite;
+}
+@keyframes titleShimmer { to { background-position: -220% 0; } }
+h3 {
+    display: table; margin-left: auto; margin-right: auto;
+    padding: 7px 18px; border-radius: 999px;
+    background: linear-gradient(90deg,#eef2ff,#fdf2f8,#fff7ed);
+    border: 1px solid #ddd6fe; color: #6d28d9;
+}
+
+/* সেকশন - প্রতিটার আলাদা রঙ */
+#auditForm > fieldset {
+    --accent:#4f46e5; --accent2:#0ea5e9; --tint:#eef2ff; --line:#c7d2fe; --ring:rgba(99,102,241,.22);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    background: linear-gradient(180deg, var(--tint) 0%, #fff 75%);
+    box-shadow: 0 6px 18px rgba(15,23,42,.05);
+    animation: fieldRise .6s cubic-bezier(.2,.8,.2,1) backwards;
+}
+#auditForm > fieldset:nth-of-type(1) { animation-delay: .12s; }
+#auditForm > fieldset:nth-of-type(2) { --accent:#7c3aed; --accent2:#db2777; --tint:#faf5ff; --line:#ddd6fe; --ring:rgba(124,58,237,.22); animation-delay: .26s; }
+#auditForm > fieldset:nth-of-type(3) { --accent:#d97706; --accent2:#f43f5e; --tint:#fffbeb; --line:#fde68a; --ring:rgba(245,158,11,.25); animation-delay: .40s; }
+@keyframes fieldRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+#auditForm > fieldset > legend {
+    color: #fff; font-size: 13px; letter-spacing: .4px;
+    padding: 7px 18px; margin-left: 4px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    box-shadow: 0 4px 12px rgba(15,23,42,.18);
+}
+
+/* লেবেল ও ইনপুট */
+#auditForm label .en-label { color: #1e293b; }
+#auditForm label .bn-label { color: var(--accent); opacity: .85; }
+#auditForm input[type="text"], #auditForm input[type="email"], #auditForm input[type="date"], #auditForm input[type="time"],
+#auditForm select, #auditForm textarea {
+    border: 1.5px solid var(--line, #cbd5e0);
+    border-radius: 10px;
+    transition: border-color .2s, box-shadow .2s, background-color .2s;
+}
+#auditForm input:hover, #auditForm select:hover, #auditForm textarea:hover { border-color: var(--accent, #3182ce); }
+#auditForm input:focus, #auditForm select:focus, #auditForm textarea:focus {
+    border-color: var(--accent, #3182ce);
+    box-shadow: 0 0 0 4px var(--ring, rgba(66,153,225,.2));
+}
+
+/* Section 2 - প্রতিটা প্যারামিটার আলাদা রঙিন কার্ড */
+.eval-grid > .form-group {
+    --c:#6366f1;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--c);
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 2px 8px rgba(15,23,42,.06);
+    transition: transform .2s ease, box-shadow .2s ease, background-color .25s ease, border-color .25s ease;
+}
+.eval-grid > .form-group:nth-child(6n+2) { --c:#0ea5e9; }
+.eval-grid > .form-group:nth-child(6n+3) { --c:#10b981; }
+.eval-grid > .form-group:nth-child(6n+4) { --c:#f59e0b; }
+.eval-grid > .form-group:nth-child(6n+5) { --c:#ec4899; }
+.eval-grid > .form-group:nth-child(6n+6) { --c:#8b5cf6; }
+.eval-grid > .form-group:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(15,23,42,.10); }
+.eval-grid .remarks-container {
+    background: #f8fafc;
+    border-left: 3px solid var(--c, #94a3b8);
+    border-radius: 8px;
+}
+/* স্কোর সিলেক্ট: 0 (ফেইল) হলে লাল, পাস হলে সবুজ - JS ছাড়াই, শুধু CSS */
+.eval-grid > .form-group > select { font-weight: 700; color: #0f172a; }
+.eval-grid > .form-group > select:has(option:checked:not([value="0"]):not([value=""])) { background-color: #f0fdf4; border-color: #86efac; color: #166534; }
+.eval-grid > .form-group > select:has(option[value="0"]:checked) { background-color: #fef2f2; border-color: #fca5a5; color: #b91c1c; }
+.eval-grid > .form-group:has(> select option[value="0"]:checked) { --c:#ef4444; background: #fffafa; border-color: #fecaca; }
+
+/* সাবমিট বাটন */
+#auditForm .submit-btn {
+    position: relative; overflow: hidden;
+    background: linear-gradient(120deg,#4f46e5,#7c3aed,#db2777) !important;
+    background-size: 200% 100% !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 20px rgba(124,58,237,.30) !important;
+    transition: transform .25s ease, box-shadow .25s ease, background-position .5s ease !important;
+}
+#auditForm .submit-btn:not(:disabled):hover {
+    background-position: 100% 0 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 14px 28px rgba(219,39,119,.30) !important;
+}
+#auditForm .submit-btn::after {
+    content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
+    transform: skewX(-20deg); pointer-events: none;
+}
+#auditForm .submit-btn:not(:disabled):hover::after { left: 130%; transition: left .7s ease; }
+#auditForm .submit-btn:disabled { background: #cbd5e0 !important; box-shadow: none !important; transform: none !important; }
+
+/* যাদের ডিভাইসে অ্যানিমেশন বন্ধ করা আছে তাদের জন্য */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
 </head>
 <body>
 <script>

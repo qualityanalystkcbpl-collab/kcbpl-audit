@@ -2869,6 +2869,12 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         var iEl = document.getElementById('empIdInput');
         var nEl = document.getElementById('empNameInput');
         if (!box || !txt || !pEl || !iEl || !nEl) return;
+        // Network/Clock/Timer stack সবসময় স্কোর বক্সের ঠিক উপরে ১২px গ্যাপ রেখে থাকবে (স্কোর বক্স লম্বা হলেও ওভারল্যাপ হবে না)
+        var sb = document.getElementById('score-counter-box'), stack = document.querySelector('.audit-tracker-container');
+        if (sb && stack && getComputedStyle(stack).position === 'fixed') {
+            var b = (parseFloat(getComputedStyle(sb).bottom) || 25) + sb.offsetHeight + 12;
+            if (stack.dataset.b !== String(b)) { stack.dataset.b = String(b); stack.style.bottom = b + 'px'; }
+        }
         var sn = document.getElementById('score-agent-name');
         if (sn) {
             var nm = nEl.value.trim();

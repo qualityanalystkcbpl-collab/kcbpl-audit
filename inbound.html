@@ -1331,6 +1331,7 @@ function loadAudio(){
   <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #94a3b8; margin-bottom: 5px;">Total Score / মোট নম্বর</div>
   <div id="live-score" style="font-size: 38px; font-weight: 800; color: #10b981; line-height: 1;">0</div>
   <div id="live-status" style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; padding: 4px 12px; border-radius: 20px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Status: Pass</div>
+  <div id="score-agent-name" style="display:none; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: #cbd5e1; margin-top: 8px; max-width: 200px; margin-left: auto; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
 </div>
 
 <!-- অডিট সাবমিট সাকসেস ফ্ল্যাশ মেসেজ (১০ সেকেন্ড দেখাবে + OK বাটন, সাথে ২ সেকেন্ডের ফুল ঝরে পড়া অ্যানিমেশন) -->
@@ -2868,6 +2869,12 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         var iEl = document.getElementById('empIdInput');
         var nEl = document.getElementById('empNameInput');
         if (!box || !txt || !pEl || !iEl || !nEl) return;
+        var sn = document.getElementById('score-agent-name');
+        if (sn) {
+            var nm = nEl.value.trim();
+            if (sn.textContent !== nm) sn.textContent = nm;
+            sn.style.display = nm ? 'block' : 'none';
+        }
         var proc = pEl.value.trim(), id = iEl.value.trim().toUpperCase(), name = nEl.value.trim();
         var key = proc + '|' + id + '|' + name;
         if (key === lastKey) return;

@@ -2656,7 +2656,7 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
     height:auto; min-height:54px; margin:20px 0 0;
 }
 #auditBanner .scroll-text{
-    font-size:16px; font-weight:900; letter-spacing:0; white-space:normal; line-height:1.9; padding:6px 10px;
+    font-size:13px; font-weight:900; letter-spacing:0; white-space:nowrap; line-height:1.9; padding:6px 10px;
     text-shadow:0 1px 3px rgba(0,0,0,.35);
     animation:none; padding-left:0; width:100%; text-align:center;  /* static, centered */
 }
@@ -2871,6 +2871,13 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         var iEl = document.getElementById('empIdInput');
         var nEl = document.getElementById('empNameInput');
         if (!box || !txt || !pEl || !iEl || !nEl) return;
+        // সবসময় ১ লাইনে রাখতে: জায়গা না হলে লেখার সাইজ নিজে থেকে একটু কমে যাবে (সর্বনিম্ন ৮px)
+        if (box.style.display !== 'none') {
+            var fs = 13, rg = document.createRange();
+            txt.style.fontSize = fs + 'px';
+            rg.selectNodeContents(txt);
+            while (rg.getBoundingClientRect().width > box.clientWidth - 24 && fs > 8) { fs -= 0.5; txt.style.fontSize = fs + 'px'; rg.selectNodeContents(txt); }
+        }
         // Network/Clock/Timer stack সবসময় স্কোর বক্সের ঠিক উপরে ১২px গ্যাপ রেখে থাকবে (স্কোর বক্স লম্বা হলেও ওভারল্যাপ হবে না)
         var sb = document.getElementById('score-counter-box'), stack = document.querySelector('.audit-tracker-container');
         if (sb && stack && getComputedStyle(stack).position === 'fixed') {

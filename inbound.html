@@ -446,6 +446,77 @@ h3 {
     #auditForm .auto-fields-box .form-inline { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 }
 
+/* ══════ সেকশন ট্যাবের চারপাশে ৭ রঙের ঘুরন্ত বর্ডার (লাল, কমলা, হলুদ, সবুজ, নীল, ইন্ডিগো, বেগুনি) ══════ */
+@property --tabAngle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+#auditForm > fieldset > legend {
+    border: 3px solid transparent;
+    padding: 5px 16px;
+    background:
+        linear-gradient(90deg, var(--accent), var(--accent2)) padding-box,
+        conic-gradient(from var(--tabAngle), #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #6366f1, #a855f7, #ef4444) border-box;
+    animation: tabBorderSpin 4s linear infinite;
+}
+@keyframes tabBorderSpin { to { --tabAngle: 360deg; } }
+
+/* ══════ Audit Duration: নির্ধারিত সময় পার হলে রঙ বদলায় + নিচে ছোট বার্তা ══════ */
+.tracker-box { transition: border-color .4s ease, box-shadow .4s ease; }
+#auditTimer { transition: color .4s ease; }
+.timer-note { display: none; margin-top: 5px; font-size: 11px; font-weight: 600; line-height: 1.3; }
+.timer-note:not(:empty) { display: block; }
+#auditTimer[data-level="1"] { color: #fbbf24; }
+#auditTimer[data-level="2"] { color: #fb923c; }
+#auditTimer[data-level="3"] { color: #f87171; }
+/* ৫ মিনিট পার হলে টাইমারের সময়টা হালকা ব্লিংক করবে */
+#auditTimer[data-level="1"], #auditTimer[data-level="2"], #auditTimer[data-level="3"] { animation: timerBlink 1.4s ease-in-out infinite; }
+@keyframes timerBlink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.tracker-box[data-level="1"] { border-color: rgba(251,191,36,.55); box-shadow: 0 10px 25px rgba(251,191,36,.18); }
+.tracker-box[data-level="2"] { border-color: rgba(251,146,60,.65); box-shadow: 0 10px 25px rgba(251,146,60,.24); }
+.tracker-box[data-level="3"] { border-color: rgba(248,113,113,.75); animation: overtimePulse 1.6s ease-in-out infinite; }
+.tracker-box[data-level="1"] .timer-note { color: #fde68a; }
+.tracker-box[data-level="2"] .timer-note { color: #fdba74; }
+.tracker-box[data-level="3"] .timer-note { color: #fecaca; }
+@keyframes overtimePulse {
+    0%, 100% { box-shadow: 0 10px 25px rgba(248,113,113,.22); }
+    50%      { box-shadow: 0 10px 30px rgba(248,113,113,.55); }
+}
+
+/* ══════ Live Clock এর নিচে শুভেচ্ছা (প্রতি ৩০ সেকেন্ডে ইংরেজি/বাংলা বদলায়) ══════ */
+.greeting-note { margin-top: 5px; font-size: 12px; font-weight: 700; letter-spacing: .3px; min-height: 16px; line-height: 1.3; }
+.greeting-note.swap { animation: greetFade .6s ease; }
+@keyframes greetFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ══════ Remarks বক্স: লেখার সময় ও লেখার পরেও ৭ রঙের সুন্দর অ্যানিমেশন (লেখা সবসময় স্পষ্ট পড়া যাবে) ══════ */
+#auditForm .remarks-container textarea { border-width: 2px; }
+/* ১) ক্লিক/লেখা শুরু করলে বা লেখা থাকলে: বর্ডারে ৭ রঙ ঘুরবে */
+#auditForm .remarks-container textarea:focus,
+#auditForm .remarks-container textarea:not(:placeholder-shown) {
+    border-color: transparent;
+    background:
+        linear-gradient(#fff, #fff) padding-box,
+        conic-gradient(from var(--tabAngle), #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #6366f1, #a855f7, #ef4444) border-box;
+    animation: tabBorderSpin 5s linear infinite;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.10), 0 4px 14px rgba(168,85,247,.16);
+}
+/* ২) লেখা থাকলে: অক্ষরগুলোর ওপর ৭ রঙের ঢেউ বয়ে যাবে - শুধু গাঢ় শেডের রঙ, তাই সাদা জমিতে পড়তে অসুবিধা নেই */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    #auditForm .remarks-container textarea:not(:placeholder-shown) {
+        font-weight: 600;
+        caret-color: #4f46e5;
+        background:
+            linear-gradient(90deg, #b91c1c, #c2410c, #b45309, #15803d, #1d4ed8, #4338ca, #7e22ce, #b91c1c) 0% 0% / 300% 100%,
+            linear-gradient(#fff, #fff) padding-box,
+            conic-gradient(from var(--tabAngle), #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #6366f1, #a855f7, #ef4444) border-box;
+        -webkit-background-clip: text, padding-box, border-box;
+                background-clip: text, padding-box, border-box;
+        -webkit-text-fill-color: transparent;
+        animation: tabBorderSpin 5s linear infinite, remarksTextFlow 6s ease-in-out infinite alternate;
+    }
+}
+@keyframes remarksTextFlow {
+    from { background-position: 0% 0, 0 0, 0 0; }
+    to   { background-position: 100% 0, 0 0, 0 0; }
+}
+
 /* যাদের ডিভাইসে অ্যানিমেশন বন্ধ করা আছে তাদের জন্য */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -1247,10 +1318,12 @@ function loadAudio(){
     <div class="tracker-box">
         <div class="tracker-label">LIVE CLOCK</div>
         <div id="liveClock" class="tracker-value">00:00:00 AM</div>
+        <div id="greetingNote" class="greeting-note" aria-live="off"></div>
     </div>
     <div class="tracker-box">
         <div class="tracker-label">Audit Duration</div>
         <div id="auditTimer" class="tracker-value">00:00</div>
+        <div id="auditTimerNote" class="timer-note" role="status" aria-live="polite"></div>
     </div>
 </div>
 
@@ -1719,11 +1792,26 @@ function loadAudio(){
         try { audio.src = url; } catch (e) { finish(); }
     }
 
+    // Call Link ফাঁকা (বা অমিল) হলে Calling Number, Call Date, Call time, Call Duration, Call ID মুছে ফেলা (TL Name মুছবে না - ওটা Process থেকে আসে)
+    function clearCallLinkFields(linkInput) {
+        ['callingNumberInput', 'callIdInput', 'callDateInput', 'callTimeInput', 'callDurationInput'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) { el.value = ''; if (id === 'callDurationInput') el.dataset.manual = ''; }
+        });
+        if (linkInput) linkInput.dataset.lastUrl = '';
+        _durationToken++;   // চলমান ডিউরেশন-লোড বাতিল, যাতে পরে এসে আবার না বসে
+        if (_durationProbe) {
+            try { _durationProbe.onloadedmetadata = _durationProbe.onerror = null; _durationProbe.src = ''; } catch (e) {}
+            _durationProbe = null;
+        }
+        if (typeof calculateLiveScore === 'function') { calculateLiveScore(); }
+    }
+
     function parseCallLink() {
         const linkInput = document.getElementById('callLinkInput');
         if (!linkInput) return;
         const url = linkInput.value.trim();
-        if (!url) return;
+        if (!url) { clearCallLinkFields(linkInput); return; }   // লিংক মুছে দিলে অটো-ফিল ফিল্ডগুলোও মুছে যাবে
 
         // URL থেকে ফাইলনেম (শেষ অংশ) বের করা, এক্সটেনশন বাদ দিয়ে
         const fileNameWithExt = url.split('/').pop().split('?')[0].split('#')[0];
@@ -1731,7 +1819,7 @@ function loadAudio(){
 
         // প্যাটার্ন: YYYYMMDD-HHMMSS_PHONENUMBER...
         const match = fileName.match(/^(\d{8})-(\d{6})_(\d+)/);
-        if (!match) return; // ফরম্যাট না মিললে অটো-ফিল হবে না
+        if (!match) { clearCallLinkFields(linkInput); return; } // ফরম্যাট না মিললে অটো-ফিল হবে না (আগের পুরনো ভ্যালুও থাকবে না)
 
         const datePart = match[1];
         const timePart = match[2];
@@ -1840,9 +1928,62 @@ function loadAudio(){
     let timerInterval;
     let totalSeconds = 0;
 
+    // ⏱ একটা অডিটের জন্য নির্ধারিত সময় (সেকেন্ডে)। এটা পার হলে টাইমারের রঙ বদলাবে আর নিচে ছোট বার্তা আসবে।
+    //    সময় বদলাতে চাইলে শুধু এই সংখ্যাটা বদলান (যেমন ৭ মিনিট হলে 7 * 60)।
+    const AUDIT_TARGET_SECONDS = 5 * 60;
+
+    // নির্ধারিত সময় পার হলে: ১) 0-1 মিনিট বেশি = হলুদ  ২) 1-2 মিনিট বেশি = কমলা  ৩) 2+ মিনিট বেশি = লাল (হালকা স্পন্দন)
+    function updateTimerState(sec) {
+        const timerEl = document.getElementById('auditTimer');
+        const note = document.getElementById('auditTimerNote');
+        if (!timerEl) return;
+        const box = timerEl.closest('.tracker-box');
+        const over = sec - AUDIT_TARGET_SECONDS;
+        let level = 0;
+        if (over >= 120) level = 3;
+        else if (over >= 60) level = 2;
+        else if (over > 0) level = 1;
+        timerEl.dataset.level = level;
+        if (box) box.dataset.level = level;
+        if (!note) return;
+        const mins = Math.floor(over / 60);
+        let msg = '';
+        if (level === 1) msg = 'Time is up. Kindly finish the audit.';
+        else if (level === 2) msg = mins + ' min overtime. Kindly finish soon.';
+        else if (level === 3) msg = mins + ' min overtime. Kindly finish now.';
+        if (note.textContent !== msg) note.textContent = msg;
+    }
+
+    // 👋 সময় অনুযায়ী শুভেচ্ছা: সকাল 5-12 | দুপুর 12-17 | সন্ধ্যা 17-21 | রাত 21-5
+    //    প্রতি ৩০ সেকেন্ড পরপর ইংরেজি <-> বাংলা + লোগোও বদলায় (প্রতি সময়ের জন্য ১০টা লোগো)
+    const GREETINGS = {
+        morning:   { en: 'Good Morning',   bn: 'শুভ সকাল',    color: '#fcd34d', icons: ['🌅','🌄','☀️','🌤️','🌻','🌼','🐦','☕','🥐','🌈'] },
+        afternoon: { en: 'Good Afternoon', bn: 'শুভ অপরাহ্ন', color: '#fdba74', icons: ['☀️','🌞','🌤️','🌴','🍃','🍋','🥤','🌺','🌿','🦋'] },
+        evening:   { en: 'Good Evening',   bn: 'শুভ সন্ধ্যা', color: '#f9a8d4', icons: ['🌆','🌇','🏙️','🌉','🍵','🪔','🎶','🌸','🕯️','🧡'] },
+        night:     { en: 'Good Night',     bn: 'শুভ রাত্রি',  color: '#a5b4fc', icons: ['🌙','🌛','⭐','🌟','✨','🌌','🌃','😴','🦉','💫'] }
+    };
+    let _lastGreeting = '';
+    function updateGreeting(now) {
+        const el = document.getElementById('greetingNote');
+        if (!el) return;
+        const h = now.getHours();
+        const period = h >= 5 && h < 12 ? 'morning' : h >= 12 && h < 17 ? 'afternoon' : h >= 17 && h < 21 ? 'evening' : 'night';
+        const slot = Math.floor(now.getTime() / 30000);          // প্রতি ৩০ সেকেন্ডে +1
+        const lang = slot % 2 === 0 ? 'en' : 'bn';
+        const g = GREETINGS[period];
+        const icon = g.icons[(slot + Math.floor(slot / 10)) % g.icons.length];   // প্রতিবার নতুন লোগো; ১০টা ঘোরা শেষে ক্রম সরে যায়, তাই ইংরেজি/বাংলা দুটোতেই সব লোগো আসে
+        const text = icon + ' ' + g[lang];
+        if (text === _lastGreeting) return;
+        _lastGreeting = text;
+        el.textContent = text;
+        el.style.color = g.color;
+        el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap');   // হালকা ফেড-ইন
+    }
+
     // লাইভ ঘড়ি আপডেট করার ফাংশন
     function updateClock() {
         const now = new Date();
+        updateGreeting(now);
         let hours = now.getHours();
         const minutes = String(now.getMinutes()).padStart(2, '0');
         const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -1869,6 +2010,7 @@ function loadAudio(){
             if (timerDisplay) {
                 timerDisplay.innerText = `${minutes}:${seconds}`;
             }
+            updateTimerState(totalSeconds);
         }, 1000);
     }
 
@@ -1880,6 +2022,7 @@ function loadAudio(){
         if (timerDisplay) {
             timerDisplay.innerText = "00:00";
         }
+        updateTimerState(0);   // রঙ ও বার্তা আবার স্বাভাবিক
         startAuditTimer(); // আবার ফ্রেশ গণনা শুরু করবে
     }
 

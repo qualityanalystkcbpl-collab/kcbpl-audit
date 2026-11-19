@@ -613,11 +613,9 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
     transition:0.3s;">
         🏠 Back to Home
     </button>
-<div class="scroll-title">
-    <div class="scroll-text">
-        📞 ইনবাউন্ড কল অডিট শিট • GTPL KCBPL কোয়ালিটি অ্যাস্যুরেন্স • রিয়েল-টাইম কল কোয়ালিটি মনিটরিং • প্রতিটি কল সঠিকভাবে মূল্যায়ন করুন • গুগল শিটসে স্বয়ংক্রিয়ভাবে তথ্য সংরক্ষণ হচ্ছে • শুধুমাত্র অভ্যন্তরীণ QA ব্যবহারের জন্য • গুণগত মান নিশ্চিত করতে প্রতিটি কল সতর্কতার সাথে মূল্যায়ন করুন •
-    </div>
 </div>
+<div id="auditBanner" class="scroll-title" style="display:none;">
+    <div class="scroll-text" id="auditBannerText"></div>
 </div>
 <!-- AUDIO PLAYER FIXED BAR -->
 
@@ -2614,6 +2612,19 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         left:120%;
     }
 }
+
+/* ===== Live audit banner (Process + Emp ID সিলেক্ট হলেই দেখা যাবে, নিচে নামলেও উপরে ফিক্সড থাকবে) ===== */
+#auditBanner.scroll-title{
+    position:sticky; top:0; z-index:1200;
+    height:54px; margin-bottom:15px;
+}
+#auditBanner .scroll-text{
+    font-size:24px; font-weight:900; letter-spacing:.3px;
+    text-shadow:0 1px 3px rgba(0,0,0,.35);
+    animation:none; /* স্পিড JS থেকে সেট হবে */
+}
+#auditBanner .ab-live{color:#fde047;}
+#auditBanner .ab-val{color:#fff; background:rgba(0,0,0,.22); padding:2px 10px; border-radius:8px;}
 /* Go To Bottom Button */
 #goToBottom {
     position: fixed;
@@ -2802,5 +2813,45 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 
 }
 </style>
+
+<script>
+// ─── Live audit banner: কোন এজেন্টের কল অডিট হচ্ছে তা স্ক্রোলিং ব্যানারে দেখায় ───
+(function () {
+    var SPEED_PX_PER_SEC = 220;   // আগের স্ক্রোলিং স্পিডের সমান (বাড়ালে দ্রুত, কমালে ধীর)
+    var lastKey = null;
+    function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+    window.updateAuditBanner = function () {
+        var box = document.getElementById('auditBanner');
+        var txt = document.getElementById('auditBannerText');
+        var pEl = document.getElementById('processSelect');
+        var iEl = document.getElementById('empIdInput');
+        var nEl = document.getElementById('empNameInput');
+        if (!box || !txt || !pEl || !iEl || !nEl) return;
+        var proc = pEl.value.trim(), id = iEl.value.trim().toUpperCase(), name = nEl.value.trim();
+        var key = proc + '|' + id + '|' + name;
+        if (key === lastKey) return;
+        lastKey = key;
+        if (!proc || !id || !name) { box.style.display = 'none'; txt.style.animation = 'none'; return; }
+        var item = '<span class="ab-live">🎧 এখন অডিট চলছে</span> &nbsp;➜&nbsp; AGENT: <span class="ab-val">' + esc(name) +
+                   '</span> &nbsp;•&nbsp; PROCESS: <span class="ab-val">' + esc(proc) +
+                   '</span> &nbsp;•&nbsp; EMP ID: <span class="ab-val">' + esc(id) + '</span>';
+        txt.innerHTML = item + ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + item;
+        box.style.display = 'flex';
+        txt.style.animation = 'none';
+        void txt.offsetWidth;
+        var dur = Math.max(8, txt.scrollWidth / SPEED_PX_PER_SEC);
+        txt.style.animation = 'scrollTitle ' + dur.toFixed(1) + 's linear infinite';
+    };
+    document.addEventListener('DOMContentLoaded', function () {
+        ['processSelect','empIdInput'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) { el.addEventListener('input', window.updateAuditBanner); el.addEventListener('change', window.updateAuditBanner); }
+        });
+        // নাম প্রোগ্রাম্যাটিকালি বসে, তাই হালকা চেক
+        setInterval(window.updateAuditBanner, 400);
+        window.updateAuditBanner();
+    });
+})();
+</script>
 </body>
 </html>

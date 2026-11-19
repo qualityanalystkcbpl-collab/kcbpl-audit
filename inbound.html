@@ -2623,8 +2623,14 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
     text-shadow:0 1px 3px rgba(0,0,0,.35);
     animation:none; /* স্পিড JS থেকে সেট হবে */
 }
-#auditBanner .ab-live{color:#fde047;}
-#auditBanner .ab-val{color:#fff; background:rgba(0,0,0,.22); padding:2px 10px; border-radius:8px;}
+#auditBanner.scroll-title::before{display:none;animation:none;} /* no shine animation */
+#auditBanner .ab-live{color:#fff;}
+#auditBanner .ab-dot{color:#fff; animation:abBlink 1s steps(1,end) infinite;}
+@keyframes abBlink{0%{opacity:1;}50%{opacity:0;}100%{opacity:1;}}
+#auditBanner .ab-val{padding:2px 12px; border-radius:8px; text-shadow:none; color:#0f172a;}
+#auditBanner .ab-agent{background:#fde047;}   /* yellow */
+#auditBanner .ab-proc{background:#86efac;}    /* green  */
+#auditBanner .ab-id{background:#fdba74;}      /* orange */
 /* Go To Bottom Button */
 #goToBottom {
     position: fixed;
@@ -2817,7 +2823,7 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 <script>
 // ─── Live audit banner: কোন এজেন্টের কল অডিট হচ্ছে তা স্ক্রোলিং ব্যানারে দেখায় ───
 (function () {
-    var SPEED_PX_PER_SEC = 220;   // আগের স্ক্রোলিং স্পিডের সমান (বাড়ালে দ্রুত, কমালে ধীর)
+    var SPEED_PX_PER_SEC = 110;   // scroll speed (higher = faster, lower = slower)
     var lastKey = null;
     function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     window.updateAuditBanner = function () {
@@ -2832,10 +2838,10 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         if (key === lastKey) return;
         lastKey = key;
         if (!proc || !id || !name) { box.style.display = 'none'; txt.style.animation = 'none'; return; }
-        var item = '<span class="ab-live">🎧 এখন অডিট চলছে</span> &nbsp;➜&nbsp; AGENT: <span class="ab-val">' + esc(name) +
-                   '</span> &nbsp;•&nbsp; PROCESS: <span class="ab-val">' + esc(proc) +
-                   '</span> &nbsp;•&nbsp; EMP ID: <span class="ab-val">' + esc(id) + '</span>';
-        txt.innerHTML = item + ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + item;
+        var item = '<span class="ab-live">🎧 AUDIT IN PROGRESS</span> &nbsp;➜&nbsp; AGENT: <span class="ab-val ab-agent">' + esc(name) +
+                   '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; PROCESS: <span class="ab-val ab-proc">' + esc(proc) +
+                   '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; EMP ID: <span class="ab-val ab-id">' + esc(id) + '</span>';
+        txt.innerHTML = item;
         box.style.display = 'flex';
         txt.style.animation = 'none';
         void txt.offsetWidth;

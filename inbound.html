@@ -2824,7 +2824,7 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
 // ─── Live audit banner: কোন এজেন্টের কল অডিট হচ্ছে তা স্ক্রোলিং ব্যানারে দেখায় ───
 (function () {
     var SPEED_PX_PER_SEC = 110;   // scroll speed (higher = faster, lower = slower)
-    var lastKey = null;
+    var lastKey = null, anim = null, PAUSE_SEC = 3;
     function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     window.updateAuditBanner = function () {
         var box = document.getElementById('auditBanner');
@@ -2837,16 +2837,22 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         var key = proc + '|' + id + '|' + name;
         if (key === lastKey) return;
         lastKey = key;
-        if (!proc || !id || !name) { box.style.display = 'none'; txt.style.animation = 'none'; return; }
-        var item = '<span class="ab-live">🎧 AUDIT IN PROGRESS</span> &nbsp;➜&nbsp; AGENT: <span class="ab-val ab-agent">' + esc(name) +
+        if (anim) { anim.cancel(); anim = null; }
+        if (!proc || !id || !name) { box.style.display = 'none'; return; }
+        var item = '<span class="ab-live">🎧 AUDIT IN PROGRESS</span> &nbsp;<span class="ab-dot">➜</span>&nbsp; AGENT: <span class="ab-val ab-agent">' + esc(name) +
                    '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; PROCESS: <span class="ab-val ab-proc">' + esc(proc) +
                    '</span> &nbsp;<span class="ab-dot">•</span>&nbsp; EMP ID: <span class="ab-val ab-id">' + esc(id) + '</span>';
         txt.innerHTML = item;
         box.style.display = 'flex';
-        txt.style.animation = 'none';
-        void txt.offsetWidth;
-        var dur = Math.max(8, txt.scrollWidth / SPEED_PX_PER_SEC);
-        txt.style.animation = 'scrollTitle ' + dur.toFixed(1) + 's linear infinite';
+        // element width = banner width + text width, so -50% = text exactly in the middle of the banner
+        var moveSec = txt.offsetWidth / SPEED_PX_PER_SEC;
+        var half = moveSec / 2, total = moveSec + PAUSE_SEC;
+        anim = txt.animate([
+            { transform: 'translateX(0)', offset: 0 },
+            { transform: 'translateX(-50%)', offset: half / total },
+            { transform: 'translateX(-50%)', offset: (half + PAUSE_SEC) / total },
+            { transform: 'translateX(-100%)', offset: 1 }
+        ], { duration: total * 1000, iterations: Infinity, easing: 'linear' });
     };
     document.addEventListener('DOMContentLoaded', function () {
         ['processSelect','empIdInput'].forEach(function (id) {

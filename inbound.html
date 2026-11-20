@@ -522,6 +522,112 @@ h3 {
     *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 </style>
+<script>try{if(localStorage.getItem('gtpl_neon_theme')==='on')document.documentElement.classList.add('neon-on');}catch(e){}</script>
+<style id="compact-grid">
+.eval-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.eval-grid > .form-group{min-width:0;padding:12px 12px 10px}
+.eval-grid > .form-group label{font-size:12.5px;line-height:1.3;margin-bottom:5px;overflow-wrap:anywhere;word-break:break-word}
+.eval-grid > .form-group label .bn-label{font-size:11.5px}
+.eval-grid select,.eval-grid textarea{max-width:100%;min-width:0;font-size:12.5px;padding:8px}
+.eval-grid .remarks-container{padding:7px;min-width:0}
+.eval-grid textarea{height:48px}
+.eval-grid .remarks-select{text-overflow:ellipsis}
+@media (max-width:1100px){.eval-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:700px){.eval-grid{grid-template-columns:minmax(0,1fr)}}
+@media (min-width:1560px){.form-container{max-width:940px}}
+
+.theme-switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;padding:8px 14px;border-radius:999px;background:#140a30;color:#e0e7ff;font-size:13px;font-weight:700;border:1px solid rgba(167,139,250,.45);box-shadow:0 4px 12px rgba(20,10,48,.30);transition:box-shadow .25s ease,transform .2s ease}
+.theme-switch:hover{transform:translateY(-2px);box-shadow:0 0 16px rgba(34,211,238,.45),0 4px 12px rgba(20,10,48,.30)}
+.theme-switch input{position:absolute;opacity:0;width:0;height:0}
+.ts-track{position:relative;width:40px;height:22px;border-radius:999px;background:#475569;transition:background .25s ease;flex-shrink:0}
+.ts-track::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s ease}
+.theme-switch input:checked + .ts-track{background:linear-gradient(90deg,#06b6d4,#db2777)}
+.theme-switch input:checked + .ts-track::after{transform:translateX(18px)}
+.theme-switch input:focus-visible + .ts-track{outline:2px solid #22d3ee;outline-offset:2px}
+.ts-state{font-size:11px;padding:1px 8px;border-radius:20px;background:rgba(255,255,255,.12)}
+</style>
+<style id="neon-theme">
+html.neon-on{color-scheme:dark;scrollbar-color:#22d3ee #140a30}
+.neon-on body{background:linear-gradient(135deg,#1a0b3b 0%,#0b1a4a 60%,#0a3a4a 100%) fixed !important;color:#e0e7ff}
+.neon-on body::before{background:
+  radial-gradient(38% 34% at 12% 18%,rgba(219,39,119,.30),transparent 70%),
+  radial-gradient(34% 32% at 88% 14%,rgba(6,182,212,.26),transparent 70%),
+  radial-gradient(40% 36% at 80% 88%,rgba(124,58,237,.30),transparent 70%),
+  radial-gradient(32% 30% at 10% 84%,rgba(34,211,238,.18),transparent 70%)}
+.neon-on .form-container{background:rgba(22,12,56,.74);border:1px solid rgba(167,139,250,.35);box-shadow:0 0 0 1px rgba(34,211,238,.10),0 18px 60px rgba(124,58,237,.35),0 0 40px rgba(6,182,212,.12)}
+.neon-on .form-container::before{background:linear-gradient(90deg,#06b6d4,#7c3aed,#db2777,#06b6d4);background-size:200% 100%}
+.neon-on h1{background:linear-gradient(90deg,#22d3ee,#a78bfa,#f472b6,#22d3ee);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#22d3ee;filter:drop-shadow(0 0 10px rgba(34,211,238,.45))}
+.neon-on h3{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);color:#a5b4fc}
+
+.neon-on #auditForm > fieldset{--accent:#06b6d4;--accent2:#7c3aed;--tint:rgba(255,255,255,.05);--line:rgba(255,255,255,.16);--ring:rgba(34,211,238,.28);
+  background:rgba(255,255,255,.045);border:1.5px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.25)}
+.neon-on #auditForm > fieldset:nth-of-type(2){--accent:#db2777;--accent2:#7c3aed;--ring:rgba(219,39,119,.30)}
+.neon-on #auditForm > fieldset:nth-of-type(3){--accent:#f59e0b;--accent2:#db2777;--ring:rgba(245,158,11,.30)}
+.neon-on #auditForm > fieldset > legend{box-shadow:0 0 16px rgba(34,211,238,.35)}
+
+.neon-on #auditForm label{color:#c7d2fe}
+.neon-on #auditForm label .en-label{color:#e0e7ff}
+.neon-on #auditForm label .bn-label{color:#a5b4fc;opacity:1}
+.neon-on #auditForm input[type="text"],.neon-on #auditForm input[type="email"],.neon-on #auditForm input[type="date"],.neon-on #auditForm input[type="time"],.neon-on #auditForm select,.neon-on #auditForm textarea{background-color:rgba(255,255,255,.07);color:#e0e7ff;border:1.5px solid rgba(255,255,255,.2)}
+.neon-on #auditForm option{background:#1b1146;color:#e0e7ff}
+.neon-on #auditForm ::placeholder{color:#8b93c9}
+.neon-on #auditForm input:hover,.neon-on #auditForm select:hover,.neon-on #auditForm textarea:hover{border-color:#22d3ee}
+.neon-on #auditForm input:focus,.neon-on #auditForm select:focus,.neon-on #auditForm textarea:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.22),0 0 14px rgba(34,211,238,.25)}
+.neon-on .agent-name-locked{background:rgba(34,211,238,.10) !important;color:#67e8f9 !important;border:1px dashed rgba(34,211,238,.5) !important}
+.neon-on #empHint{color:#fda4af}
+
+.neon-on #auditForm .auto-fields-box{background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(124,58,237,.12));border:1.5px dashed rgba(34,211,238,.55);border-left:5px solid #22d3ee;box-shadow:0 0 18px rgba(6,182,212,.15)}
+.neon-on #auditForm .auto-fields-heading{background:linear-gradient(90deg,#06b6d4,#7c3aed)}
+.neon-on #auditForm .auto-fields-box label,.neon-on #auditForm .auto-fields-box label .en-label{color:#a5f3fc}
+.neon-on #auditForm .auto-fields-box label .bn-label{color:#67e8f9}
+.neon-on #auditForm .auto-fields-box .locked-field{background:rgba(34,211,238,.10) !important;color:#e0f2fe !important}
+
+.neon-on .eval-grid > .form-group{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);border-left:5px solid var(--c);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.neon-on .eval-grid > .form-group:hover{box-shadow:0 0 0 1px var(--c),0 10px 26px rgba(0,0,0,.35),0 0 22px color-mix(in srgb,var(--c) 40%,transparent)}
+.neon-on #auditForm .eval-grid > .form-group > select{color:#e0e7ff}
+.neon-on #auditForm .eval-grid > .form-group > select:has(option:checked:not([value="0"]):not([value=""])){background-color:rgba(16,185,129,.16);border-color:#34d399;color:#6ee7b7}
+.neon-on #auditForm .eval-grid > .form-group > select:has(option[value="0"]:checked){background-color:rgba(244,63,94,.18);border-color:#fb7185;color:#fda4af}
+.neon-on .eval-grid > .form-group:has(> select option[value="0"]:checked){--c:#fb7185;background:rgba(244,63,94,.12);border:1px solid rgba(251,113,133,.5);border-left:5px solid #fb7185}
+.neon-on .eval-grid .remarks-container{background:rgba(0,0,0,.22);border-left:3px solid var(--c,#22d3ee)}
+
+.neon-on #auditForm .remarks-container textarea:focus,
+.neon-on #auditForm .remarks-container textarea:not(:placeholder-shown){border-color:transparent;
+  background:linear-gradient(#150b38,#150b38) padding-box,conic-gradient(from var(--tabAngle),#22d3ee,#a78bfa,#f472b6,#fbbf24,#34d399,#22d3ee) border-box;
+  -webkit-background-clip:padding-box,border-box;background-clip:padding-box,border-box;
+  -webkit-text-fill-color:#e0f2fe;color:#e0f2fe;font-weight:600;caret-color:#22d3ee;
+  animation:tabBorderSpin 5s linear infinite;box-shadow:0 0 14px rgba(34,211,238,.25)}
+.neon-on .remarks-mandatory{border:1px solid #fb7185 !important;background-color:rgba(244,63,94,.14) !important}
+.neon-on .remarks-mandatory::placeholder{color:#fda4af}
+
+.neon-on #auditForm .submit-btn:not(:disabled){background:linear-gradient(120deg,#06b6d4,#7c3aed,#db2777) !important;background-size:200% 100% !important;box-shadow:0 0 22px rgba(6,182,212,.45),0 8px 24px rgba(219,39,119,.35) !important}
+.neon-on #auditForm .submit-btn:not(:disabled):hover{box-shadow:0 0 30px rgba(34,211,238,.7),0 12px 30px rgba(219,39,119,.5) !important}
+.neon-on #auditForm .submit-btn:disabled{background:#3b3563 !important;color:#9ca3c9 !important;box-shadow:none !important}
+
+.neon-on #failCountBox{background:rgba(48,10,32,.92);border:1px solid rgba(251,113,133,.5);border-left:4px solid #fb7185;box-shadow:0 0 22px rgba(244,63,94,.25)}
+.neon-on #failCountHeading{color:#fb7185;border-bottom-color:rgba(251,113,133,.4)}
+.neon-on .fail-item{color:#fecdd3}
+.neon-on .fail-remarks{color:#fdba74}
+.neon-on .tracker-box,.neon-on #score-counter-box{box-shadow:0 0 22px rgba(34,211,238,.18),0 10px 25px rgba(0,0,0,.35)}
+
+.neon-on .sc-prog{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#e0e7ff}
+.neon-on .sc-ring::before{background:#1a1040}
+.neon-on .sc-prog-title{color:#a5b4fc}
+.neon-on .sc-prog-pct{color:#fff}
+.neon-on #stPctSub{color:#a5b4fc !important}
+.neon-on .sec-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.neon-on .sec-mini{background:rgba(255,255,255,.08)}
+.neon-on .sec-mini-l{color:#a5b4fc}
+.neon-on .sec-mini-n{color:#fff}
+.neon-on #empScore{color:#a5b4fc}
+.neon-on .emp-score-n{color:#94a3d8}
+.neon-on .emp-cnt.cr{color:#fb7185}
+.neon-on .emp-cnt.cb{color:#7dd3fc}
+.neon-on .emp-cnt.cg{color:#4ade80}
+
+.neon-on #passRemarksBox{background:#1b1146;border-top:5px solid #22d3ee;box-shadow:0 0 40px rgba(34,211,238,.35)}
+.neon-on #passRemarksMsg{color:#e0e7ff}
+.neon-on #passRemarksMsg span{color:#a5b4fc}
+</style>
 </head>
 <body>
 <script>
@@ -598,7 +704,8 @@ if(localStorage.getItem("gtpl_login") !== "yes"){
 .sec-mini-l { font-size: 9.5px; font-weight: 700; color: #64748b; }
 .sec-mini-n { font-size: 19px; font-weight: 800; color: #1e1b4b; line-height: 1.15; }
 </style>
-<div style="text-align:right; margin-bottom:15px;">
+<div style="display:flex; justify-content:flex-end; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:15px;">
+    <label class="theme-switch" title="Neon Glass design ON/OFF (refresh korleo thakbe)"><input type="checkbox" id="neonToggle"><span class="ts-track"></span><span>Neon Glass</span><span class="ts-state" id="neonState">OFF</span></label>
     <button onclick="location.href='LOGIN.html'"
     style="
     background:linear-gradient(135deg,#2563eb,#1e40af);
@@ -2906,6 +3013,24 @@ setInterval(refreshAuditStats, STATS_REFRESH_MS);
         setInterval(window.updateAuditBanner, 400);
         window.updateAuditBanner();
     });
+})();
+</script>
+<script>
+(function () {
+    var KEY = 'gtpl_neon_theme', root = document.documentElement;
+    var tg = document.getElementById('neonToggle'), st = document.getElementById('neonState');
+    function sync() {
+        var on = root.classList.contains('neon-on');
+        if (tg) tg.checked = on;
+        if (st) st.textContent = on ? 'ON' : 'OFF';
+    }
+    if (tg) tg.addEventListener('change', function () {
+        var on = tg.checked;
+        root.classList.toggle('neon-on', on);
+        try { localStorage.setItem(KEY, on ? 'on' : 'off'); } catch (e) {}
+        sync();
+    });
+    sync();
 })();
 </script>
 </body>

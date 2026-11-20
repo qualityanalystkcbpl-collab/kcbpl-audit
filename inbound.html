@@ -628,6 +628,17 @@ html.neon-on{color-scheme:dark;scrollbar-color:#22d3ee #140a30}
 .neon-on #passRemarksMsg{color:#e0e7ff}
 .neon-on #passRemarksMsg span{color:#a5b4fc}
 </style>
+<style id="status-colors">
+/* 0 (No Error) = GREEN | FATAL = RED | plain 0 = RED (fail) */
+.eval-grid > .form-group > select:has(option[data-ne]:checked){background-color:#f0fdf4 !important;border-color:#86efac !important;color:#166534 !important}
+.eval-grid > .form-group:has(> select option[data-ne]:checked){--c:#10b981 !important;background:#fff !important;border-color:var(--line) !important;border-left-color:#10b981 !important}
+.eval-grid > .form-group > select:has(option[value="FATAL"]:checked){background-color:#fef2f2 !important;border-color:#fca5a5 !important;color:#b91c1c !important}
+.eval-grid > .form-group:has(> select option[value="FATAL"]:checked){--c:#ef4444 !important;background:#fffafa !important;border-color:#fecaca !important;border-left-color:#ef4444 !important}
+.neon-on .eval-grid > .form-group > select:has(option[data-ne]:checked){background-color:rgba(16,185,129,.16) !important;border-color:#34d399 !important;color:#6ee7b7 !important}
+.neon-on .eval-grid > .form-group:has(> select option[data-ne]:checked){--c:#34d399 !important;background:rgba(16,185,129,.07) !important;border-color:rgba(52,211,153,.35) !important;border-left-color:#34d399 !important}
+.neon-on .eval-grid > .form-group > select:has(option[value="FATAL"]:checked){background-color:rgba(244,63,94,.18) !important;border-color:#fb7185 !important;color:#fda4af !important}
+.neon-on .eval-grid > .form-group:has(> select option[value="FATAL"]:checked){--c:#fb7185 !important;background:rgba(244,63,94,.12) !important;border-color:rgba(251,113,133,.5) !important;border-left-color:#fb7185 !important}
+</style>
 </head>
 <body>
 <script>
@@ -1320,7 +1331,7 @@ function loadAudio(){
                 <label class="required"><span class="en-label">Disconnection/Call ignorance (0 Marks / FATAL)</span><span class="bn-label">ইচ্ছা করে কল কেটে দেওয়া বা কাস্টমারকে ইগনোর করা</span></label>
                 <select name="Disconnection/Call ignorance" class="fatal-select" required>
                     <option value="">Select Score</option>
-                    <option selected value="0">0 (No Error)</option>
+                    <option selected value="0" data-ne="1">0 (No Error)</option>
                     <option value="FATAL">FATAL (Auto Fail)</option>
                 </select>
                 <div class="remarks-container">
@@ -1338,7 +1349,7 @@ function loadAudio(){
                 <label class="required"><span class="en-label">Unprofessional on call/Rude/Sarcastic/slangs (0 Marks / FATAL)</span><span class="bn-label">রুক্ষ আচরণ, ব্যঙ্গ করা বা অপেশাদার টোন ব্যবহার</span></label>
                 <select name="Unprofessional on call/Rude/Sarcastic/slangs" class="fatal-select" required>
                     <option value="">Select Score</option>
-                    <option selected value="0">0 (No Error)</option>
+                    <option selected value="0" data-ne="1">0 (No Error)</option>
                     <option value="FATAL">FATAL (Auto Fail)</option>
                 </select>
                 <div class="remarks-container">
@@ -1375,7 +1386,7 @@ function loadAudio(){
                 <label class="required"><span class="en-label">Cross Talk/laughing / Validation Failure (0 Marks / FATAL)</span><span class="bn-label">Cross Talk, হাসাহাসি করা বা ভ্যালিডেশন ফেইল</span></label>
                 <select name="Cross Talk/laughing / Validation Failure" class="fatal-select" required>
                     <option value="">Select Score</option>
-                    <option selected value="0">0 (No Error)</option>
+                    <option selected value="0" data-ne="1">0 (No Error)</option>
                     <option value="FATAL">FATAL (Auto Fail)</option>
                 </select>
                 <div class="remarks-container">
